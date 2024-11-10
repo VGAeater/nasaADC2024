@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&family=Roboto&display=swap" rel="stylesheet">
+	<script src="/src/p5.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.min.js"></script>-->
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script>-->
+	<script src="/src/sketch.js"></script>
+	<link rel="stylesheet" type="text/css" href="/src/style.css">
+	<meta charset="utf-8" />
+
+</head>
+<body>
+	<div id="canvasdiv" resize="setSize();">
+		<canvas id="canvas"></canvas>
+		<dd id="overlaytext"></dd>
+	</div>
+	<div id="menu" class="hidden">
+		<div class="menurow">
+			<!--
+			<hr>
+			<div class="menusection">
+				<button onclick="goToObject(arrayEarthStart);">Go to Earth</button><br>
+				<button onclick="goToObject(arrayMoonStart);">Go to moon</button><br>
+				<button onclick="goToObject(arrayProbeStart);">Go to probe</button>
+			</div>
+			-->
+			<hr>
+			<div class="menusection">
+				<label>Time (min)</label><br>
+				<input type="text" id="time" placeholder="0" oninput="setTime(this.value);"><br>
+				<label>Stroke Weight</label><br>
+				<input type="text" id="stroke" placeholder="100" oninput="strokeWeight(this.value == '' ? 100 : parseFloat(this.value));"><br>
+				<label>Speed (min/sec)</label><br>
+				<input type="text" id="speed" placeholder="10" oninput="speed = this.value == '' ? 10 : parseFloat(this.value);"><br>
+			</div>
+			<hr>
+			<div class="menusection">
+				<label>Follow Earth</label><br>
+				<input type="checkbox" id="followEarth" oninput="handleFollowButtons('earth');"><br>
+				<label>Follow moon</label><br>
+				<input type="checkbox" id="followMoon" oninput="handleFollowButtons('moon');"><br>
+				<label>Follow probe</label><br>
+				<input type="checkbox" id="followProbe" oninput="handleFollowButtons('probe');"><br>
+			</div>
+			<hr>
+			<div class="menusection">
+				<label>Show Axes</label><br>
+				<input type="checkbox" oninput="showAxes = this.checked;"><br>
+				<label>Show Text</label><br>
+				<input type="checkbox" oninput="showText = this.checked; overlayDOM.innerHTML = '';"><br>
+				<label>Earth Texture</label><br>
+				<input type="checkbox" oninput="useEarthTexture = this.checked;">
+			</div>
+			<hr>
+		</div>
+		<hr>
+		<div class="menurow">
+			<button id="playbutton" onclick="playing = this.classList.toggle('playing');"></button>
+			<input type="range" value="0" min="0" max="12983.16998" step="1" id="timeslider" oninput="setTime(this.value);"/>
+		</div>
+	</div>
+</body>
+
+</html>
+

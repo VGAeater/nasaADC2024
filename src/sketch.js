@@ -37,7 +37,7 @@ var prevcanvasbox;
 var earthTex;
 
 var arr, key;
-fetch('/src/flightpath.csv').then(response => {
+fetch('src/flightpath.csv').then(response => {
 	return response.text(); // Extract the text from the response
 }).then(text => {
 	let data = text.split("\n");

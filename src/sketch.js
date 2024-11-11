@@ -144,15 +144,12 @@ function handleEarth(data) {
 		camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z);
 	}
 
-	//if (followEarth)
-
 	stroke(0, 0, 255);
 
 	push();
 	if (useEarthTexture)
 		texture(earthTex);
 	translate(x, y, z);
-	//scale(-1, 1, 1);
 	rotateX(-PI);
 	rotateY(HALF_PI);
 	rotateZ(-0.40910518);
@@ -327,19 +324,6 @@ function handleFollowButtons(selected) {
 	followMoon = followMoonDOM.checked;
 	followProbe = followProbeDOM.checked;
 }
-
-//function goToObject(arrayStart) {
-//	let data = dataWeightedAverage(time);
-//
-//	if (!data)
-//		return;
-//
-//	let x = data[arrayStart];
-//	let y = data[arrayStart+1];
-//	let z = data[arrayStart+2];
-//
-//	camera.lookAt(x, y, z);
-//}
 
 function setTime(input) {
 	if (input == "") {

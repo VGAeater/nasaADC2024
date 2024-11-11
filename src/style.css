@@ -202,11 +202,11 @@ button:active {
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 2vh;
-	background-image: url(/assets/play.svg);
+	background-image: url(assets/play.svg);
 }
 
 #playbutton.playing {
-	background-image: url(/assets/pause.svg);
+	background-image: url(assets/pause.svg);
 }
 
 #overlaytext {

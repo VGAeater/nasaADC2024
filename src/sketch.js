@@ -254,7 +254,6 @@ function setSize() {
 
 	resizeCanvas(box.width, box.height);
 	resizeTo(box.width, box.height);
-	//textSize(box.height / 20);
 	perspective(2 * atan(box.height / 2 / 800), box.width/box.height, 1, 10000000);
 	prevbox = box;
 }
@@ -283,7 +282,7 @@ function setup() {
 
 	createCanvas(prevbox.width, prevbox.height, WEBGL, canvas);
 	camera = createCamera();
-	camera.camera(earthRadius * 3, earthRadius * 2, -earthRadius * 3, 0, 0, 0, 0, -1, 0);
+	camera.camera(earthRadius * 3, earthRadius * 2, -earthRadius * 3, 0, 0, 0, 0, -1, 0);	// 0, -1, 0 to make coordinate system right handed
 
 	setSize();
 	noFill();
@@ -291,8 +290,6 @@ function setup() {
 }
 
 function draw() {
-	//scale(1, -1, 1); // make the coordinate system right handed
-
 	setSize();
 	orbitControl();
 	background(0);

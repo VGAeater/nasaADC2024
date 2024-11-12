@@ -2,7 +2,12 @@ const tanMult = 5000;
 const arrayEarthStart = 8, arrayMoonStart = 14, arrayProbeStart = 1;
 const arrayProbeMass = 7;
 const earthRadius = 6378.137, moonRadius = 1737.4;
-
+const antennaPositions = [
+	[35.3399*Math.PI/180, -116.875*Math.PI/180, 0.951499],
+	[-35.3985*Math.PI/180, 148.982*Math.PI/180, 0.69202],
+	[40.4256*Math.PI/180, -4.2541*Math.PI/180, 0.837051],
+	[37.9273*Math.PI/180, -75.475*Math.PI/180, -0.019736]
+];
 
 function binarySearchFloor(arr, el) {
 	let m = 0;
@@ -38,16 +43,16 @@ var earthTex;
 
 var arr, key;
 fetch('src/flightpath.csv').then(response => {
-	return response.text(); // Extract the text from the response
+	return response.text();
 }).then(text => {
 	let data = text.split("\n");
 	key = data[0].split(",");
 	arr = [...Array(key.length)].map(e => []);
+
 	for (let i = 1; i < data.length-1; i++) {
 		let row = data[i].split(",");
-		for (let j = 0; j < key.length; j++) {
+		for (let j = 0; j < key.length; j++)
 			arr[j].push(parseFloat(row[j]));
-		}
 	}
 	delete data;
 	dataWeightedAverage = time => {
@@ -57,14 +62,12 @@ fetch('src/flightpath.csv').then(response => {
 		if (timeIndex+1 >= arr[0].length) {
 			for (let i = 0; i < arr.length; i++)
 				output.push(arr[i][arr[0].length - 1]);
-
 			return output;
 		}
 		
 		if (timeIndex < 0) {
 			for (let i = 0; i < arr.length; i++)
 				output.push(arr[i][0]);
-
 			return output;
 		}
 
@@ -78,7 +81,6 @@ fetch('src/flightpath.csv').then(response => {
 
 		for (let i = 0; i < arr.length; i++)
 			output.push(arr[i][timeIndex] * (1 - weight) + arr[i][timeIndex+1] * weight);
-
 		return output;
 	}
 
@@ -144,14 +146,39 @@ function handleEarth(data) {
 	stroke(0, 0, 255);
 
 	push();
-	if (useEarthTexture)
-		texture(earthTex);
+
 	translate(x, y, z);
-	rotateX(-PI);
-	rotateY(HALF_PI);
-	rotateZ(-0.40910518);
-	rotateY(0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127*time);
-	sphere(earthRadius, 16, 8);
+	rotateX(-PI);		// weird axes correction
+	// tilt axis
+	rotateX(-0.40910518);
+	// rotate earth
+	rotateY(0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127 * time);
+
+	push();
+
+	rotateY(-HALF_PI);	// weird axes correction
+
+	if (useEarthTexture) {
+		noStroke();
+		texture(earthTex);
+		sphere(earthRadius, 64, 64);
+	} else
+		sphere(earthRadius, 16, 8);
+
+	pop();
+
+	// loop through antennas
+	for (const pos of antennaPositions) {
+		push();
+
+		let r = earthRadius + pos[2];
+		translate(r * cos(pos[0]) * cos(pos[1]), -r * sin(pos[0]), -r * cos(pos[0]) * sin(pos[1]));	// negatives for even more weird axes correction
+		stroke(255, 0, 255);
+		sphere(200, 4, 2);
+
+		pop();
+	}
+
 	pop();
 }
 

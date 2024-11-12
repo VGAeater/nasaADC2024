@@ -87,9 +87,6 @@ fetch('src/flightpath.csv').then(response => {
 
 
 function handleRocket(data) {
-	if (!arrReady)
-		return;
-
 	let x = data[arrayProbeStart];
 	let y = data[arrayProbeStart+1];
 	let z = data[arrayProbeStart+2];
@@ -109,7 +106,10 @@ function handleRocket(data) {
 
 	push();
 	translate(x, y, z);
-	sphere(500, 8, 4);
+	//rotateZ(createVector(x, y).heading());
+	//rotateY(-createVector(x, y).heading());
+	//console.log(createVector(x, y, z).angleBetween(createVector(0, 0, 0)));
+	cone(500, 1000, 8);
 	pop();
 
 	stroke(255,0,0);
@@ -130,9 +130,6 @@ function handleRocket(data) {
 }
 
 function handleEarth(data) {
-	if (!arrReady)
-		return;
-
 	let x = data[arrayEarthStart];
 	let y = data[arrayEarthStart+1];
 	let z = data[arrayEarthStart+2];
@@ -159,9 +156,6 @@ function handleEarth(data) {
 }
 
 function handleMoon(data) {
-	if (!arrReady)
-		return;
-
 	let x = data[arrayMoonStart];
 	let y = data[arrayMoonStart+1];
 	let z = data[arrayMoonStart+2];
@@ -208,7 +202,7 @@ function drawAxes() {
 }
 
 function drawText(data) {
-	if (!showText || !arrReady)
+	if (!showText)
 		return;
 
 	let framerate = frameRate();
@@ -288,6 +282,10 @@ function setup() {
 
 function draw() {
 	setSize();
+
+	if (!arrReady)
+		return;
+
 	orbitControl();
 	background(0);
 
@@ -296,12 +294,11 @@ function draw() {
 	handleEarth(data);
 	handleMoon(data);
 	handleRocket(data);
-	drawAxes();
 	drawText(data);
+	drawAxes();
 
-	if (playing) {
+	if (playing)
 		setTime(time + speed * deltaTime / 1000);
-	}
 }
 
 
@@ -326,13 +323,9 @@ function handleFollowButtons(selected) {
 }
 
 function setTime(input) {
-	if (input == "") {
-		time = 0;
-		return;
-	}
-
 	time = parseFloat(input);
-	if (isNaN(time))
+
+	if (input == "" || isNaN(time))
 		time = 0;
 
 	timeDOM.value = input;
@@ -358,4 +351,3 @@ function linkB(dr, slantr) {
 	return bits / 1000;
 }
 
-alert(linkB(34, 336217.2642));

@@ -161,7 +161,12 @@ function handleEarth(data) {
 
 	if (useEarthTexture) {
 		noStroke();
-		texture(earthTex);
+		shader(earthShader);
+	earthShader.setUniform("dayTexture", earthDayTex);
+	earthShader.setUniform("nightTexture", earthNightTex);
+	earthShader.setUniform("lightDirection", [1,0,0]);
+	earthShader.setUniform("resolution", [prevbox.width, prevbox.height]);
+		fill(255);
 		sphere(earthRadius, 64, 64);
 	} else
 		sphere(earthRadius, 16, 8);
@@ -274,11 +279,21 @@ function setSize() {
 	resizeCanvas(box.width, box.height);
 	resizeTo(box.width, box.height);
 	perspective(2 * atan(box.height / 2 / 800), box.width/box.height, 1, 10000000);
+
+	earthShader.setUniform("resolution", [box.width, box.height]);
+
 	prevbox = box;
 }
 
 function preload() {
-	earthTex = loadImage('assets/dayTimeEarth.jpg');
+	earthDayTex = loadImage('assets/earthDay.jpg');
+	earthNightTex = loadImage('assets/earthNight.jpg');
+	cloudsTex = loadImage('assets/clouds.jpg');
+	moonTex = loadImage('assets/moon.jpg');
+
+	earthShader = loadShader('src/earth.vert', 'src/earth.frag');
+	atmoShader = loadShader('src/atmo.vert', 'src/atmo.frag');
+	moonShader = loadShader('src/moon.vert', 'src/moon.frag');
 }
 
 function setup() {
@@ -302,6 +317,11 @@ function setup() {
 	createCanvas(prevbox.width, prevbox.height, WEBGL, canvas);
 	camera = createCamera();
 	camera.camera(earthRadius * 3, earthRadius * 2, -earthRadius * 3, 0, 0, 0, 0, -1, 0);	// 0, -1, 0 to make coordinate system right handed
+	
+	earthShader.setUniform("dayTexture", earthDayTex);
+	earthShader.setUniform("nightTexture", earthNightTex);
+	earthShader.setUniform("lightDirection", createVector(1, 1, 1).normalize());
+	earthShader.setUniform("resolution", [prevbox.width, prevbox.height]);
 
 	setSize();
 	noFill();

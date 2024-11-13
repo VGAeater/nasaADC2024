@@ -2,6 +2,7 @@ const tanMult = 5000;
 const arrayEarthStart = 8, arrayMoonStart = 14, arrayProbeStart = 1;
 const arrayProbeMass = 7;
 const earthRadius = 6378.137, moonRadius = 1737.4;
+
 const antennaPositions = [
 	[35.3399*Math.PI/180, -116.875*Math.PI/180, 0.951499],
 	[-35.3985*Math.PI/180, 148.982*Math.PI/180, 0.69202],
@@ -313,7 +314,7 @@ function draw() {
 	if (!arrReady)
 		return;
 
-	orbitControl();
+	orbitControl(2, 2, 0.5);
 	background(0);
 
 	let data = dataWeightedAverage(time);
@@ -327,7 +328,6 @@ function draw() {
 	if (playing)
 		setTime(time + speed * deltaTime / 1000);
 }
-
 
 function keyPressed() {
 	if (keyCode == 27) {

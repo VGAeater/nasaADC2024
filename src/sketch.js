@@ -21,7 +21,7 @@ var timeSliderDOM;
 var overlayDOM;
 var showAxes = false, showText = false, playing = false, speed = 10;
 
-var trackBonus = true;
+var trackBonus = false;
 
 var canvasdiv, menu;
 var prevcanvasbox;

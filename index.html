@@ -20,14 +20,6 @@
 	</div>
 	<div id="menu" class="hidden">
 		<div class="menurow">
-			<!--
-			<hr>
-			<div class="menusection">
-				<button onclick="goToObject(arrayEarthStart);">Go to Earth</button><br>
-				<button onclick="goToObject(arrayMoonStart);">Go to moon</button><br>
-				<button onclick="goToObject(arrayProbeStart);">Go to probe</button>
-			</div>
-			-->
 			<hr>
 			<div class="menusection">
 				<label>Time (min)</label><br>
@@ -47,15 +39,6 @@
 				<input type="checkbox" id="followProbe" oninput="handleFollowButtons('probe');"><br>
 			</div>
 			<hr>
-			<div class="menusection">
-				<label>Show Axes</label><br>
-				<input type="checkbox" oninput="showAxes = this.checked;"><br>
-				<label>Show Text</label><br>
-				<input type="checkbox" oninput="showText = this.checked; overlayDOM.innerHTML = '';"><br>
-				<label>Use Textures</label><br>
-				<input type="checkbox" oninput="useTextures = this.checked;">
-			</div>
-			<hr>
 		</div>
 		<hr>
 		<div class="menurow">
@@ -70,6 +53,15 @@
 				<input type="checkbox" oninput="trackBonus = this.checked;"><br>
 				<label>Show Other Path</label><br>
 				<input type="checkbox" oninput="showOtherPath = this.checked;"><br>
+			</div>
+			<hr>
+			<div class="menusection">
+				<label>Show Axes</label><br>
+				<input type="checkbox" oninput="showAxes = this.checked;"><br>
+				<label>Show Text</label><br>
+				<input type="checkbox" oninput="showText = this.checked; overlayDOM.innerHTML = '';"><br>
+				<label>Use Textures</label><br>
+				<input type="checkbox" oninput="useTextures = this.checked;">
 			</div>
 			<hr>
 		</div>

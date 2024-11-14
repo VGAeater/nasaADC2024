@@ -107,7 +107,7 @@ function buildArr(t) {
 
 var baseArr, baseKey;
 var baseReady = false;
-fetch('src/base.csv').then(response => {
+fetch('assets/base.csv').then(response => {
 	return response.text();
 }).then(text => {
 	[baseArr, baseKey] = buildArr(text);
@@ -116,7 +116,7 @@ fetch('src/base.csv').then(response => {
 
 var bonusArr, bonusKey;
 var bonusReady = false;
-fetch('src/bonus.csv').then(response => {
+fetch('assets/bonus.csv').then(response => {
 	return response.text();
 }).then(text => {
 	[bonusArr, bonusKey] = buildArr(text);

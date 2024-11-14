@@ -72,37 +72,35 @@ function dataWeightedAverage(arr, time) {
 	return output;
 }
 
-var baseArr, baseKey;
-var baseReady = false;
-fetch('src/base.csv').then(r => { return r.text(); }).then(t => {
+function buildArr(t) {
 	let data = t.split("\n");
-	baseKey = data[0].split(",");
-	baseArr = [...Array(baseKey.length)].map(e => []);
+	let key = data[0].split(",");
+	let arr = [...Array(key.length)].map(e => []);
 
 	for (let i = 1; i < data.length-1; i++) {
 		let row = data[i].split(",");
-		for (let j = 0; j < baseKey.length; j++)
-			baseArr[j].push(parseFloat(row[j]));
+		for (let j = 0; j < key.length; j++)
+			arr[j].push(parseFloat(row[j]));
 	}
-	delete data;
 
+	return [arr, key];
+}
+
+var baseArr, baseKey;
+var baseReady = false;
+fetch('src/base.csv').then(response => {
+	return response.text();
+}).then(text => {
+	[baseArr, baseKey] = buildArr(text);
 	baseReady = true;
 });
 
 var bonusArr, bonusKey;
 var bonusReady = false;
-fetch('src/bonus.csv').then(r => { return r.text(); }).then(t => {
-	let data = t.split("\n");
-	bonusKey = data[0].split(",");
-	bonusArr = [...Array(bonusKey.length)].map(e => []);
-
-	for (let i = 1; i < data.length-1; i++) {
-		let row = data[i].split(",");
-		for (let j = 0; j < bonusKey.length; j++)
-			bonusArr[j].push(parseFloat(row[j]));
-	}
-	delete data;
-
+fetch('src/bonus.csv').then(response => {
+	return response.text();
+}).then(text => {
+	[bonusArr, bonusKey] = buildArr(text);
 	bonusReady = true;
 });
 
@@ -121,23 +119,15 @@ function buildPath(arr, start) {
 function handleRocket(baseData, bonusData) {
 	let x, y, z, xv, yv, zv;
 
-	if (trackBonus) {
-		x = bonusData[arrayProbeStart];
-		y = bonusData[arrayProbeStart+1];
-		z = bonusData[arrayProbeStart+2];
+	let data = trackBonus ? bonusData : baseData;
 
-		xv = bonusData[arrayProbeStart+3];
-		yv = bonusData[arrayProbeStart+4];
-		zv = bonusData[arrayProbeStart+5];
-	} else {
-		x = baseData[arrayProbeStart];
-		y = baseData[arrayProbeStart+1];
-		z = baseData[arrayProbeStart+2];
+	x = data[arrayProbeStart];
+	y = data[arrayProbeStart+1];
+	z = data[arrayProbeStart+2];
 
-		xv = baseData[arrayProbeStart+3];
-		yv = baseData[arrayProbeStart+4];
-		zv = baseData[arrayProbeStart+5];
-	}
+	xv = data[arrayProbeStart+3];
+	yv = data[arrayProbeStart+4];
+	zv = data[arrayProbeStart+5];
 
 	if (followProbe)
 		goToPosition(x, y, z);
@@ -167,9 +157,17 @@ function handleRocket(baseData, bonusData) {
 		bonusRocketPath = endGeometry();
 	}
 
-	stroke(255,255,0);
-	model(baseRocketPath);
-	model(bonusRocketPath);
+	if (trackBonus) {
+		stroke(255,255,0);
+		model(bonusRocketPath);
+		stroke(255,69,0);
+		model(baseRocketPath);
+	} else {
+		stroke(255,255,0);
+		model(baseRocketPath);
+		stroke(255,69,0);
+		model(bonusRocketPath);
+	}
 }
 
 function handleEarth(data) {

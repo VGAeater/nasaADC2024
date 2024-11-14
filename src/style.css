@@ -26,12 +26,12 @@ html, body {
 }
 
 #canvasdiv.small {
-	height: 70%;
+	height: 65%;
 }
 
 #menu {
 	position: fixed;
-	height: 30%;
+	height: 35%;
 	width: 100%;
 	bottom: 0;
 	left: 0;
@@ -67,10 +67,7 @@ input[type=range] {
 	appearance: none; /* Hides the slider so that custom slider can be made */
 	width: calc(100% - 2vh); /* Specific width is required for Firefox. */
 	background: transparent; /* Otherwise white in Chrome */
-	margin-top: 1vh;
-	margin-left: 1vh;
-	margin-right: 1vh;
-	margin-bottom: 2vh;
+	margin: 1vh;
 }
 
 input[type=range]:focus {
@@ -199,6 +196,7 @@ button:active {
 	height: 4vh;
 	border-radius: 1.5vh;
 	margin-left: 1vh;
+	margin-top: 1vh;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 2vh;

@@ -10,6 +10,25 @@ const antennaPositions = [
 	[37.9273*Math.PI/180, -75.475*Math.PI/180, -0.019736]
 ];
 
+var baseRocketPath, bonusRocketPath, moonPath;
+var time = 0;
+
+var followEarth = false, followMoon = false, followProbe = false;
+var useTextures = false;
+var followEarthDOM, followMoonDOM, followProbeDOM;
+var timeDOM, strokeDOM, speedDOM;
+var timeSliderDOM;
+var overlayDOM;
+var showAxes = false, showText = false, playing = false, speed = 10;
+
+var trackBonus = true;
+
+var canvasdiv, menu;
+var prevcanvasbox;
+
+var earthDayTex, earthNightTex, moonTex, cloudsTex;
+var earthShader, moonShader, atmoShader;
+
 function binarySearchFloor(arr, el) {
 	let m = 0;
 	let n = arr.length - 1;
@@ -23,87 +42,105 @@ function binarySearchFloor(arr, el) {
 	return m-1;
 }
 
-function dataWeightedAverage(time) { return null; }
+function dataWeightedAverage(arr, time) {
+	let timeIndex = binarySearchFloor(arr[0], time);
 
-var rocketPath;
-var arrReady = false;
-var time = 0;
-
-var followEarth = false, followMoon = false, followProbe = false;
-var useEarthTexture = false;
-var followEarthDOM, followMoonDOM, followProbeDOM;
-var timeDOM, strokeDOM, speedDOM;
-var timeSliderDOM;
-var overlayDOM;
-var showAxes = false, showText = false, playing = false, speed = 10;
-
-var canvasdiv, menu;
-var prevcanvasbox;
-
-var earthTex;
-
-var arr, key;
-fetch('src/flightpath.csv').then(response => {
-	return response.text();
-}).then(text => {
-	let data = text.split("\n");
-	key = data[0].split(",");
-	arr = [...Array(key.length)].map(e => []);
-
-	for (let i = 1; i < data.length-1; i++) {
-		let row = data[i].split(",");
-		for (let j = 0; j < key.length; j++)
-			arr[j].push(parseFloat(row[j]));
-	}
-	delete data;
-	dataWeightedAverage = time => {
-		let timeIndex = binarySearchFloor(arr[0], time);
-
-		let output = [];
-		if (timeIndex+1 >= arr[0].length) {
-			for (let i = 0; i < arr.length; i++)
-				output.push(arr[i][arr[0].length - 1]);
-			return output;
-		}
-		
-		if (timeIndex < 0) {
-			for (let i = 0; i < arr.length; i++)
-				output.push(arr[i][0]);
-			return output;
-		}
-
-		let lowerTime = arr[0][timeIndex];
-		let upperTime = arr[0][timeIndex+1];
-
-		let clampTimeDelta = upperTime - lowerTime;
-		let realTimeDelta = time - lowerTime;
-
-		let weight = realTimeDelta / clampTimeDelta;
-
+	let output = [];
+	if (timeIndex+1 >= arr[0].length) {
 		for (let i = 0; i < arr.length; i++)
-			output.push(arr[i][timeIndex] * (1 - weight) + arr[i][timeIndex+1] * weight);
+			output.push(arr[i][arr[0].length - 1]);
+		return output;
+	}
+		
+	if (timeIndex < 0) {
+		for (let i = 0; i < arr.length; i++)
+			output.push(arr[i][0]);
 		return output;
 	}
 
-	arrReady = true;
+	let lowerTime = arr[0][timeIndex];
+	let upperTime = arr[0][timeIndex+1];
+
+	let clampTimeDelta = upperTime - lowerTime;
+	let realTimeDelta = time - lowerTime;
+
+	let weight = realTimeDelta / clampTimeDelta;
+
+	for (let i = 0; i < arr.length; i++)
+		output.push(arr[i][timeIndex] * (1 - weight) + arr[i][timeIndex+1] * weight);
+
+	return output;
+}
+
+var baseArr, baseKey;
+var baseReady = false;
+fetch('src/base.csv').then(r => { return r.text(); }).then(t => {
+	let data = t.split("\n");
+	baseKey = data[0].split(",");
+	baseArr = [...Array(baseKey.length)].map(e => []);
+
+	for (let i = 1; i < data.length-1; i++) {
+		let row = data[i].split(",");
+		for (let j = 0; j < baseKey.length; j++)
+			baseArr[j].push(parseFloat(row[j]));
+	}
+	delete data;
+
+	baseReady = true;
 });
 
+var bonusArr, bonusKey;
+var bonusReady = false;
+fetch('src/bonus.csv').then(r => { return r.text(); }).then(t => {
+	let data = t.split("\n");
+	bonusKey = data[0].split(",");
+	bonusArr = [...Array(bonusKey.length)].map(e => []);
 
-function handleRocket(data) {
-	let x = data[arrayProbeStart];
-	let y = data[arrayProbeStart+1];
-	let z = data[arrayProbeStart+2];
-
-	let xv = data[arrayProbeStart+3];
-	let yv = data[arrayProbeStart+4];
-	let zv = data[arrayProbeStart+5];
-
-	if (followProbe) {
-		let camDeltaX = camera.eyeX - camera.centerX;
-		let camDeltaY = camera.eyeY - camera.centerY;
-		let camDeltaZ = camera.eyeZ - camera.centerZ;
-		camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z, 0, -1, 0);
+	for (let i = 1; i < data.length-1; i++) {
+		let row = data[i].split(",");
+		for (let j = 0; j < bonusKey.length; j++)
+			bonusArr[j].push(parseFloat(row[j]));
 	}
+	delete data;
+
+	bonusReady = true;
+});
+
+function goToPosition(x, y, z) {
+	let camDeltaX = camera.eyeX - camera.centerX;
+	let camDeltaY = camera.eyeY - camera.centerY;
+	let camDeltaZ = camera.eyeZ - camera.centerZ;
+	camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z, 0, -1, 0);
+}
+
+function buildPath(arr, start) {
+	for (let i = 0; i < arr[0].length-1; i++)
+		line(arr[start][i], arr[start+1][i], arr[start+2][i], arr[start][i+1], arr[start+1][i+1], arr[start+2][i+1]);
+}
+
+function handleRocket(baseData, bonusData) {
+	let x, y, z, xv, yv, zv;
+
+	if (trackBonus) {
+		x = bonusData[arrayProbeStart];
+		y = bonusData[arrayProbeStart+1];
+		z = bonusData[arrayProbeStart+2];
+
+		xv = bonusData[arrayProbeStart+3];
+		yv = bonusData[arrayProbeStart+4];
+		zv = bonusData[arrayProbeStart+5];
+	} else {
+		x = baseData[arrayProbeStart];
+		y = baseData[arrayProbeStart+1];
+		z = baseData[arrayProbeStart+2];
+
+		xv = baseData[arrayProbeStart+3];
+		yv = baseData[arrayProbeStart+4];
+		zv = baseData[arrayProbeStart+5];
+	}
+
+	if (followProbe)
+		goToPosition(x, y, z);
 
 	stroke(0,255,255);
 
@@ -118,18 +155,21 @@ function handleRocket(data) {
 	stroke(255,0,0);
 	line(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 
-	if (rocketPath) {
-		stroke(255,255,0);
-		model(rocketPath);
-		return;
+	if (!baseRocketPath) {
+		beginGeometry();
+		buildPath(baseArr, arrayProbeStart);
+		baseRocketPath = endGeometry();
 	}
 
-	beginGeometry();
-	for (let i = 0; i < arr[0].length-1; i++) {
-		line(arr[arrayProbeStart][i], arr[arrayProbeStart+1][i], arr[arrayProbeStart+2][i], arr[arrayProbeStart][i+1], arr[arrayProbeStart+1][i+1], arr[arrayProbeStart+2][i+1]);
+	if (!bonusRocketPath) {
+		beginGeometry();
+		buildPath(bonusArr, arrayProbeStart);
+		bonusRocketPath = endGeometry();
 	}
-	rocketPath = endGeometry();
-	model(rocketPath);
+
+	stroke(255,255,0);
+	model(baseRocketPath);
+	model(bonusRocketPath);
 }
 
 function handleEarth(data) {
@@ -137,12 +177,8 @@ function handleEarth(data) {
 	let y = data[arrayEarthStart+1];
 	let z = data[arrayEarthStart+2];
 
-	if (followEarth) {
-		let camDeltaX = camera.eyeX - camera.centerX;
-		let camDeltaY = camera.eyeY - camera.centerY;
-		let camDeltaZ = camera.eyeZ - camera.centerZ;
-		camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z);
-	}
+	if (followEarth)
+		goToPosition(x, y, z);
 
 	stroke(0, 0, 255);
 
@@ -159,13 +195,13 @@ function handleEarth(data) {
 
 	rotateY(-HALF_PI);	// weird axes correction
 
-	if (useEarthTexture) {
+	if (useTextures) {
 		noStroke();
 		shader(earthShader);
-	earthShader.setUniform("dayTexture", earthDayTex);
-	earthShader.setUniform("nightTexture", earthNightTex);
-	earthShader.setUniform("lightDirection", [1,0,0]);
-	earthShader.setUniform("resolution", [prevbox.width, prevbox.height]);
+		earthShader.setUniform("dayTexture", earthDayTex);
+		earthShader.setUniform("nightTexture", earthNightTex);
+		earthShader.setUniform("lightDirection", createVector(1, 0, 0).array());
+		earthShader.setUniform("resolution", [prevbox.width, prevbox.height]);
 		fill(255);
 		sphere(earthRadius, 64, 64);
 	} else
@@ -193,12 +229,8 @@ function handleMoon(data) {
 	let y = data[arrayMoonStart+1];
 	let z = data[arrayMoonStart+2];
 
-	if (followMoon) {
-		let camDeltaX = camera.eyeX - camera.centerX;
-		let camDeltaY = camera.eyeY - camera.centerY;
-		let camDeltaZ = camera.eyeZ - camera.centerZ;
-		camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z);
-	}
+	if (followMoon)
+		goToPosition(x, y, z);
 
 	stroke(255);
 
@@ -206,6 +238,17 @@ function handleMoon(data) {
 	translate(x, y, z);
 	sphere(moonRadius, 12, 6);
 	pop();
+
+	stroke(255,255,0);
+	if (moonPath) {
+		model(moonPath);
+		return;
+	}
+
+	beginGeometry();
+	buildPath(bonusArr, arrayMoonStart);
+	moonPath = endGeometry();
+	model(moonPath);
 }
 
 function drawAxes() {
@@ -280,8 +323,6 @@ function setSize() {
 	resizeTo(box.width, box.height);
 	perspective(2 * atan(box.height / 2 / 800), box.width/box.height, 1, 10000000);
 
-	earthShader.setUniform("resolution", [box.width, box.height]);
-
 	prevbox = box;
 }
 
@@ -318,11 +359,6 @@ function setup() {
 	camera = createCamera();
 	camera.camera(earthRadius * 3, earthRadius * 2, -earthRadius * 3, 0, 0, 0, 0, -1, 0);	// 0, -1, 0 to make coordinate system right handed
 	
-	earthShader.setUniform("dayTexture", earthDayTex);
-	earthShader.setUniform("nightTexture", earthNightTex);
-	earthShader.setUniform("lightDirection", createVector(1, 1, 1).normalize());
-	earthShader.setUniform("resolution", [prevbox.width, prevbox.height]);
-
 	setSize();
 	noFill();
 	strokeWeight(100);
@@ -331,18 +367,19 @@ function setup() {
 function draw() {
 	setSize();
 
-	if (!arrReady)
+	if (!(baseReady && bonusReady))
 		return;
 
 	orbitControl(2, 2, 0.5);
 	background(0);
 
-	let data = dataWeightedAverage(time);
+	let baseData = dataWeightedAverage(baseArr, time);
+	let bonusData = dataWeightedAverage(bonusArr, time);
 
-	handleEarth(data);
-	handleMoon(data);
-	handleRocket(data);
-	drawText(data);
+	handleEarth(bonusData);
+	handleMoon(bonusData);
+	handleRocket(baseData, bonusData);
+	drawText(baseData, bonusData);
 	drawAxes();
 
 	if (playing)

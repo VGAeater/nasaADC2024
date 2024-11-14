@@ -1,6 +1,7 @@
 const tanMult = 5000;
 const arrayEarthStart = 8, arrayMoonStart = 14, arrayProbeStart = 1;
 const arrayProbeMass = 7;
+const arrayRangeWPSA = 9, arrayRangeDSS54 = 11, arrayRangeDSS24 = 13, arrayRangeDSS34 = 15;
 const earthRadius = 6378.137, moonRadius = 1737.4;
 
 const antennaPositions = [
@@ -29,7 +30,7 @@ var prevcanvasbox;
 var earthDayTex, earthNightTex, moonTex, cloudsTex;
 var earthShader, moonShader, atmoShader;
 
-function linkBudget(dr, slantr) {
+function linkBudget(slantr, dr) {
 	pt = 10;
 	gt = 9;
 	losses = 19.43;
@@ -71,7 +72,7 @@ function dataWeightedAverage(arr, time) {
 		return output;
 	}
 		
-	if (timeIndex < 0) {
+	if (timeIndex <= 0) {
 		for (let i = 0; i < arr.length; i++)
 			output.push(arr[i][0]);
 		return output;
@@ -289,6 +290,15 @@ function textTriplet(data, start) {
 	return `${data[start].toFixed(3)}, ${data[start+1].toFixed(3)}, ${data[start+2].toFixed(3)}`;
 }
 
+function antennaText(range, radius) {
+	let netBudget = linkBudget(range, radius);
+
+	if (netBudget > 10000)
+		return `${netBudget.toFixed(3)}kbps → 10000`;
+
+	return netBudget.toFixed(3);
+}
+
 function drawText(baseData, bonusData) {
 	if (!showText)
 		return;
@@ -300,14 +310,24 @@ function drawText(baseData, bonusData) {
 	let moonV = sqrt(bonusData[arrayMoonStart+3]**2 + bonusData[arrayMoonStart+4]**2 + bonusData[arrayMoonStart+5]**2);
 	let earthV = sqrt(bonusData[arrayEarthStart+3]**2 + bonusData[arrayEarthStart+4]**2 + bonusData[arrayEarthStart+5]**2);
 
-	overlayDOM.innerHTML = `FPS: ${framerate.toFixed(3)} Time: ${time.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Probe pos: ${textTriplet(probeData, arrayProbeStart)}<br>`;
-	overlayDOM.innerHTML += `Probe vel: ${textTriplet(probeData, arrayProbeStart+3)} → ${probeV.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Moon pos: ${textTriplet(bonusData, arrayMoonStart)}<br>`;
-	overlayDOM.innerHTML += `Moon vel: ${textTriplet(bonusData, arrayMoonStart+3)} → ${moonV.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Earth pos: ${textTriplet(bonusData, arrayEarthStart)}<br>`;
-	overlayDOM.innerHTML += `Earth vel: ${textTriplet(bonusData, arrayEarthStart+3)} → ${earthV.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Mass: ${probeData[arrayProbeStart+6]}kg<br>`;
+	let buffer = `FPS: ${framerate.toFixed(3)} Time: ${time.toFixed(3)}<br>`;
+
+	buffer += `Probe pos: ${textTriplet(probeData, arrayProbeStart)}<br>`;
+	buffer += `Probe vel: ${textTriplet(probeData, arrayProbeStart+3)} → ${probeV.toFixed(3)}<br>`;
+	buffer += `Moon pos: ${textTriplet(bonusData, arrayMoonStart)}<br>`;
+	buffer += `Moon vel: ${textTriplet(bonusData, arrayMoonStart+3)} → ${moonV.toFixed(3)}<br>`;
+	buffer += `Earth pos: ${textTriplet(bonusData, arrayEarthStart)}<br>`;
+	buffer += `Earth vel: ${textTriplet(bonusData, arrayEarthStart+3)} → ${earthV.toFixed(3)}<br>`;
+
+	buffer += `Mass: ${probeData[arrayProbeStart+6]}kg<br>`;
+	if (!trackBonus) {
+		buffer += `WPSA: ${antennaText(probeData[arrayRangeWPSA], 12)}kbps<br>`;
+		buffer += `DSS24: ${antennaText(probeData[arrayRangeDSS24], 34)}kbps<br>`;
+		buffer += `DSS34: ${antennaText(probeData[arrayRangeDSS34], 34)}kbps<br>`;
+		buffer += `DSS54: ${antennaText(probeData[arrayRangeDSS54], 34)}kbps<br>`;
+	}
+
+	overlayDOM.innerHTML = buffer;
 }
 
 function setSize() {

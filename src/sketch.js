@@ -29,7 +29,7 @@ var prevcanvasbox;
 var earthDayTex, earthNightTex, moonTex, cloudsTex;
 var earthShader, moonShader, atmoShader;
 
-function linkB(dr, slantr) {
+function linkBudget(dr, slantr) {
 	pt = 10;
 	gt = 9;
 	losses = 19.43;

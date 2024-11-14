@@ -267,30 +267,22 @@ function handleMoon(data) {
 	model(moonPath);
 }
 
+function drawAxie(x, y, z) {
+	stroke(x*255,y*255,z*255);
+	line(0,0,0,x*7500,y*7500,z*7500);
+	push();
+	translate(x*7500, y*7500, z*7500);
+	sphere(500, 8, 4);
+	pop();
+}
+
 function drawAxes() {
 	if (!showAxes)
 		return;
 
-	stroke(255,0,0);
-	line(0,0,0,7500,0,0);
-	push();
-	translate(7500, 0, 0);
-	sphere(500, 8, 4);
-	pop();
-
-	stroke(0,255,0);
-	line(0,0,0,0,7500,0);
-	push();
-	translate(0, 7500, 0);
-	sphere(500, 8, 4);
-	pop();
-
-	stroke(0,0,255);
-	line(0,0,0,0,0,7500);
-	push();
-	translate(0, 0, 7500);
-	sphere(500, 8, 4);
-	pop();
+	drawAxie(1,0,0);
+	drawAxie(0,1,0);
+	drawAxie(0,0,1);
 }
 
 function textTriplet(data, start) {

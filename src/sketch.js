@@ -21,13 +21,32 @@ var timeSliderDOM;
 var overlayDOM;
 var showAxes = false, showText = false, playing = false, speed = 10;
 
-var trackBonus = false;
+var trackBonus = false, showOtherPath = false;
 
 var canvasdiv, menu;
 var prevcanvasbox;
 
 var earthDayTex, earthNightTex, moonTex, cloudsTex;
 var earthShader, moonShader, atmoShader;
+
+function linkB(dr, slantr) {
+	pt = 10;
+	gt = 9;
+	losses = 19.43;
+	nr = 0.55;
+	lam = 0.136363636363636;
+	kb = -228.6;
+	ts = 22;
+	first = pt + gt - losses;
+	dishCirc = dr * Math.PI;
+	second = 10 * Math.log10(nr * ((dishCirc / lam)**2));
+	slant = 4000 * slantr * Math.PI;
+	third = -20 * Math.log10(slant / lam);
+	fourth = -kb - 10 * Math.log10(22);
+	expo = (first + second + third + fourth) / 10;
+	bits = 10**expo;
+	return bits / 1000;
+}
 
 function binarySearchFloor(arr, el) {
 	let m = 0;
@@ -157,16 +176,15 @@ function handleRocket(baseData, bonusData) {
 		bonusRocketPath = endGeometry();
 	}
 
-	if (trackBonus) {
-		stroke(255,255,0);
-		model(bonusRocketPath);
+	let mainPath = trackBonus ? bonusRocketPath : baseRocketPath;
+	let secondaryPath = !trackBonus ? bonusRocketPath : baseRocketPath;
+
+	stroke(255,255,0);
+	model(mainPath);
+
+	if (showOtherPath) {
 		stroke(255,69,0);
-		model(baseRocketPath);
-	} else {
-		stroke(255,255,0);
-		model(baseRocketPath);
-		stroke(255,69,0);
-		model(bonusRocketPath);
+		model(secondaryPath);
 	}
 }
 
@@ -275,40 +293,28 @@ function drawAxes() {
 	pop();
 }
 
-function drawText(data) {
+function textTriplet(data, start) {
+	return `${data[start].toFixed(3)}, ${data[start+1].toFixed(3)}, ${data[start+2].toFixed(3)}`;
+}
+
+function drawText(baseData, bonusData) {
 	if (!showText)
 		return;
 
+	let probeData = trackBonus ? bonusData : baseData;
+
 	let framerate = frameRate();
-	let probeX = data[arrayProbeStart];
-	let probeY = data[arrayProbeStart+1];
-	let probeZ = data[arrayProbeStart+2];
-	let probeXV = data[arrayProbeStart+3];
-	let probeYV = data[arrayProbeStart+4];
-	let probeZV = data[arrayProbeStart+5];
-	let probeV = sqrt(probeXV**2 + probeYV**2 + probeZV**2);
-	let moonX = data[arrayMoonStart];
-	let moonY = data[arrayMoonStart+1];
-	let moonZ = data[arrayMoonStart+2];
-	let moonXV = data[arrayMoonStart+3];
-	let moonYV = data[arrayMoonStart+4];
-	let moonZV = data[arrayMoonStart+5];
-	let moonV = sqrt(moonXV**2 + moonYV**2 + moonZV**2);
-	let earthX = data[arrayEarthStart];
-	let earthY = data[arrayEarthStart+1];
-	let earthZ = data[arrayEarthStart+2];
-	let earthXV = data[arrayEarthStart+3];
-	let earthYV = data[arrayEarthStart+4];
-	let earthZV = data[arrayEarthStart+5];
-	let earthV = sqrt(earthXV**2 + earthYV**2 + earthZV**2);
+	let probeV = sqrt(probeData[arrayProbeStart+3]**2 + probeData[arrayProbeStart+4]**2 + probeData[arrayProbeStart+5]**2);
+	let moonV = sqrt(bonusData[arrayMoonStart+3]**2 + bonusData[arrayMoonStart+4]**2 + bonusData[arrayMoonStart+5]**2);
+	let earthV = sqrt(bonusData[arrayEarthStart+3]**2 + bonusData[arrayEarthStart+4]**2 + bonusData[arrayEarthStart+5]**2);
 
 	overlayDOM.innerHTML = `FPS: ${framerate.toFixed(3)} Time: ${time.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Probe pos: ${probeX.toFixed(3)}, ${probeY.toFixed(3)}, ${probeZ.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Probe vel: ${probeXV.toFixed(3)}, ${probeYV.toFixed(3)}, ${probeZV.toFixed(3)} → ${probeV.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Moon pos: ${moonX.toFixed(3)}, ${moonY.toFixed(3)}, ${moonZ.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Moon vel: ${moonXV.toFixed(3)}, ${moonYV.toFixed(3)}, ${moonZV.toFixed(3)} → ${moonV.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Earth pos: ${earthX.toFixed(3)}, ${earthY.toFixed(3)}, ${earthZ.toFixed(3)}<br>`;
-	overlayDOM.innerHTML += `Earth vel: ${earthXV.toFixed(3)}, ${earthYV.toFixed(3)}, ${earthZV.toFixed(3)} → ${earthV.toFixed(3)}<br>`;
+	overlayDOM.innerHTML += `Probe pos: ${textTriplet(probeData, arrayProbeStart)}<br>`;
+	overlayDOM.innerHTML += `Probe vel: ${textTriplet(probeData, arrayProbeStart+3)} → ${probeV.toFixed(3)}<br>`;
+	overlayDOM.innerHTML += `Moon pos: ${textTriplet(bonusData, arrayMoonStart)}<br>`;
+	overlayDOM.innerHTML += `Moon vel: ${textTriplet(bonusData, arrayMoonStart+3)} → ${moonV.toFixed(3)}<br>`;
+	overlayDOM.innerHTML += `Earth pos: ${textTriplet(bonusData, arrayEarthStart)}<br>`;
+	overlayDOM.innerHTML += `Earth vel: ${textTriplet(bonusData, arrayEarthStart+3)} → ${earthV.toFixed(3)}<br>`;
 }
 
 function setSize() {
@@ -412,24 +418,5 @@ function setTime(input) {
 
 	timeDOM.value = input;
 	timeSliderDOM.value = time;
-}
-
-function linkB(dr, slantr) {
-	pt = 10;
-	gt = 9;
-	losses = 19.43;
-	nr = 0.55;
-	lam = 0.136363636363636;
-	kb = -228.6;
-	ts = 22;
-	first = pt + gt - losses;
-	dishCirc = dr * Math.PI;
-	second = 10 * Math.log10(nr * ((dishCirc / lam)**2));
-	slant = 4000 * slantr * Math.PI;
-	third = -20 * Math.log10(slant / lam);
-	fourth = -kb - 10 * Math.log10(22);
-	expo = (first + second + third + fourth) / 10;
-	bits = 10**expo;
-	return bits / 1000;
 }
 

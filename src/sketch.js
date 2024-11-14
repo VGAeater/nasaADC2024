@@ -307,6 +307,7 @@ function drawText(baseData, bonusData) {
 	overlayDOM.innerHTML += `Moon vel: ${textTriplet(bonusData, arrayMoonStart+3)} → ${moonV.toFixed(3)}<br>`;
 	overlayDOM.innerHTML += `Earth pos: ${textTriplet(bonusData, arrayEarthStart)}<br>`;
 	overlayDOM.innerHTML += `Earth vel: ${textTriplet(bonusData, arrayEarthStart+3)} → ${earthV.toFixed(3)}<br>`;
+	overlayDOM.innerHTML += `Mass: ${probeData[arrayProbeStart+6]}kg<br>`;
 }
 
 function setSize() {

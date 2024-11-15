@@ -229,6 +229,8 @@ function handleEarth(data) {
 		shader(earthShader);
 		earthShader.setUniform("dayTexture", earthDayTex);
 		earthShader.setUniform("nightTexture", earthNightTex);
+		earthShader.setUniform("cloudTexture", cloudsTex);
+		earthShader.setUniform("time", time);
 		earthShader.setUniform("lightDirection", createVector(1, 0, 0).array());
 		earthShader.setUniform("resolution", [prevbox.width, prevbox.height]);
 		fill(255);
@@ -290,9 +292,6 @@ function drawAxie(x, y, z) {
 }
 
 function drawAxes() {
-	if (!showAxes)
-		return;
-
 	drawAxie(1,0,0);
 	drawAxie(0,1,0);
 	drawAxie(0,0,1);
@@ -312,9 +311,6 @@ function antennaText(range, radius) {
 }
 
 function drawText(baseData, bonusData) {
-	if (!showText)
-		return;
-
 	let probeData = trackBonus ? bonusData : baseData;
 
 	let framerate = frameRate();
@@ -388,9 +384,9 @@ function setup() {
 	camera = createCamera();
 	camera.camera(earthRadius * 3, earthRadius * 2, -earthRadius * 3, 0, 0, 0, 0, -1, 0);	// 0, -1, 0 to make coordinate system right handed
 	
-	setSize();
 	noFill();
 	strokeWeight(100);
+	background(0);
 }
 
 function draw() {
@@ -409,8 +405,10 @@ function draw() {
 	handleClouds();
 	handleMoon(bonusData);
 	handleRocket(baseData, bonusData);
-	drawText(baseData, bonusData);
-	drawAxes();
+	if (showText)
+		drawText(baseData, bonusData);
+	if (showAxes)
+		drawAxes();
 
 	if (playing)
 		setTime(time + speed * deltaTime / 1000);

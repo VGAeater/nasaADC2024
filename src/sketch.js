@@ -189,6 +189,18 @@ function handleRocket(baseData, bonusData) {
 	}
 }
 
+function handleClouds(){
+	if (!useTextures) 
+		return;
+
+	push();
+	
+	texture(cloudsTex);
+	rotateY(-0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127 * 1.5 * time);
+	sphere(earthRadius * 1.01, 64, 64);
+	pop();
+}
+
 function handleEarth(data) {
 	let x = data[arrayEarthStart];
 	let y = data[arrayEarthStart+1];
@@ -394,6 +406,7 @@ function draw() {
 	let bonusData = dataWeightedAverage(bonusArr, time);
 
 	handleEarth(bonusData);
+	handleClouds();
 	handleMoon(bonusData);
 	handleRocket(baseData, bonusData);
 	drawText(baseData, bonusData);

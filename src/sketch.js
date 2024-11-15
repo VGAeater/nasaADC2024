@@ -29,6 +29,7 @@ var prevcanvasbox;
 
 var earthDayTex, earthNightTex, moonTex, cloudsTex;
 var earthShader, moonShader, atmoShader;
+var pass1Shader;
 
 function linkBudget(slantr, dr) {
 	pt = 10;
@@ -92,8 +93,8 @@ function dataWeightedAverage(arr, time) {
 	return output;
 }
 
-function buildArr(t) {
-	let data = t.split("\n");
+function buildArr(text) {
+	let data = text.split("\n");
 	let key = data[0].split(",");
 	let arr = [...Array(key.length)].map(e => []);
 
@@ -108,7 +109,7 @@ function buildArr(t) {
 
 var baseArr, baseKey;
 var baseReady = false;
-fetch('assets/base.csv').then(response => {
+fetch('assets/updated.csv').then(response => {
 	return response.text();
 }).then(text => {
 	[baseArr, baseKey] = buildArr(text);
@@ -180,13 +181,13 @@ function handleRocket(baseData, bonusData) {
 	let mainPath = trackBonus ? bonusRocketPath : baseRocketPath;
 	let secondaryPath = !trackBonus ? bonusRocketPath : baseRocketPath;
 
-	stroke(255,255,0);
-	model(mainPath);
-
 	if (showOtherPath) {
 		stroke(255,69,0);
 		model(secondaryPath);
 	}
+
+	stroke(255,255,0);
+	model(mainPath);
 }
 
 function handleEarth(data) {
@@ -348,6 +349,8 @@ function preload() {
 	earthShader = loadShader('src/earth.vert', 'src/earth.frag');
 	atmoShader = loadShader('src/atmo.vert', 'src/atmo.frag');
 	moonShader = loadShader('src/moon.vert', 'src/moon.frag');
+
+	//pass1Shader = loadShader('src/post.vert', 'src/pass1.frag');
 }
 
 function setup() {
@@ -371,7 +374,7 @@ function setup() {
 	createCanvas(prevbox.width, prevbox.height, WEBGL, canvas);
 	camera = createCamera();
 	camera.camera(earthRadius * 3, earthRadius * 2, -earthRadius * 3, 0, 0, 0, 0, -1, 0);	// 0, -1, 0 to make coordinate system right handed
-	
+
 	noFill();
 	strokeWeight(100);
 	background(0);
@@ -396,6 +399,8 @@ function draw() {
 		drawText(baseData, bonusData);
 	if (showAxes)
 		drawAxes();
+
+	//pass1Shader();
 
 	if (playing)
 		setTime(time + speed * deltaTime / 1000);

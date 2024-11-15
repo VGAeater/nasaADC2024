@@ -19,7 +19,7 @@ void main() {
 	//gets brightness of the current vertex
 	vec4 dayColor = texture2D(dayTexture, vUv);
 	vec4 nightColor = texture2D(nightTexture, vUv);
-	vec4 cloudColor = texture2D(cloudTexture, mod(vUv + vec2(time * 0.0003, 0), vec2(1.)));
+	vec4 cloudColor = texture2D(cloudTexture, mod(vUv + vec2(time * 0.0002, 0), vec2(1.)));
 
 	//blends the textures, so it looks muy bueno
 	gl_FragColor = mix(mix(nightColor, dayColor, blendFactor), cloudColor, 0.1 + blendFactor / 2.);

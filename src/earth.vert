@@ -13,14 +13,8 @@ uniform mat4 uProjectionMatrix;
 uniform mat4 uNormalMatrix;
 
 void main() {
-	//basically prevents the model from being distorted, when orbitControls are used
-	vNormal = /*normalize(uNormalMatrix */ aNormal/*)*/;
-
-	//position of the vertex in the world space (where the earth is)
+	vNormal = aNormal;
 	vPosition = vec3(uModelViewMatrix * vec4(aPosition.xyz, 1.0));
 	vUv = aTexCoord;
-	//gets the final position for the rendering
 	gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition.xyz, 1.0);
-
-	//gl_Position = vec4(aPosition, 1.);
 }

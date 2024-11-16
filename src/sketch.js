@@ -221,7 +221,6 @@ function handleEarth(data) {
 		earthShader.setUniform("cloudTexture", cloudsTex);
 		earthShader.setUniform("time", time);
 		earthShader.setUniform("lightDirection", createVector(1, 0, 0).array());
-		earthShader.setUniform("resolution", [prevbox.width, prevbox.height]);
 		fill(255);
 		sphere(earthRadius, 64, 64);
 	} else
@@ -255,8 +254,19 @@ function handleMoon(data) {
 	stroke(255);
 
 	push();
+
 	translate(x, y, z);
-	sphere(moonRadius, 12, 6);
+
+	if (useTextures) {
+		noStroke();
+		shader(moonShader);
+		moonShader.setUniform("moonTexture", moonTex);
+		moonShader.setUniform("lightDirection", createVector(1, 0, 0).array());
+		fill(255);
+		sphere(moonRadius, 64, 64);
+	} else
+		sphere(moonRadius, 12, 6);
+
 	pop();
 
 	stroke(255,255,0);

@@ -1,11 +1,21 @@
+precision mediump float;
+
 varying vec3 vNormal;
+varying vec3 vPosition;
 varying vec2 vUv;
-varying vec3 vWorldNormal;
-        
+
+attribute vec3 aPosition;
+attribute vec3 aNormal;
+attribute vec2 aTexCoord;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+uniform mat4 uNormalMatrix;
+
 void main() {
-	vUv = uv;
-	vNormal = normal;
-	// Transform the normal to world space
-	vWorldNormal = (modelMatrix * vec4(normal.xyz, 0.0)).xyz;
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(position.xyz, 1.0);
+	vNormal = aNormal;
+	vPosition = vec3(uModelViewMatrix * vec4(aPosition.xyz, 1.0));
+	vUv = aTexCoord;
+	gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition.xyz, 1.0);
 }
+

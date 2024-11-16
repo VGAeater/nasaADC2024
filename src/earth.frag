@@ -4,7 +4,6 @@ uniform sampler2D dayTexture;
 uniform sampler2D nightTexture;
 uniform sampler2D cloudTexture;
 uniform vec3 lightDirection;
-uniform vec2 resolution;
 uniform float time;
 
 varying vec3 vNormal;
@@ -23,6 +22,4 @@ void main() {
 
 	//blends the textures, so it looks muy bueno
 	gl_FragColor = mix(mix(nightColor, dayColor, blendFactor), cloudColor, 0.1 + blendFactor / 2.);
-
-	//gl_FragColor = dayColor;
 }

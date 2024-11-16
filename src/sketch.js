@@ -386,6 +386,8 @@ function setup() {
 	camera = createCamera();
 	camera.camera(earthRadius * 3, earthRadius * 2, -earthRadius * 3, 0, 0, 0, 0, -1, 0);	// 0, -1, 0 to make coordinate system right handed
 
+	perspective(2 * atan(prevbox.height / 2 / 800), prevbox.width/prevbox.height, 1, 10000000);
+
 	noFill();
 	strokeWeight(100);
 	background(0);

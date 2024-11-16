@@ -389,6 +389,8 @@ function setup() {
 	noFill();
 	strokeWeight(100);
 	background(0);
+
+	document.getElementById("loading").style.display = "none";
 }
 
 function draw() {

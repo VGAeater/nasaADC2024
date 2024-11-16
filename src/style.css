@@ -216,3 +216,27 @@ button:active {
 	margin: 0;
 	padding: 0;
 }
+
+#loading {
+	z-index: 1;
+	position: fixed;
+	left: calc(50vw - 17.5vmin);
+	top: calc(50vh - 17.5vmin);
+	display: inline-grid;
+	width: 35vmin;
+	aspect-ratio: 1;
+	overflow: hidden;
+	clip-path: circle(50% at 50% 50%);
+	background: url("../assets/moon.svg");
+}
+
+#loading:before {
+	content: "";
+	background: url("../assets/arrow.svg");
+	/*background: white;*/
+	animation: loading 2s linear infinite;
+	translate: -100% 75.3548304488%;
+}
+
+@keyframes loading { to {translate: 100% -75.3548304488%} }
+

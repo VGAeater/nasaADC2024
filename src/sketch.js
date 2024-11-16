@@ -3,6 +3,7 @@ const arrayEarthStart = 8, arrayMoonStart = 14, arrayProbeStart = 1;
 const arrayProbeMass = 7;
 const arrayRangeWPSA = 9, arrayRangeDSS54 = 11, arrayRangeDSS24 = 13, arrayRangeDSS34 = 15;
 const earthRadius = 6378.137, moonRadius = 1737.4;
+const earthTilt = 0.40910518, earthRotation = 0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127;
 
 const antennaPositions = [
 	[35.3399*Math.PI/180, -116.875*Math.PI/180, 0.951499],
@@ -73,7 +74,7 @@ function dataWeightedAverage(arr, time) {
 		return output;
 	}
 		
-	if (timeIndex <= 0) {
+	if (timeIndex < 0) {
 		for (let i = 0; i < arr.length; i++)
 			output.push(arr[i][0]);
 		return output;
@@ -205,9 +206,9 @@ function handleEarth(data) {
 	translate(x, y, z);
 	rotateX(-PI);		// weird axes correction
 	// tilt axis
-	rotateX(-0.40910518);
+	rotateX(-earthTilt);
 	// rotate earth
-	rotateY(0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127 * time);
+	rotateY(earthRotation * time);
 
 	push();
 

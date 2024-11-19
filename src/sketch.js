@@ -195,16 +195,16 @@ function handleAtmosphere(){
 	if (!useTextures)
 		return;
 	push();
-	
-	translate(0, 0, 0);
+	noStroke();
 	shader(atmoShader);
 	atmoShader.setUniform("rimColor", [0.3411764705882353, 0.6470588235294118, 1]);
 	atmoShader.setUniform("faceColor", [0, 0, 0]);
 	atmoShader.setUniform("fresnelBias", 0.1);
-	atmoShader.setUniform("fresnelScale", 1);
-	atmoShader.setUniform("fresnelPower", 4);
+	atmoShader.setUniform("fresnelScale", 1.0);
+	atmoShader.setUniform("fresnelPower", 4.0);
 	atmoShader.setUniform("cameraPosition", [camera.eyeX, camera.eyeY, camera.eyeZ]);
 	sphere(earthRadius * 2, 64, 64);
+	console.log("RAN");
 	pop();
 }
 

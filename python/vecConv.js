@@ -32,13 +32,14 @@ function vecReflection(vec, a, b, c, d){
     // Converts it from a 4x1 array to a 1x4 array (flat)
     resultMatrix = resultMatrix.map(row => row[0]);
     // Removes the last one to bring it back to a 1x3 matrix
-    resultMatrix = resultMatrix.pop();
+    resultMatrix.pop();
+    return resultMatrix;
 
 }
 
 function main(){
     // this should be in the form: ax+by+cz+d=0.
-    a = 1
+    a = 2
     b = 2
     c = 3
     d = 4

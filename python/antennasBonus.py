@@ -3,7 +3,7 @@ import csv
 import numpy as np  # For matrix operations
 
 
-#
+# Finds the distance between 2 points
 def distance(antennaCords, probeCords):
    first = (probeCords[0] - antennaCords[0])**2
    second = (probeCords[1] - antennaCords[1])**2
@@ -15,7 +15,8 @@ def distance(antennaCords, probeCords):
 # This is a bit over-complicated cuz SOMEONE (stratton) wanted me to make him a function that could do matrix multiplication of the earth
 def rotationMatrix(timeElapsed):
    # Earth's angular velocity per minute
-   earthAngularVelocity = 0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127
+   #For extreme precision:    earthAngularVelocity = 0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127
+   earthAngularVelocity = 0.00437526893908836290919128240470
 
 
    # Initializes the rotation angles
@@ -46,8 +47,7 @@ def rotationMatrix(timeElapsed):
 
 
    # Multiplies and returns the 3 matricies
-   #It has to be in this order!!! (cuz matrix multiplication is NOT communitative or whatever that word is)
-   return rZ @ rY @ rX
+   return rY @ rZ @ rX
 #
 def antennaLoc(i, timeElapsed):
    # All of this is from the handbook
@@ -69,7 +69,6 @@ def antennaLoc(i, timeElapsed):
    # Used the math from the handbook to change it into x,y,z cords
    x = totalRadius * math.cos(radLat) * math.cos(radLon)
    y = totalRadius * math.cos(radLat) * math.sin(radLon)
-  
    z = totalRadius * math.sin(radLat)
    # Makes it into a numpy array
    initialPos = np.array([x, y, z])
@@ -86,16 +85,17 @@ def main():
    elapsedTime = 0 
 
 
-   with open('flightpath.csv', mode='r') as file:
+   with open('../assets/bonus.csv', mode='r') as file:
        data = list(csv.reader(file))
        for i in range(1, len(data)-1):
            elapsedTime = float(data[i][0])
-           antenna = antennaLoc(0, elapsedTime)
-           print("Minute: ", elapsedTime)
-           print("Antenna Cords:", antenna)
+           antenna = antennaLoc(1, elapsedTime)
            probe[0] = float(data[i][1])
            probe[1] = float(data[i][2])
            probe[2] = float(data[i][3])
+           print("Minute: ", elapsedTime)
+           print("Antenna Cords:", antenna)
+           print("Probe Cords: ", probe)
            print("Distance: ", distance(antenna, probe))
 
 

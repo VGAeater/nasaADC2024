@@ -15,7 +15,7 @@ uniform mat4 uNormalMatrix;
 
 varying float vReflectivity;
 
-void main(){
+void main() {
     vec4 myPos = uModelViewMatrix * vec4(aPosition, 1.0);
     vec3 normalWorld = normalize(mat3(uNormalMatrix) * aNormal);
 

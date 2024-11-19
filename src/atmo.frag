@@ -1,3 +1,5 @@
+precision mediump float;
+
 uniform vec3 rimColor;
 uniform vec3 faceColor;
 

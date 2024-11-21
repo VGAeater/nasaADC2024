@@ -14,10 +14,10 @@ const antennaPositions = [
 
 var baseRocketOrbitPath, baseRocketPath, baseRocketReturnPath, baseRocketEDL, bonusRocketPath, moonPath;
 //array for data. 0 is color, 1 is start, 2 is end, 3 is the shape
-var orbitData = [[[241, 64, 42], 0, 111, null], 
-				 [[40, 169, 221], 111, 1000, null],
-				 [[255, 255, 255], 1000, 6000, null],
-				 [[227, 139, 73], 6000, 10000, null]];
+var orbitData = [[[241, 64, 42], 0, 1443, null], 
+				 [[40, 169, 221], 1443, 5000, null],
+				 [[255, 255, 255], 5000, 8000, null],
+				 [[227, 139, 73], 8000, 12982, null]];
 var time = 0;
 
 var followEarth = false, followMoon = false, followProbe = false;
@@ -166,22 +166,20 @@ function handleRocket(baseData, bonusData) {
 
 	push();
 	translate(x, y, z);
-	//rotateZ(createVector(x, y).heading());
-	//rotateY(-createVector(x, y).heading());
-	//console.log(createVector(x, y, z).angleBetween(createVector(0, 0, 0)));
-	cone(500, 1000, 8);
+	cone(500, 1000, 6);
 	pop();
 
 	stroke(255,0,0);
 	line(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 
 	if (!baseRocketPath) {
-		for (let i = 0; i < orbitData.length; i++){
-			beginGeometry();
-			//so, since stratton did it this way, I HAVE TO MAKE IT LIKE 4 DIFFERENT TIMES 
-			buildPath(baseArr, orbitData[i][1], orbitData[i][2]);
-			orbitData[i][3] = endGeometry();
-		}
+		orbitData.forEach(data => {
+			if (!data[3]) {
+				beginGeometry();
+				buildPath(baseArr, data[1], data[2]);
+				data[3] = endGeometry();
+			}
+		});
 	}
 
 	if (!bonusRocketPath) {

@@ -140,15 +140,9 @@ function goToPosition(x, y, z) {
 }
 
 function buildPath(arr, start, end = null) {  
-	console.log(arr);  
-    for (let i = 0; i < arr[0].length-1; i++) {
-        try {
-            line(arr[start][i], arr[start+1][i], arr[start+2][i], arr[start][i+1], arr[start+1][i+1], arr[start+2][i+1]);
-        } catch (error) {
-            console.error("Error in buildPath:", error);
-            break;
-        }
-    }
+    for (let i = start; i < arr[0].length-1; i++) {
+       line(arr[1][i], arr[2][i], arr[3][i], arr[1][i+1], arr[2][i+1], arr[3][i+1]);
+	}
 }
 
 function handleRocket(baseData, bonusData) {

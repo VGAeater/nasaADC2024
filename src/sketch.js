@@ -94,6 +94,7 @@ function dataWeightedAverage(arr, time) {
 	return output;
 }
 
+// builds an array of data from the text input
 function buildArr(text) {
 	let data = text.split("\n");
 	let key = data[0].split(",");
@@ -133,6 +134,7 @@ function goToPosition(x, y, z) {
 	camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z, 0, -1, 0);
 }
 
+// go through the entire path (only used once per path)
 function buildPath(arr, start) {
 	for (let i = 0; i < arr[0].length-1; i++)
 		line(arr[start][i], arr[start+1][i], arr[start+2][i], arr[start][i+1], arr[start+1][i+1], arr[start+2][i+1]);

@@ -12,7 +12,11 @@ const antennaPositions = [
 	[37.9273*Math.PI/180, -75.475*Math.PI/180, -0.019736]
 ];
 
-var baseRocketPath, bonusRocketPath, moonPath;
+var baseRocketOrbitPath, baseRocketPath, baseRocketReturnPath, baseRocketEDL, bonusRocketPath, moonPath;
+var orbitData = [[[241, 64, 42], arrayProbeStart, 111, null], 
+				 [[40, 169, 221], 111, 1000, null],
+				 [[255, 255, 255], 1000, 6000, null],
+				 [[227, 139, 73], 6000, 10000, null]];
 var time = 0;
 
 var followEarth = false, followMoon = false, followProbe = false;
@@ -135,10 +139,16 @@ function goToPosition(x, y, z) {
 	camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z, 0, -1, 0);
 }
 
-function buildPath(arr, start, end=arr[0].length-1) {
-	for (let i = 0; i < end; i++){
-		line(arr[start][i], arr[start+1][i], arr[start+2][i], arr[start][i+1], arr[start+1][i+1], arr[start+2][i+1]);
-	}
+function buildPath(arr, start, end = null) {  
+	console.log(arr);  
+    for (let i = 0; i < arr[0].length-1; i++) {
+        try {
+            line(arr[start][i], arr[start+1][i], arr[start+2][i], arr[start][i+1], arr[start+1][i+1], arr[start+2][i+1]);
+        } catch (error) {
+            console.error("Error in buildPath:", error);
+            break;
+        }
+    }
 }
 
 function handleRocket(baseData, bonusData) {
@@ -171,10 +181,12 @@ function handleRocket(baseData, bonusData) {
 	line(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 
 	if (!baseRocketPath) {
-		beginGeometry();
-		//so, since stratton did it this way, I HAVE TO MAKE IT LIKE 4 DIFFERENT TIMES 
-		buildPath(baseArr, arrayProbeStart, 111);
-		baseRocketPath = endGeometry();
+		for (let i = 0; i < orbitData.length; i++){
+			beginGeometry();
+			//so, since stratton did it this way, I HAVE TO MAKE IT LIKE 4 DIFFERENT TIMES 
+			buildPath(baseArr, orbitData[i][1], orbitData[i][2]);
+			orbitData[i][3] = endGeometry();
+		}
 	}
 
 	if (!bonusRocketPath) {
@@ -191,8 +203,11 @@ function handleRocket(baseData, bonusData) {
 		model(secondaryPath);
 	}
 
-	stroke(255,255,0);
-	model(mainPath);
+	for (var i = 0; i < orbitData.length; i++){
+		stroke(orbitData[i][0][0], orbitData[i][0][1], orbitData[i][0][2]);
+		model(orbitData[i][3]);
+	}
+	
 }
 
 //do not use for now, we are focusing on more important stuff

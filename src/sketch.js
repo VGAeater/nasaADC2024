@@ -14,10 +14,12 @@ const antennaPositions = [
 
 var baseRocketOrbitPath, baseRocketPath, baseRocketReturnPath, baseRocketEDL, bonusRocketPath, moonPath;
 //array for data. 0 is color, 1 is start, 2 is end, 3 is the shape
-var orbitData = [[[241, 64, 42], 0, 1443, null], 
-				 [[40, 169, 221], 1443, 5000, null],
-				 [[255, 255, 255], 5000, 8000, null],
-				 [[227, 139, 73], 8000, 12982, null]];
+
+var orbitData = [[[227, 139, 73], 0, 115, null], //EDL part 1
+				 [[241, 64, 42], 115, 1497, null], //orbiting earth
+				 [[40, 169, 221], 1497, 7093, null], // to the moon
+				 [[255, 255, 255], 7093, 12960, null], //back to earth
+				 [[227, 139, 73], 12960, 12982, null]]; //EDL part 2
 var time = 0;
 
 var followEarth = false, followMoon = false, followProbe = false;
@@ -173,6 +175,7 @@ function handleRocket(baseData, bonusData) {
 	line(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 
 	if (!baseRocketPath) {
+		//goes through each orbitData, and creates the path ONLY ONCE THIS SAVES 50 FRAMES
 		orbitData.forEach(data => {
 			if (!data[3]) {
 				beginGeometry();

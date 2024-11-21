@@ -25,6 +25,8 @@ var showAxes = false, showText = false, playing = false, speed = 10;
 
 var trackBonus = false, showOtherPath = false;
 
+var pathColor = [];
+
 var canvasdiv, menu;
 var prevcanvasbox;
 
@@ -133,9 +135,10 @@ function goToPosition(x, y, z) {
 	camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z, 0, -1, 0);
 }
 
-function buildPath(arr, start) {
-	for (let i = 0; i < arr[0].length-1; i++)
+function buildPath(arr, start, end=arr[0].length-1) {
+	for (let i = 0; i < end; i++){
 		line(arr[start][i], arr[start+1][i], arr[start+2][i], arr[start][i+1], arr[start+1][i+1], arr[start+2][i+1]);
+	}
 }
 
 function handleRocket(baseData, bonusData) {
@@ -169,7 +172,8 @@ function handleRocket(baseData, bonusData) {
 
 	if (!baseRocketPath) {
 		beginGeometry();
-		buildPath(baseArr, arrayProbeStart);
+		//so, since stratton did it this way, I HAVE TO MAKE IT LIKE 4 DIFFERENT TIMES 
+		buildPath(baseArr, arrayProbeStart, 111);
 		baseRocketPath = endGeometry();
 	}
 
@@ -191,6 +195,7 @@ function handleRocket(baseData, bonusData) {
 	model(mainPath);
 }
 
+//do not use for now, we are focusing on more important stuff
 function handleAtmo(){
 	if (!useTextures)
 		return;
@@ -432,7 +437,7 @@ function draw() {
 
 	handleEarth(bonusData);
 	handleMoon(bonusData);
-	handleAtmo();
+	//handleAtmo();
 	handleRocket(baseData, bonusData);
 	if (showText)
 		drawText(baseData, bonusData);

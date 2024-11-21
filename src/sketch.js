@@ -13,7 +13,8 @@ const antennaPositions = [
 ];
 
 var baseRocketOrbitPath, baseRocketPath, baseRocketReturnPath, baseRocketEDL, bonusRocketPath, moonPath;
-var orbitData = [[[241, 64, 42], arrayProbeStart, 111, null], 
+//array for data. 0 is color, 1 is start, 2 is end, 3 is the shape
+var orbitData = [[[241, 64, 42], 0, 111, null], 
 				 [[40, 169, 221], 111, 1000, null],
 				 [[255, 255, 255], 1000, 6000, null],
 				 [[227, 139, 73], 6000, 10000, null]];
@@ -140,7 +141,7 @@ function goToPosition(x, y, z) {
 }
 
 function buildPath(arr, start, end = null) {  
-    for (let i = start; i < arr[0].length-1; i++) {
+    for (let i = start; i < end; i++) {
        line(arr[1][i], arr[2][i], arr[3][i], arr[1][i+1], arr[2][i+1], arr[3][i+1]);
 	}
 }

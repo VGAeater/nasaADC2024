@@ -207,28 +207,21 @@ function handleRocket(baseData, bonusData) {
 }
 
 //do not use for now, we are focusing on more important stuff
-function handleAtmo(){
-	if (!useTextures)
-		return;
+//function handleAtmo(){
+//	if (!useTextures)
+//		return;
 
-	push();
-	pointLight(color(255, 255, 255), createVector(0, 0, earthRadius*2.01));
-	pop();
-	push();
-	noStroke();
-	//shader(atmoShader);
-	//atmoShader.setUniform("rimColor", [0.3411764705882353, 0.6470588235294118, 1, 1]);
-	//atmoShader.setUniform("faceColor", [0, 0, 0, 1]);
-	//atmoShader.setUniform("fresnelBias", 0.1);
-	//atmoShader.setUniform("fresnelScale", 1.0);
-	//atmoShader.setUniform("fresnelPower", 4.0);
-	//atmoShader.setUniform("cameraPosition", [camera.eyeX, camera.eyeY, camera.eyeZ]);
-	specularMaterial(255);
-	shininess(100);
-	fill(200, 160, 10);
-	sphere(earthRadius * 2, 64, 64);
-	pop();
-}
+//	push();
+//	pointLight(color(255, 255, 255), createVector(0, 0, earthRadius*2.01));
+//	pop();
+//	push();
+//	noStroke();
+//	specularMaterial(255);
+//	shininess(100);
+//	fill(200, 160, 10);
+//	sphere(earthRadius * 2, 64, 64);
+//	pop();
+//}
 
 function handleEarth(data) {
 	let x = data[arrayEarthStart];

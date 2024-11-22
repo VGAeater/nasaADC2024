@@ -464,4 +464,3 @@ function setTime(input) {
 	timeDOM.value = input;
 	timeSliderDOM.value = time;
 }
-

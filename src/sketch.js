@@ -12,7 +12,17 @@ const antennaPositions = [
 	[37.9273*Math.PI/180, -75.475*Math.PI/180, -0.019736, 12, arrayRangeWPSA]
 ];
 
-var baseRocketPath, bonusRocketPath, moonPath;
+// [color, start, end, base model, bonus model]
+var orbitData = [
+	[[227, 139, 73], 0, null, null], //EDL part 1
+	[[241, 64, 42], 115, null, null], //orbiting earth
+	[[40, 169, 221], 1497, null, null], // to the moon
+	[[255, 255, 255], 7093, null, null], //back to earth
+	[[227, 139, 73], 12960, null, null] //EDL part 2
+];
+
+// moon path model that will be built later
+var moonPath;
 var time = 0;
 
 var followEarth = false, followMoon = false, followProbe = false;
@@ -133,9 +143,11 @@ function goToPosition(x, y, z) {
 	camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z, 0, -1, 0);
 }
 
-function buildPath(arr, start) {
-	for (let i = 0; i < arr[0].length-1; i++)
-		line(arr[start][i], arr[start+1][i], arr[start+2][i], arr[start][i+1], arr[start+1][i+1], arr[start+2][i+1]);
+function buildPath(arr, selector, start=0, end=null) {
+	if (end == null)
+		end = arr[0].length-1;
+	for (let i = start; i < end; i++)
+		line(arr[selector][i], arr[selector+1][i], arr[selector+2][i], arr[selector][i+1], arr[selector+1][i+1], arr[selector+2][i+1]);
 }
 
 function antennaColor(budget) {
@@ -179,28 +191,37 @@ function handleRocket(baseData, bonusData) {
 	stroke(255,0,0);
 	line(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 
-	if (!baseRocketPath) {
-		beginGeometry();
-		buildPath(baseArr, arrayProbeStart);
-		baseRocketPath = endGeometry();
+	// checks to see if last path is already created, we do not need a boolean value for this
+	if (!orbitData[4][2]) {
+		for (let i = 0; i < orbitData.length; i++) {
+			beginGeometry();
+			buildPath(baseArr, arrayProbeStart, orbitData[i][1], orbitData[i+1] ? orbitData[i+1][1] : null);
+			orbitData[i][2] = endGeometry();
+		}
 	}
 
-	if (!bonusRocketPath) {
-		beginGeometry();
-		buildPath(bonusArr, arrayProbeStart);
-		bonusRocketPath = endGeometry();
+	// checks to see if last path is already created, we do not need a boolean value for this
+	if (!orbitData[4][3]) {
+		for (let i = 0; i < orbitData.length; i++) {
+			beginGeometry();
+			buildPath(bonusArr, arrayProbeStart, orbitData[i][1], orbitData[i+1] ? orbitData[i+1][1] : null);
+			orbitData[i][3] = endGeometry();
+		}
 	}
 
-	let mainPath = trackBonus ? bonusRocketPath : baseRocketPath;
-	let secondaryPath = !trackBonus ? bonusRocketPath : baseRocketPath;
+	let mainPath = trackBonus ? 3 : 2;
+	let secondaryPath = !trackBonus ? 3 : 2;
 
 	if (showOtherPath) {
-		stroke(255,69,0);
-		model(secondaryPath);
+		stroke(255,0,255);
+		for (var i = 0; i < orbitData.length; i++)
+			model(orbitData[i][secondaryPath]);
 	}
 
-	stroke(255,255,0);
-	model(mainPath);
+	for (var i = 0; i < orbitData.length; i++){
+		stroke(orbitData[i][0]);
+		model(orbitData[i][mainPath]);
+	}
 }
 
 function handleEarth(baseData, bonusData) {

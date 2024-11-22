@@ -59,6 +59,27 @@ hr {
 	border-color: #cc1444;
 }
 
+.coloritem {
+    margin: 1vh 0px;
+    display: flex;
+    align-items: center;
+}
+
+.colorbox {
+    width: 3vh;
+    height: 3vh;
+    margin-right: 1vh;
+    border-radius: 2vh;
+}
+
+.sectionheader {
+	width: calc(100% - 2vh);
+	padding: 1vh;
+	border: none;
+	background-color: #121213;
+	border-radius: 2vh;
+	margin: 0px;
+}
 
 
 

@@ -26,12 +26,11 @@ var moonPath;
 var time = 0;
 
 var followEarth = false, followMoon = false, followProbe = false;
-var useTextures = false;
 var followEarthDOM, followMoonDOM, followProbeDOM;
 var timeDOM, strokeDOM, speedDOM;
 var timeSliderDOM;
 var overlayDOM;
-var showAxes = false, showText = false, playing = false, speed = 10;
+var showAxes = false, showText = false, useTextures = true, playing = false, speed = 10;
 
 var trackBonus = false, showOtherPath = false;
 

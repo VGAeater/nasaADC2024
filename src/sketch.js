@@ -6,10 +6,10 @@ const earthRadius = 6378.137, moonRadius = 1737.4;
 const earthTilt = 0.40910518, earthRotation = 0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127;
 
 const antennaPositions = [
-	[35.3399*Math.PI/180, -116.875*Math.PI/180, 0.951499],
-	[-35.3985*Math.PI/180, 148.982*Math.PI/180, 0.69202],
-	[40.4256*Math.PI/180, -4.2541*Math.PI/180, 0.837051],
-	[37.9273*Math.PI/180, -75.475*Math.PI/180, -0.019736]
+	[35.3399*Math.PI/180, -116.875*Math.PI/180, 0.951499, 34, arrayRangeDSS24],
+	[-35.3985*Math.PI/180, 148.982*Math.PI/180, 0.69202, 34, arrayRangeDSS34],
+	[40.4256*Math.PI/180, -4.2541*Math.PI/180, 0.837051, 34, arrayRangeDSS54],
+	[37.9273*Math.PI/180, -75.475*Math.PI/180, -0.019736, 12, arrayRangeWPSA]
 ];
 
 var baseRocketPath, bonusRocketPath, moonPath;
@@ -138,6 +138,18 @@ function buildPath(arr, start) {
 		line(arr[start][i], arr[start+1][i], arr[start+2][i], arr[start][i+1], arr[start+1][i+1], arr[start+2][i+1]);
 }
 
+function antennaColor(budget) {
+	if (budget !== budget)
+		return [255, 0, 255]
+	if (budget > 8000)
+		return [0, 255, 0]
+	if (budget > 4000)
+		return [255, 211, 0]
+	if (budget > 1000)
+		return [255, 140, 0]
+	return [255, 0, 0]
+}
+
 function handleRocket(baseData, bonusData) {
 	let x, y, z, xv, yv, zv;
 
@@ -191,10 +203,10 @@ function handleRocket(baseData, bonusData) {
 	model(mainPath);
 }
 
-function handleEarth(data) {
-	let x = data[arrayEarthStart];
-	let y = data[arrayEarthStart+1];
-	let z = data[arrayEarthStart+2];
+function handleEarth(baseData, bonusData) {
+	let x = bonusData[arrayEarthStart];
+	let y = bonusData[arrayEarthStart+1];
+	let z = bonusData[arrayEarthStart+2];
 
 	if (followEarth)
 		goToPosition(x, y, z);
@@ -208,7 +220,7 @@ function handleEarth(data) {
 	// tilt axis
 	rotateX(-earthTilt);
 	// rotate earth
-	rotateY(earthRotation * time);
+	rotateY(earthRotation * time + earthRotation * 521);	// temporary fix to correct the earths initial rotation
 
 	push();
 
@@ -235,8 +247,10 @@ function handleEarth(data) {
 
 		let r = earthRadius + pos[2];
 		translate(r * cos(pos[0]) * cos(pos[1]), -r * sin(pos[0]), -r * cos(pos[0]) * sin(pos[1]));	// negatives for even more weird axes correction
-		stroke(255, 0, 255);
-		sphere(200, 4, 2);
+		budget = linkBudget(baseArr[pos[4]][Math.round(time)], pos[3])
+		color = antennaColor(budget)
+		stroke(color);
+		sphere(350, 4, 2);
 
 		pop();
 	}
@@ -361,7 +375,7 @@ function preload() {
 	atmoShader = loadShader('src/atmo.vert', 'src/atmo.frag');
 	moonShader = loadShader('src/moon.vert', 'src/moon.frag');
 
-	//pass1Shader = loadShader('src/post.vert', 'src/pass1.frag');
+	pass1Shader = loadShader('src/post.vert', 'src/pass1.frag');
 }
 
 function setup() {
@@ -407,7 +421,7 @@ function draw() {
 	let baseData = dataWeightedAverage(baseArr, time);
 	let bonusData = dataWeightedAverage(bonusArr, time);
 
-	handleEarth(bonusData);
+	handleEarth(baseData, bonusData);
 	handleMoon(bonusData);
 	handleRocket(baseData, bonusData);
 	if (showText)

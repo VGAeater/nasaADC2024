@@ -418,7 +418,7 @@ function setup() {
 	background(0);
 
 	//had to move orbitData here, otherwise color would not work
-	orbitData = [[[227, 139, 73], 0, 115, null], //EDL part 1
+	orbitData = [[color(227, 139, 73), 0, 115, null], //EDL part 1
 				 [color(241, 64, 42), 115, 1497, null], //orbiting earth
 				 [color(40, 169, 221), 1497, 7093, null], // to the moon
 				 [color(255, 255, 255), 7093, 12960, null], //back to earth

@@ -12,14 +12,11 @@ const antennaPositions = [
 	[37.9273*Math.PI/180, -75.475*Math.PI/180, -0.019736]
 ];
 
-var baseRocketOrbitPath, baseRocketPath, baseRocketReturnPath, baseRocketEDL, bonusRocketPath, moonPath;
+var baseRocketPath, bonusRocketPath, moonPath;
 //array for data. 0 is color, 1 is start, 2 is end, 3 is the shape
 
-var orbitData = [[[227, 139, 73], 0, 115, null], //EDL part 1
-				 [[241, 64, 42], 115, 1497, null], //orbiting earth
-				 [[40, 169, 221], 1497, 7093, null], // to the moon
-				 [[255, 255, 255], 7093, 12960, null], //back to earth
-				 [[227, 139, 73], 12960, 12982, null]]; //EDL part 2
+var orbitData;
+
 var time = 0;
 
 var followEarth = false, followMoon = false, followProbe = false;
@@ -31,8 +28,6 @@ var overlayDOM;
 var showAxes = false, showText = false, playing = false, speed = 10;
 
 var trackBonus = false, showOtherPath = false;
-
-var pathColor = [];
 
 var canvasdiv, menu;
 var prevcanvasbox;
@@ -190,7 +185,6 @@ function handleRocket(baseData, bonusData) {
 		bonusRocketPath = endGeometry();
 	}
 
-	let mainPath = trackBonus ? bonusRocketPath : baseRocketPath;
 	let secondaryPath = !trackBonus ? bonusRocketPath : baseRocketPath;
 
 	if (showOtherPath) {
@@ -199,7 +193,7 @@ function handleRocket(baseData, bonusData) {
 	}
 
 	for (var i = 0; i < orbitData.length; i++){
-		stroke(orbitData[i][0][0], orbitData[i][0][1], orbitData[i][0][2]);
+		stroke(orbitData[i][0]);
 		model(orbitData[i][3]);
 	}
 	
@@ -422,6 +416,13 @@ function setup() {
 	noFill();
 	strokeWeight(100);
 	background(0);
+
+	//had to move orbitData here, otherwise color would not work
+	orbitData = [[[227, 139, 73], 0, 115, null], //EDL part 1
+				 [color(241, 64, 42), 115, 1497, null], //orbiting earth
+				 [color(40, 169, 221), 1497, 7093, null], // to the moon
+				 [color(255, 255, 255), 7093, 12960, null], //back to earth
+				 [color(227, 139, 73), 12960, 12982, null]]; //EDL part 2
 
 	document.getElementById("loading").style.display = "none";
 }

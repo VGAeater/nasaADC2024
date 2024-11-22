@@ -142,9 +142,10 @@ function goToPosition(x, y, z) {
 	camera.camera(x + camDeltaX, y + camDeltaY, z + camDeltaZ, x, y, z, 0, -1, 0);
 }
 
-function buildPath(arr, start, end = null) {  
-    for (let i = start; i < end; i++) {
-       line(arr[1][i], arr[2][i], arr[3][i], arr[1][i+1], arr[2][i+1], arr[3][i+1]);
+//added an arrStart, so we can determine where to start the path, no breako moono now
+function buildPath(arr, start, arrStart=0, end = arr[0].length-1) {  
+    for (let i = arrStart; i < end; i++) {
+       line(arr[start][i], arr[start+1][i], arr[start+2][i], arr[start][i+1], arr[start+1][i+1], arr[start+2][i+1]);
 	}
 }
 
@@ -174,15 +175,13 @@ function handleRocket(baseData, bonusData) {
 	stroke(255,0,0);
 	line(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 
-	if (!baseRocketPath) {
-		//goes through each orbitData, and creates the path ONLY ONCE THIS SAVES 50 FRAMES
-		orbitData.forEach(data => {
-			if (!data[3]) {
-				beginGeometry();
-				buildPath(baseArr, data[1], data[2]);
-				data[3] = endGeometry();
-			}
-		});
+	//checks to see if last path is already created, we do not need a boolean value for this
+	if (!orbitData[4][3]) {
+		for (let i = 0; i < orbitData.length; i++) {
+			beginGeometry();
+			buildPath(baseArr, arrayProbeStart, orbitData[i][1], orbitData[i][2]);
+			orbitData[i][3] = endGeometry();
+		}
 	}
 
 	if (!bonusRocketPath) {

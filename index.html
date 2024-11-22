@@ -20,24 +20,6 @@
 		<dd id="overlaytext"></dd>
 	</div>
 	<div id="loading"></div>
-	<div id="colorkey">
-        <div class="color-item">
-            <div class="color-box" style="background-color: rgb(227, 139, 73);"></div>
-            <span class="color-label">EDL</span>
-        </div>
-        <div class="color-item">
-            <div class="color-box" style="background-color: rgb(241, 64, 42);"></div>
-            <span class="color-label">Orbiting Earth</span>
-        </div>
-        <div class="color-item">
-            <div class="color-box" style="background-color: rgb(40, 169, 221);"></div>
-            <span class="color-label">Path to Moon</span>
-        </div>
-		<div class="color-item">
-            <div class="color-box" style="background-color: white;"></div>
-            <span class="color-label">Returning to Earth</span>
-        </div>
-    </div>
 	<div id="menu" class="hidden">
 		<div class="menurow">
 			<hr>
@@ -82,6 +64,32 @@
 				<input type="checkbox" oninput="showText = this.checked; overlayDOM.innerHTML = '';"><br>
 				<label>Use Textures</label><br>
 				<input type="checkbox" oninput="useTextures = this.checked;">
+			</div>
+			<hr>
+		</div>
+		<div>
+			<h3>Color Key</h3>
+		</div>
+		<div class="menurow">
+			<hr>
+			
+			<div class="menusection">
+				<div class="coloritem">
+					<div class="colorbox" style="background-color: rgb(227, 139, 73);"></div>
+					<span class="colorlabel">EDL</span>
+				</div>
+				<div class="coloritem">
+					<div class="colorbox" style="background-color: rgb(241, 64, 42);"></div>
+					<span class="colorlabel">Orbiting Earth</span>
+				</div>
+				<div class="coloritem">
+					<div class="colorbox" style="background-color: rgb(40, 169, 221);"></div>
+					<span class="colorlabel">Path to Moon</span>
+				</div>
+				<div class="coloritem">
+					<div class="colorbox" style="background-color: white;"></div>
+					<span class="colorlabel">Returning to Earth</span>
+				</div>
 			</div>
 			<hr>
 		</div>

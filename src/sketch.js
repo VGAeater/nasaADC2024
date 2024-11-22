@@ -15,8 +15,21 @@ const antennaPositions = [
 var baseRocketPath, bonusRocketPath, moonPath;
 //array for data. 0 is color, 1 is start, 2 is end, 3 is the shape
 
-var orbitData;
+var orbitData = [
+	[null, 0, 115, null], //EDL part 1
+	[null, 115, 1497, null], //orbiting earth
+	[null, 1497, 7093, null], // to the moon
+	[null, 7093, 12960, null], //back to earth
+	[null, 12960, 12982, null]]; //EDL part 2
 
+//we might need these later for the other paths
+var pathColors = [
+	[227, 139, 73],
+	[241, 64, 42],
+	[40, 169, 221],
+	[255, 255, 255],
+	[227, 139, 73]
+];
 var time = 0;
 
 var followEarth = false, followMoon = false, followProbe = false;
@@ -417,12 +430,10 @@ function setup() {
 	strokeWeight(100);
 	background(0);
 
-	//had to move orbitData here, otherwise color would not work
-	orbitData = [[color(227, 139, 73), 0, 115, null], //EDL part 1
-				 [color(241, 64, 42), 115, 1497, null], //orbiting earth
-				 [color(40, 169, 221), 1497, 7093, null], // to the moon
-				 [color(255, 255, 255), 7093, 12960, null], //back to earth
-				 [color(227, 139, 73), 12960, 12982, null]]; //EDL part 2
+	//passes in the color obj
+	for(let i = 0; i < pathColors.length; i++) {
+		orbitData[i][0] = color(pathColors[i][0], pathColors[i][1], pathColors[i][2]);
+	}
 
 	document.getElementById("loading").style.display = "none";
 }

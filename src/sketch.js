@@ -150,15 +150,16 @@ function buildPath(arr, selector, start=0, end=null) {
 }
 
 function antennaColor(budget) {
-	if (budget !== budget)
-		return [255, 0, 255]
-	if (budget > 8000)
-		return [0, 255, 0]
+	if (isNaN(budget)) {
+		let intensity = 255 * (sin(millis() / 100) + 1) / 2;
+		return [255, 0, 0, intensity];
+	} if (budget > 8000)
+		return [0, 255, 0];
 	if (budget > 4000)
-		return [255, 211, 0]
+		return [255, 211, 0];
 	if (budget > 1000)
-		return [255, 140, 0]
-	return [255, 0, 0]
+		return [255, 140, 0];
+	return [200, 0, 0];
 }
 
 function handleRocket(baseData, bonusData) {

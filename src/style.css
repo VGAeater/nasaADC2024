@@ -72,6 +72,10 @@ hr {
     border-radius: 2vh;
 }
 
+#pulsingcolorbox {
+	animation: pulsingcolorbox ease-in-out 0.31415926535s infinite alternate;
+}
+
 .sectionheader {
 	width: calc(100% - 2vh);
 	padding: 1vh;
@@ -142,8 +146,6 @@ input[type=range]::-ms-track {
 	border-color: transparent;
 	color: transparent;
 }
-
-
 
 input[type=checkbox] {
   cursor: default;
@@ -275,3 +277,8 @@ button:active {
 	}
 }
 
+@keyframes pulsingcolorbox {
+	to {
+		background-color: red;
+	}
+}

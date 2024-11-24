@@ -24,7 +24,7 @@
 		<div class="menurow">
 			<hr>
 			<div class="menusection">
-				<h3 class="sectionheader">Color Key</h3>
+				<h3 class="sectionheader">Path Color Key</h3>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: rgb(227, 139, 73);"></div>
 					<span class="colorlabel">EDL</span>
@@ -48,21 +48,36 @@
 			</div>
 			<hr>
 			<div class="menusection">
+				<h3 class="sectionheader">Antenna Color Key</h3>
+				<div class="coloritem">
+					<div class="colorbox" style="background-color: lime;"></div>
+					<span class="colorlabel">High Priority</span>
+				</div>
+				<div class="coloritem">
+					<div class="colorbox" style="background-color: yellow;"></div>
+					<span class="colorlabel">Medium Priority</span>
+				</div>
+				<div class="coloritem">
+					<div class="colorbox" style="background-color: orange;"></div>
+					<span class="colorlabel">Low Priority</span>
+				</div>
+				<div class="coloritem">
+					<div class="colorbox" style="background-color: red;"></div>
+					<span class="colorlabel">Very Low Priority</span>
+				</div>
+				<div class="coloritem">
+					<div class="colorbox" id="pulsingcolorbox"></div>
+					<span class="colorlabel">Not Applicable</span>
+				</div>
+			</div>
+			<hr>
+			<div class="menusection">
 				<label>Time (min)</label><br>
 				<input type="text" id="time" placeholder="0" oninput="setTime(this.value);"><br>
 				<label>Stroke Weight</label><br>
 				<input type="text" id="stroke" placeholder="100" oninput="strokeWeight(this.value == '' ? 100 : parseFloat(this.value));"><br>
 				<label>Speed (min/sec)</label><br>
 				<input type="text" id="speed" placeholder="10" oninput="speed = this.value == '' ? 10 : parseFloat(this.value);"><br>
-			</div>
-			<hr>
-			<div class="menusection">
-				<label>Follow Earth</label><br>
-				<input type="checkbox" id="followEarth" oninput="handleFollowButtons('earth');"><br>
-				<label>Follow moon</label><br>
-				<input type="checkbox" id="followMoon" oninput="handleFollowButtons('moon');"><br>
-				<label>Follow probe</label><br>
-				<input type="checkbox" id="followProbe" oninput="handleFollowButtons('probe');"><br>
 			</div>
 			<hr>
 		</div>
@@ -73,6 +88,15 @@
 		</div>
 		<hr>
 		<div class="menurow">
+			<hr>
+			<div class="menusection">
+				<label>Follow Earth</label><br>
+				<input type="checkbox" id="followEarth" oninput="handleFollowButtons('earth');"><br>
+				<label>Follow moon</label><br>
+				<input type="checkbox" id="followMoon" oninput="handleFollowButtons('moon');"><br>
+				<label>Follow probe</label><br>
+				<input type="checkbox" id="followProbe" oninput="handleFollowButtons('probe');"><br>
+			</div>
 			<hr>
 			<div class="menusection">
 				<label>Track Bonus</label><br>
@@ -96,4 +120,3 @@
 </body>
 
 </html>
-

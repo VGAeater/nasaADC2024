@@ -73,7 +73,7 @@ hr {
 }
 
 #pulsingcolorbox {
-	animation: pulsingcolorbox 0.8s infinite;
+	animation: pulsingcolorbox ease-in-out 0.31415926535s infinite alternate;
 }
 
 .sectionheader {
@@ -278,10 +278,7 @@ button:active {
 }
 
 @keyframes pulsingcolorbox {
-	0%, 100% {
+	to {
 		background-color: red;
-	}
-	50% {
-		background-color: rgb(150, 0, 0);
 	}
 }

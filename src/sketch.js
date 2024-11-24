@@ -151,8 +151,8 @@ function buildPath(arr, selector, start=0, end=null) {
 
 function antennaColor(budget) {
 	if (isNaN(budget)) {
-		const pulseIntensity = (Math.sin(time * 0.75) + 1) / 2;
-		const pulseRed = Math.round(50 + 150 * pulseIntensity);
+		let pulseIntensity = (sin(time * 0.75) + 1) / 2;
+		let pulseRed = round(50 + 150 * pulseIntensity);
 		return [pulseRed, 0, 0];
 	} if (budget > 8000)
 		return [0, 255, 0];

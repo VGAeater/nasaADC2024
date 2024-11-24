@@ -154,8 +154,7 @@ function antennaColor(budget) {
 		const pulseIntensity = (Math.sin(time * 0.75) + 1) / 2;
 		const pulseRed = Math.round(50 + 150 * pulseIntensity);
 		return [pulseRed, 0, 0];
-	}
-	if (budget > 8000)
+	} if (budget > 8000)
 		return [0, 255, 0];
 	if (budget > 4000)
 		return [255, 211, 0];

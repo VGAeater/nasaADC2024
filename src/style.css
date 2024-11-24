@@ -72,6 +72,10 @@ hr {
     border-radius: 2vh;
 }
 
+#pulsingcolorbox {
+	animation: pulsingcolorbox 0.8s infinite;
+}
+
 .sectionheader {
 	width: calc(100% - 2vh);
 	padding: 1vh;
@@ -80,10 +84,6 @@ hr {
 	border-radius: 2vh;
 	margin: 0px;
 }
-
-
-
-
 
 input[type=range] {
 	appearance: none; /* Hides the slider so that custom slider can be made */
@@ -142,8 +142,6 @@ input[type=range]::-ms-track {
 	border-color: transparent;
 	color: transparent;
 }
-
-
 
 input[type=checkbox] {
   cursor: default;
@@ -275,3 +273,11 @@ button:active {
 	}
 }
 
+@keyframes pulsingcolorbox {
+	0%, 100% {
+		background-color: red;
+	}
+	50% {
+		background-color: rgb(150, 0, 0);
+	}
+}

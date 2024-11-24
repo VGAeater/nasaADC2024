@@ -161,7 +161,7 @@ function antennaColor(budget) {
 		return [255, 211, 0];
 	if (budget > 1000)
 		return [255, 140, 0];
-	return [255, 0, 0];
+	return [200, 0, 0];
 }
 
 function handleRocket(baseData, bonusData) {

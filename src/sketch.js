@@ -268,7 +268,7 @@ function handleEarth(baseData, bonusData) {
 
 		let r = earthRadius + pos[2];
 		translate(r * cos(pos[0]) * cos(pos[1]), -r * sin(pos[0]), -r * cos(pos[0]) * sin(pos[1]));	// negatives for even more weird axes correction
-		budget = linkBudget(baseArr[pos[4]][Math.round(time)], pos[3])
+		budget = linkBudget(baseArr[pos[4]][Math.round(time)], pos[3]);
 		//if show color is checked, color based on budget, else is magenta.
 		color = showAntennaColor ? antennaColor(budget) : [255, 0, 255];
 		stroke(color);

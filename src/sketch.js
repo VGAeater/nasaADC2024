@@ -30,7 +30,7 @@ var followEarthDOM, followMoonDOM, followProbeDOM;
 var timeDOM, strokeDOM, speedDOM;
 var timeSliderDOM;
 var overlayDOM;
-var showAxes = false, showText = false, useTextures = true, playing = false, speed = 10;
+var showAxes = false, showText = false, showAntennaColor = true, useTextures = true, playing = false, speed = 10;
 
 var trackBonus = false, showOtherPath = false;
 
@@ -269,7 +269,8 @@ function handleEarth(baseData, bonusData) {
 		let r = earthRadius + pos[2];
 		translate(r * cos(pos[0]) * cos(pos[1]), -r * sin(pos[0]), -r * cos(pos[0]) * sin(pos[1]));	// negatives for even more weird axes correction
 		budget = linkBudget(baseArr[pos[4]][Math.round(time)], pos[3])
-		color = antennaColor(budget)
+		//if show color is checked, color based on budget, else is white.
+		color = showAntennaColor ? antennaColor(budget) : [255, 255, 255];
 		stroke(color);
 		sphere(350, 4, 2);
 

@@ -388,10 +388,13 @@ function setSize() {
 }
 
 function preload() {
-	earthDayTex = loadImage('assets/earthDay.jpg');
-	earthNightTex = loadImage('assets/earthNight.jpg');
-	cloudsTex = loadImage('assets/clouds.jpg');
-	moonTex = loadImage('assets/moon.jpg');
+	//window.MSStream was removed because IE it probably cant handle 8k textures lol (if you use IE, please get some help 🙏)
+	let res = /iPad|iPhone|iPod/.test(navigator.userAgent) ? "4k" : "8k";
+	
+    earthDayTex = loadImage('assets/' + res + '/earthDay.jpg');
+    earthNightTex = loadImage('assets/' + res + '/earthNight.jpg');
+    cloudsTex = loadImage('assets/' + res + '/clouds.jpg');
+    moonTex = loadImage('assets/' + res + '/moon.jpg');
 
 	earthShader = loadShader('src/earth.vert', 'src/earth.frag');
 	atmoShader = loadShader('src/atmo.vert', 'src/atmo.frag');

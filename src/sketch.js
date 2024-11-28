@@ -509,7 +509,7 @@ function draw() {
 }
 
 function keyPressed() {
-	if (keyCode == 27) {				// one esc key press show/hide menu
+	if (keyCode == 27) {				// on esc key press show/hide menu
 		menu.classList.toggle("hidden");
 		canvasdiv.classList.toggle("small");
 	}

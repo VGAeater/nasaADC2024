@@ -213,7 +213,8 @@ function handleRocket(baseData, bonusData) {
 	//rotateZ(createVector(x, y).heading());
 	//rotateY(-createVector(x, y).heading());
 	//console.log(createVector(x, y, z).angleBetween(createVector(0, 0, 0)));
-	cone(500, 1000, 8);				// draw the probe
+	//cone(500, 1000, 8);				// draw the probe
+	sphere(500, 6, 3);				// change it to a sphere until we get rotation or model
 
 	pop();
 

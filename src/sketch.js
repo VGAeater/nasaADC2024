@@ -434,7 +434,7 @@ function setSize() {
 
 function preload() {
 	//window.MSStream was removed because IE it probably cant handle 8k textures lol (if you use IE, please get some help 🙏)
-	let res = /iPad|iPhone|iPod/.test(navigator.userAgent) ? "4k" : "8k";
+	let res = /iPad|iPhone|iPod|Android/.test(navigator.userAgent) ? "4k" : "8k";
 
 	// load the textures based on what resolution was chosen
 	earthDayTex = loadImage('assets/' + res + '/earthDay.jpg');

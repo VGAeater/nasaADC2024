@@ -224,8 +224,18 @@ function handleRocket(baseData, bonusData) {
 	sphere(500, 6, 3);				// change it to a sphere until we get rotation or model
 
 	pop();
-
-	stroke(255,0,0);
+	let veloVectorDistance = dist(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
+	let veloColor;
+	if (veloVectorDistance > 35000) {
+		veloColor = [255, 0, 0];
+	} else if (veloVectorDistance > 27500) {
+		veloColor = [255, 165, 0];
+	} else if (veloVectorDistance > 17500) {
+		veloColor = [255, 255, 0];
+	} else {
+		veloColor = [0, 255, 0];
+	}
+	stroke(veloColor);
 	line(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 
 	// checks to see if last path is already created, we do not need a boolean value for this

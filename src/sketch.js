@@ -5,6 +5,8 @@ const arrayRangeWPSA = 9, arrayRangeDSS54 = 11, arrayRangeDSS24 = 13, arrayRange
 const earthRadius = 6378.137, moonRadius = 1737.4;
 const earthTilt = 0.40910518, earthRotation = 0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127;
 
+var prevBest;		// Previous best for the priorotized list
+
 // [ lat, long, relative alt, dish radius, starting position in data array ]
 const antennaPositions = [
 	[35.3399*Math.PI/180, -116.875*Math.PI/180, 0.951499, 34, arrayRangeDSS24],
@@ -43,7 +45,7 @@ var earthDayTex, earthNightTex, moonTex, cloudsTex;			// the textures for the ea
 var earthShader, moonShader, atmoShader;				// the shaders for the eath, moon, and atmosphere
 var pass1Shader;							// probably going to get deleted
 
-// finds the length budget for a specific range and radius of dish
+// finds the link budget for a specific range and radius of dish
 function linkBudget(slantr, dr) {
 	pt = 10;
 	gt = 9;
@@ -373,7 +375,7 @@ function textTriplet(data, start) {
 	return `${data[start].toFixed(3)}, ${data[start+1].toFixed(3)}, ${data[start+2].toFixed(3)}`;
 }
 
-// generates a formated string used in the length budget monitors
+// generates a formated string used in the link budget monitors
 function antennaText(range, radius) {
 	let netBudget = linkBudget(range, radius);
 
@@ -407,16 +409,43 @@ function handleText(baseData, bonusData) {
 
 	buffer += `Mass: ${probeData[arrayProbeStart+6]}kg<br>`;
 
-	// print the easly calculated length budget if tracking the easy data
+	// print the easly calculated link budget if tracking the easy data
 	if (!trackBonus) {
 		buffer += `WPSA: ${antennaText(probeData[arrayRangeWPSA], 12)}kbps<br>`;
 		buffer += `DSS24: ${antennaText(probeData[arrayRangeDSS24], 34)}kbps<br>`;
 		buffer += `DSS34: ${antennaText(probeData[arrayRangeDSS34], 34)}kbps<br>`;
 		buffer += `DSS54: ${antennaText(probeData[arrayRangeDSS54], 34)}kbps<br>`;
+
+		wpsaLink = linkBudget(probeData[arrayRangeWPSA], 12);
+		dss24Link = linkBudget(probeData[arrayRangeDSS24], 34);
+		dss34Link = linkBudget(probeData[arrayRangeDSS34], 34);
+		dss54Link = linkBudget(probeData[arrayRangeDSS54], 34);
+
+		antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
 	}
 
 	overlayDOM.innerHTML = buffer;			// set the innerhtml to the newly generated buffer (this proved to be faster than writing to the DOM every time)
 }
+
+
+// Does the whole priorotized list thing
+function antennaList(wpsa, dss24, dss34, dss54) {
+	let budgets = {
+		'WPSA':  Math.min(wpsa, 10000),			// Makes the budgets a max of 10,000
+		'DSS24': Math.min(dss24, 10000),
+		'DSS34': Math.min(dss34, 10000),
+		'DSS54': Math.min(dss54, 10000)
+	};
+	
+	budgets[prevBest] += 0.00001;			// Adds a negligible amount to the previous one so it sorts slightly above (idk if this is the best way to do this but, once again, cry about it)
+	const entries = Object.entries(budgets);
+	entries.sort((a, b) => (isNaN(a[1]) ? 0 : a[1]) - (isNaN(b[1]) ? 0 : b[1])); 		// Sorts it, if the budget is NaN, it is 0 cuz the sorting doesn't work on NaN
+	const sortedScores = Object.fromEntries(entries);
+	budgets[prevBest] -= 0.00001;					// put back the value taken to make it accurate
+	prevBest = sortedScores[3];			// Makes the prevBest variable into the highest one
+}
+
+
 
 function setSize() {
 	let box = canvasdiv.getBoundingClientRect();	// find the current bounding box

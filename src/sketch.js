@@ -5,7 +5,10 @@ const arrayRangeWPSA = 9, arrayRangeDSS54 = 11, arrayRangeDSS24 = 13, arrayRange
 const earthRadius = 6378.137, moonRadius = 1737.4;
 const earthTilt = 0.40910518, earthRotation = 0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127;
 
+const launchTime = new Date('2024-06-11T03:25:47');		// For realtime functionality
+
 var prevBest = "WPSA";		// Previous best for the priorotized list
+var realTime = false;
 
 // [ lat, long, relative alt, dish radius, starting position in data array ]
 const antennaPositions = [
@@ -222,7 +225,6 @@ function handleRocket(baseData, bonusData) {
 
 	let veloVectorDistance = dist(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 	let veloColor;
-	console.log(veloVectorDistance);
 	if (veloVectorDistance > 35000) {
 		veloColor = [255, 0, 0];
 	} else if (veloVectorDistance > 27500) {
@@ -233,8 +235,12 @@ function handleRocket(baseData, bonusData) {
 		veloColor = [0, 255, 0];
 	}
 	stroke(veloColor);
+	strokeWeight(150);
 	line(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 
+	//resets strokeWeight
+	strokeWeight(100);
+	
 	// checks to see if last path is already created, we do not need a boolean value for this
 	if (!orbitData[4][2]) {
 		for (let i = 0; i < orbitData.length; i++) {
@@ -584,11 +590,15 @@ function handleFollowButtons(selected) {
 
 // parse the time and both dom elements to match it
 function setTime(input) {
-	time = parseFloat(input);
+	if (!realTime){
+		time = parseFloat(input);
 
-	if (input == "" || isNaN(time))			// default to 0 if bad input
-		time = 0;
+		if (input == "" || isNaN(time))			// default to 0 if bad input
+			time = 0;
 
-	timeDOM.value = input;				// set it to original in case of mis-input
-	timeSliderDOM.value = time;			// needs to be valid
+		timeDOM.value = input;				// set it to original in case of mis-input
+		timeSliderDOM.value = time;			// needs to be valid
+	
+}
+	
 }

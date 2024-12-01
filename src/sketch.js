@@ -431,18 +431,19 @@ function handleText(baseData, bonusData) {
 // Does the whole priorotized list thing
 function antennaList(wpsa, dss24, dss34, dss54) {
 	let budgets = {
-		'WPSA':  Math.min(wpsa, 10000),			// Makes the budgets a max of 10,000
+		'WPSA':  Math.min(wpsa, 10000),		// Makes the budgets a max of 10,000
 		'DSS24': Math.min(dss24, 10000),
 		'DSS34': Math.min(dss34, 10000),
 		'DSS54': Math.min(dss54, 10000)
 	};
 	
-	budgets[prevBest] += 0.00001;			// Adds a negligible amount to the previous one so it sorts slightly above (idk if this is the best way to do this but, once again, cry about it)
+	budgets[prevBest] += 0.00001;			// Adds a negligible amount to the previous one so it sorts slightly above (idc if this is the best way to do this but, once again, cry about it)
 	const entries = Object.entries(budgets);
-	entries.sort((a, b) => (isNaN(a[1]) ? 0 : a[1]) - (isNaN(b[1]) ? 0 : b[1])); 		// Sorts it, if the budget is NaN, it is 0 cuz the sorting doesn't work on NaN
+	entries.sort((a, b) => (isNaN(a[1]) ? 0 : a[1]) - (isNaN(b[1]) ? 0 : b[1])); 	// Sorts it, if the budget is NaN, it is 0 cuz the sorting doesn't work on NaN
 	const sortedScores = Object.fromEntries(entries);
-	budgets[prevBest] -= 0.00001;					// put back the value taken to make it accurate
+	budgets[prevBest] -= 0.00001;			// put back the value taken to make it accurate
 	prevBest = sortedScores[3];			// Makes the prevBest variable into the highest one
+	return sortedScores;
 }
 
 

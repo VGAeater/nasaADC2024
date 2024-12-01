@@ -5,7 +5,7 @@ const arrayRangeWPSA = 9, arrayRangeDSS54 = 11, arrayRangeDSS24 = 13, arrayRange
 const earthRadius = 6378.137, moonRadius = 1737.4;
 const earthTilt = 0.40910518, earthRotation = 0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127;
 
-var prevBest;		// Previous best for the priorotized list
+var prevBest = "WPSA";		// Previous best for the priorotized list
 
 // [ lat, long, relative alt, dish radius, starting position in data array ]
 const antennaPositions = [
@@ -421,12 +421,16 @@ function handleText(baseData, bonusData) {
 		dss34Link = linkBudget(probeData[arrayRangeDSS34], 34);
 		dss54Link = linkBudget(probeData[arrayRangeDSS54], 34);
 		if (useAntennaList) {
+			const list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
+			var antennaKeys = Object.keys(list);
+			var antennaValues = Object.values(list);
 			buffer += `PRIOROTIZED LIST<br>`;
-			buffer += `1. ${antennaList(wpsaLink, dss24Link, dss34Link, dss54Link)[3]}<br>`;
-			buffer += `2. ${antennaList(wpsaLink, dss24Link, dss34Link, dss54Link)[2]}<br>`;
-			buffer += `3. ${antennaList(wpsaLink, dss24Link, dss34Link, dss54Link)[1]}<br>`;
-			buffer += `4. ${antennaList(wpsaLink, dss24Link, dss34Link, dss54Link)[0]}<br>`;
+			buffer += `1. ${antennaKeys[3]} - ${antennaValues[3]}<br>`;
+			buffer += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;
+			buffer += `3. ${antennaKeys[1]} - ${antennaValues[1]}<br>`;
+			buffer += `4. ${antennaKeys[0]} - ${antennaValues[0]}<br>`;
 		}
+		
 	}
 
 	overlayDOM.innerHTML = buffer;			// set the innerhtml to the newly generated buffer (this proved to be faster than writing to the DOM every time)
@@ -446,8 +450,9 @@ function antennaList(wpsa, dss24, dss34, dss54) {
 	const entries = Object.entries(budgets);
 	entries.sort((a, b) => (isNaN(a[1]) ? 0 : a[1]) - (isNaN(b[1]) ? 0 : b[1])); 	// Sorts it, if the budget is NaN, it is 0 cuz the sorting doesn't work on NaN
 	const sortedScores = Object.fromEntries(entries);
-	budgets[prevBest] -= 0.00001;			// put back the value taken to make it accurate
-	prevBest = sortedScores[3];			// Makes the prevBest variable into the highest one
+	sortedScores[prevBest] -= 0.00001;			// put back the value taken to make it accurate
+	prevBest = Object.keys(sortedScores)[3];
+	console.log(sortedScores);			// Makes the prevBest variable into the highest one
 	return sortedScores;
 }
 

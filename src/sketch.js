@@ -28,7 +28,7 @@ var orbitData = [
 var moonPath;
 var time = 0;
 
-var showAxes = false, showText = false, showAntennaColor = true, useTextures = true;	// state tracking variables for graphical options
+var showAxes = false, showText = false, showAntennaColor = true, useTextures = true, useAntennaList = true;	// state tracking variables for graphical options
 var followEarth = false, followMoon = false, followProbe = false;	// state tracking variables for following
 var playing = false, speed = 10;					// state tracking variables for simulation speed
 var followEarthDOM, followMoonDOM, followProbeDOM;			// dom objects for follow switches
@@ -420,8 +420,13 @@ function handleText(baseData, bonusData) {
 		dss24Link = linkBudget(probeData[arrayRangeDSS24], 34);
 		dss34Link = linkBudget(probeData[arrayRangeDSS34], 34);
 		dss54Link = linkBudget(probeData[arrayRangeDSS54], 34);
-
-		antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
+		if (useAntennaList) {
+			buffer += `PRIOROTIZED LIST<br>`;
+			buffer += `1. ${antennaList(wpsaLink, dss24Link, dss34Link, dss54Link)[3]}<br>`;
+			buffer += `2. ${antennaList(wpsaLink, dss24Link, dss34Link, dss54Link)[2]}<br>`;
+			buffer += `3. ${antennaList(wpsaLink, dss24Link, dss34Link, dss54Link)[1]}<br>`;
+			buffer += `4. ${antennaList(wpsaLink, dss24Link, dss34Link, dss54Link)[0]}<br>`;
+		}
 	}
 
 	overlayDOM.innerHTML = buffer;			// set the innerhtml to the newly generated buffer (this proved to be faster than writing to the DOM every time)

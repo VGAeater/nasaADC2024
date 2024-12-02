@@ -5,6 +5,11 @@ const arrayRangeWPSA = 9, arrayRangeDSS54 = 11, arrayRangeDSS24 = 13, arrayRange
 const earthRadius = 6378.137, moonRadius = 1737.4;
 const earthTilt = 0.40910518, earthRotation = 0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127;
 
+var realTime = true;
+// const launchTime = new Date('2024-06-11T15:25:47');		// Launch time acc to handbook
+const launchTime = new Date('2024-11-29T15:25:47');		// Launch time acc to handbook
+
+
 var prevBest = "WPSA";		// Previous best for the priorotized list
 
 // [ lat, long, relative alt, dish radius, starting position in data array ]
@@ -219,8 +224,18 @@ function handleRocket(baseData, bonusData) {
 	sphere(500, 6, 3);				// change it to a sphere until we get rotation or model
 
 	pop();
-
-	stroke(255,0,0);
+	let veloVectorDistance = dist(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
+	let veloColor;
+	if (veloVectorDistance > 35000) {
+		veloColor = [255, 0, 0];
+	} else if (veloVectorDistance > 27500) {
+		veloColor = [255, 165, 0];
+	} else if (veloVectorDistance > 17500) {
+		veloColor = [255, 255, 0];
+	} else {
+		veloColor = [0, 255, 0];
+	}
+	stroke(veloColor);
 	line(x, y, z, x + xv * tanMult, y + yv * tanMult, z + zv * tanMult);
 
 	// checks to see if last path is already created, we do not need a boolean value for this
@@ -451,8 +466,7 @@ function antennaList(wpsa, dss24, dss34, dss54) {
 	entries.sort((a, b) => (isNaN(a[1]) ? 0 : a[1]) - (isNaN(b[1]) ? 0 : b[1])); 	// Sorts it, if the budget is NaN, it is 0 cuz the sorting doesn't work on NaN
 	const sortedScores = Object.fromEntries(entries);
 	sortedScores[prevBest] -= 0.00001;			// put back the value taken to make it accurate
-	prevBest = Object.keys(sortedScores)[3];
-	console.log(sortedScores);			// Makes the prevBest variable into the highest one
+	prevBest = Object.keys(sortedScores)[3];		// Makes prevbest
 	return sortedScores;
 }
 
@@ -572,11 +586,23 @@ function handleFollowButtons(selected) {
 
 // parse the time and both dom elements to match it
 function setTime(input) {
-	time = parseFloat(input);
+	if(!realTime){
+		time = parseFloat(input);
 
-	if (input == "" || isNaN(time))			// default to 0 if bad input
-		time = 0;
+		if (input == "" || isNaN(time))			// default to 0 if bad input
+			time = 0;
 
-	timeDOM.value = input;				// set it to original in case of mis-input
-	timeSliderDOM.value = time;			// needs to be valid
+		timeDOM.value = input;				// set it to original in case of mis-input
+		timeSliderDOM.value = time;			// needs to be valid
+	}
+
+	else {
+		let now = new Date();
+		let timeDifference = now.getTime() - launchTime.getTime();
+		let minutesDifference = timeDifference / (1000 * 60);
+		minutesDifference = Math.max(minutesDifference, 0);		// If it's negative, turns it into positive
+		console.log(minutesDifference);
+		timeDOM.value = minutesDifference;
+		timeSliderDOM.value = minutesDifference;
+	}
 }

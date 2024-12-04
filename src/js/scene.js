@@ -500,6 +500,5 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	otherCheckboxDOM.oninput = () => { showOtherPath = otherCheckboxDOM.checked; }
 
 	const antennaCheckboxDOM = document.getElementById("antennacheckbox");
-	antennaCheckboxDOM.oninput = () => { showAntennaColor = antennaCheckboxDOM.checked; }
+	antennaCheckboxDOM.oninput = () => { showAntennaColor = antennaCheckboxDOM.checked; };
 }
-

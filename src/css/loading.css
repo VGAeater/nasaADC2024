@@ -8,7 +8,7 @@
 	aspect-ratio: 1;
 	overflow: hidden;
 	clip-path: circle(50% at 50% 50%);
-	background: url("../assets/moon.svg");
+	background: url("../../assets/moon.svg");
 	animation: moon 2s ease-in-out infinite;
 }
 

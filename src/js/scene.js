@@ -120,7 +120,9 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		else
 			p.stroke(0, 255, 0);
 
+		p.strokeWeight(strokeWeight * 2);		// double the stroke weight so that the tangent is easier to see
 		p.line(x, y, z, x + xv * c.tanMult, y + yv * c.tanMult, z + zv * c.tanMult);
+		p.strokeWeight(strokeWeight);
 
 		// checks to see if last path is already created, we do not need a boolean value for this
 		if (!orbitData[4][2]) {

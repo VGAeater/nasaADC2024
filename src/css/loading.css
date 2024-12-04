@@ -14,7 +14,7 @@
 
 #loading:before {
 	content: "";
-	background: url("../assets/arrow.svg");
+	background: url("../../assets/arrow.svg");
 	/*background: white;*/
 	animation: arrow 2s ease-in-out infinite;
 	translate: 0px 0px;

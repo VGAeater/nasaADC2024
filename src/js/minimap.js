@@ -1,6 +1,6 @@
 import * as c from "./constants.js";
 
-export const minimap = ( dataObject, shared ) => ( p ) => {
+export const minimap = ( dataObject, s ) => ( p ) => {
 	const orbitData = [
 		[[227, 139, 73], 0],			//EDL part 1
 		[[241, 64, 42], 115],			//orbiting earth
@@ -41,15 +41,18 @@ export const minimap = ( dataObject, shared ) => ( p ) => {
 		pgBase = p.createGraphics(320, 320);	// pre graphic for base outline
 		pgBonus = p.createGraphics(320, 320);	// pre graphic for bonus bonoutline
 
-		pgBase.strokeWeight(4);
-		pgBonus.strokeWeight(4);
+		pgBase.strokeWeight(2);
+		pgBonus.strokeWeight(2);
 
 		pgBase.background(0);
 		pgBonus.background(0);
+
+		p.noFill();
+		p.strokeWeight(2);
 	}
 
 	p.draw = () => {
-		if (!(dataObject.baseReady && dataObject.bonusReady))	// stall until the data has been loaded (kinda hacky solution)
+		if (!(dataObject.baseReady && dataObject.bonusReady) || !minimapCheckboxDOM.checked)	// stall until the data has been loaded (kinda hacky solution)
 			return;
 
 		if (!doneDrawing) {
@@ -72,13 +75,26 @@ export const minimap = ( dataObject, shared ) => ( p ) => {
 		}
 
 		p.scale(1, -1);
-		p.image(pgBase, 0, -320);
+		p.translate(0, -320);
 
+		let baseData = dataObject.dataWeightedAverage(dataObject.baseArr, s.time);
+		let bonusData = dataObject.dataWeightedAverage(dataObject.bonusArr, s.time);
 
+		let currData = s.trackBonus ? bonusData : baseData;
+
+		p.image(s.trackBonus ? pgBonus : pgBase, 0, 0);
+
+		let [x, y] = spaceToCanvas(currData[c.arrayProbeStart], currData[c.arrayProbeStart+2]);
+		p.stroke(0, 255, 255);
+		p.triangle(x, y, x - 6, y + 0.866025405 * 12, x + 6, y + 0.866025405 * 12);
+
+		[x, y] = spaceToCanvas(bonusData[c.arrayMoonStart], bonusData[c.arrayMoonStart+2]);
+		p.stroke(255);
+		p.triangle(x, y, x - 6, y + 0.866025405 * 12, x + 6, y + 0.866025405 * 12);
 	}
 
 	tab.onmousedown = e => {
-		shared.isDragging = true;		// indicate that the minimap is being dragged
+		s.isDragging = true;			// indicate that the minimap is being dragged
 		// set the original offset between the mouse and the top left corner of the minimap
 		offsetX = e.clientX - main.offsetLeft;
 		offsetY = e.clientY - main.offsetTop;
@@ -92,14 +108,14 @@ export const minimap = ( dataObject, shared ) => ( p ) => {
 	};
 
 	document.onmousemove = e => {
-		if (!shared.isDragging) return;		// check if actualy dragging
+		if (!s.isDragging) return;		// check if actualy dragging
 
 		// calculate the minimap position based on the mouse position and the original offset
 		main.style.left = e.clientX - offsetX + 'px';
 		main.style.top = e.clientY - offsetY + 'px';
 	};
 
-	document.onmouseup = () => { shared.isDragging = false; };	// indicate that we are done dragging
+	document.onmouseup = () => { s.isDragging = false; };	// indicate that we are done dragging
 
 	minimapCheckboxDOM.oninput = e => { main.classList.toggle('hidden', !minimapCheckboxDOM.checked); }
 }

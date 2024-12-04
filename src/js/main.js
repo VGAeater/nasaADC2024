@@ -5,7 +5,9 @@ import { minimap } from "./minimap.js";
 var dataObject;
 var sceneObject, minimapObject;
 var shared = {
-	isDragging: false
+	isDragging: false,
+	time: 0,
+	trackBonus: false
 };
 
 window.onload = () => {

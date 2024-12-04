@@ -1,6 +1,6 @@
 import * as c from "./constants.js";
 
-export const scene = ( dataObject, shared ) => ( p ) => {
+export const scene = ( dataObject, s ) => ( p ) => {
 	// [color, start, end, base model, bonus model]
 	var orbitData = [
 		[[227, 139, 73], 0, null, null],		//EDL part 1
@@ -11,8 +11,6 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 	];
 
 	var moonPath;						// moon path model that will be built later
-
-	var time = 0;
 
 	var realTime = false;
 	// const launchTime = new Date('2024-06-11T15:25:47');	// Launch time acc to handbook
@@ -37,7 +35,7 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 
 	const overlayDOM = document.getElementById("overlaytext");
 
-	var trackBonus = false, showOtherPath = false;		// data selection trackers
+	var showOtherPath = false;				// data selection trackers
 	var earthDayTex, earthNightTex, moonTex, cloudsTex;	// the textures for the earth and moon
 	var earthShader, moonShader, atmoShader;		// the shaders for the eath, moon, and atmosphere
 
@@ -85,7 +83,7 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 	}
 
 	function handleRocket(baseData, bonusData) {
-		let data = trackBonus ? bonusData : baseData;	// switch to bonus data if tracking it
+		let data = s.trackBonus ? bonusData : baseData;	// switch to bonus data if tracking it
 
 		// set the x y z xv yv and zv for later
 		let x = data[c.arrayProbeStart];
@@ -143,8 +141,8 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		}
 
 		// set the main and secontary path to be drawn based on which one is being tracked
-		let mainPath = trackBonus ? 3 : 2;
-		let secondaryPath = !trackBonus ? 3 : 2;
+		let mainPath = s.trackBonus ? 3 : 2;
+		let secondaryPath = !s.trackBonus ? 3 : 2;
 
 		// show the secondary path first and only if showing other path enabled
 		if (showOtherPath) {
@@ -176,7 +174,7 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		p.translate(x, y, z);
 		p.rotateX(-Math.PI);					// weird axes correction
 		p.rotateX(-c.earthTilt);				// tilt axis
-		p.rotateY(c.earthRotation * time + c.earthRotation * 521 /* temporary fix to correct the earths initial rotation */);	// rotate earth
+		p.rotateY(c.earthRotation * s.time + c.earthRotation * 521 /* temporary fix to correct the earths initial rotation */);	// rotate earth
 
 		p.push();
 
@@ -188,7 +186,7 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 			earthShader.setUniform("dayTexture", earthDayTex);
 			earthShader.setUniform("nightTexture", earthNightTex);
 			earthShader.setUniform("cloudTexture", cloudsTex);
-			earthShader.setUniform("time", time);
+			earthShader.setUniform("time", s.time);
 			earthShader.setUniform("lightDirection", p.createVector(1, 0, 0).array());
 			p.fill(255);				// this can be any color it just needs to be filled so that it renders
 			p.sphere(c.earthRadius, 64, 64);
@@ -321,7 +319,7 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		if (!showText)					// check if user wants to see this
 			return;
 
-		let probeData = trackBonus ? bonusData : baseData;
+		let probeData = s.trackBonus ? bonusData : baseData;
 
 		// make generale stuff
 		let framerate = p.frameRate();
@@ -329,7 +327,7 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		let moonV = Math.hypot(bonusData[c.arrayMoonStart+3], bonusData[c.arrayMoonStart+4], bonusData[c.arrayMoonStart+5]);
 		let earthV = Math.hypot(bonusData[c.arrayEarthStart+3], bonusData[c.arrayEarthStart+4], bonusData[c.arrayEarthStart+5]);
 
-		let buffer = `FPS: ${framerate.toFixed(3)} Time: ${time.toFixed(3)}<br>`;
+		let buffer = `FPS: ${framerate.toFixed(3)} Time: ${s.time.toFixed(3)}<br>`;
 
 		// print all of the positions and velocities
 		buffer += `Probe pos: ${textTriplet(probeData, c.arrayProbeStart)}<br>`;
@@ -342,7 +340,7 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		buffer += `Mass: ${probeData[c.arrayProbeStart+6]}kg<br>`;
 
 		// print the easly calculated link budget if tracking the easy data
-		if (!trackBonus) {
+		if (!s.trackBonus) {
 			buffer += `WPSA: ${antennaText(probeData[c.arrayRangeWPSA], 12)}kbps<br>`;
 			buffer += `DSS24: ${antennaText(probeData[c.arrayRangeDSS24], 34)}kbps<br>`;
 			buffer += `DSS34: ${antennaText(probeData[c.arrayRangeDSS34], 34)}kbps<br>`;
@@ -404,13 +402,13 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		if (!(dataObject.baseReady && dataObject.bonusReady))	// stall until the data has been loaded (kinda hacky solution)
 			return;
 
-		if (!shared.isDragging)				// make sure the minimap isnt being dragged because p5 is too stupid to take input by dom element
+		if (!s.isDragging)				// make sure the minimap isnt being dragged because p5 is too stupid to take input by dom element
 			p.orbitControl(2, 2, 0.5);		// default orbit controls are wack
 		p.background(0);
 
 		// set the current data points based on time
-		let baseData = dataObject.dataWeightedAverage(dataObject.baseArr, time);
-		let bonusData = dataObject.dataWeightedAverage(dataObject.bonusArr, time);
+		let baseData = dataObject.dataWeightedAverage(dataObject.baseArr, s.time);
+		let bonusData = dataObject.dataWeightedAverage(dataObject.bonusArr, s.time);
 
 		// run each handler
 		handleEarth(baseData, bonusData);
@@ -420,7 +418,7 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		handleAxes();
 
 		if (playing)					// increment time if playing
-			setTime(time + speed * p.deltaTime / 1000);
+			setTime(s.time + speed * p.deltaTime / 1000);
 	}
 
 	p.keyPressed = () => {
@@ -453,13 +451,13 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 			input = Math.max(input, 0);		// If it's negative, turns it into positive
 		}
 
-		time = parseFloat(input);
+		s.time = parseFloat(input);
 
-		if (input == "" || isNaN(time))			// default to 0 if bad input
-			time = 0;
+		if (input == "" || isNaN(s.time))			// default to 0 if bad input
+			s.time = 0;
 
 		timeDOM.value = input;				// set it to original in case of mis-input
-		timeSliderDOM.value = time;			// needs to be valid
+		timeSliderDOM.value = s.time;			// needs to be valid
 	}
 
 	playButtonDOM.onclick = e => { playing = e.target.classList.toggle('playing'); };
@@ -494,7 +492,7 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 	realCheckboxDOM.oninput = () => { realTime = realCheckboxDOM.checked; }
 
 	const bonusCheckboxDOM = document.getElementById("bonuscheckbox");
-	bonusCheckboxDOM.oninput = () => { trackBonus = bonusCheckboxDOM.checked; };
+	bonusCheckboxDOM.oninput = () => { s.trackBonus = bonusCheckboxDOM.checked; };
 
 	const otherCheckboxDOM = document.getElementById("othercheckbox");
 	otherCheckboxDOM.oninput = () => { showOtherPath = otherCheckboxDOM.checked; }

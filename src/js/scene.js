@@ -378,9 +378,8 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		moonTex = p.loadImage('assets/' + res + '/moon.jpg');
 
 		// load the shaders
-		earthShader = p.loadShader('src/earth.vert', 'src/earth.frag');
-		atmoShader = p.loadShader('src/atmo.vert', 'src/atmo.frag');
-		moonShader = p.loadShader('src/moon.vert', 'src/moon.frag');
+		earthShader = p.loadShader('src/glsl/earth.vert', 'src/glsl/earth.frag');
+		moonShader = p.loadShader('src/glsl/moon.vert', 'src/glsl/moon.frag');
 	}
 
 	p.setup = () => {

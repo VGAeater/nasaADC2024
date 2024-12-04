@@ -2,13 +2,24 @@
 <html lang="en">
 
 <head>
+	<!-- noto imports cuz i love noto -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&family=Roboto&display=swap" rel="stylesheet">
+
+	<!-- p5 import -->
 	<script src="src/p5.min.js"></script>
 	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.min.js"></script>-->
-	<script src="src/sketch.js"></script>
+	<!-- main script and style imports -->
+	<script type="module" src="src/main.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="src/style.css">
+	<link rel="stylesheet" type="text/css" href="src/minimap.css">
+	<link rel="stylesheet" type="text/css" href="src/loading.css">
+	<link rel="stylesheet" type="text/css" href="src/menu.css">
+
+	<!-- basic website declarations -->
+	<title>Venatio</title>
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<meta charset="utf-8" />
 
@@ -18,12 +29,16 @@
 		<canvas id="canvas"></canvas>
 		<dd id="overlaytext"></dd>
 	</div>
+	<div id="minimap">
+		<div id="minimaptab"></div>
+		<canvas id="minimapcanvas"></canvas>
+	</div>
 	<div id="loading"></div>
 	<div id="menu" class="hidden">
 		<div class="menurow">
 			<hr>
 			<div class="menusection">
-				<h3 class="sectionheader">Path Color Key</h3>
+				<h3 class="sectionheader">Path Key</h3>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: rgb(227, 139, 73);"></div>
 					<span class="colorlabel">EDL</span>
@@ -47,7 +62,7 @@
 			</div>
 			<hr>
 			<div class="menusection">
-				<h3 class="sectionheader">Antenna Color Key</h3>
+				<h3 class="sectionheader">Antenna Key</h3>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: lime;"></div>
 					<span class="colorlabel">High Priority</span>
@@ -71,30 +86,30 @@
 			</div>
 			<hr>
 			<div class="menusection">
-				<h3 class="sectionheader">Resultant Velocity Vector Color Key</h3>
+				<h3 class="sectionheader">Velocity Vector Key</h3>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: red;"></div>
-					<span class="colorlabel">Greater than 35,000 km/h</span>
+					<span class="colorlabel">Greater than 7 km/s</span>
 				</div>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: orange;"></div>
-					<span class="colorlabel">Greater than 27,500 km/h</span>
+					<span class="colorlabel">Greater than 5 km/s</span>
 				</div>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: yellow;"></div>
-					<span class="colorlabel">Greater than 17,500 km/h</span>
+					<span class="colorlabel">Greater than 3 km/s</span>
 				</div>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: lime;"></div>
-					<span class="colorlabel">Less than 17,500 km/h</span>
+					<span class="colorlabel">Less than 3 km/s</span>
 				</div>
 			</div>
 			<hr>
 			<div class="menusection">
 				<label>Time (min)</label><br>
-				<input type="text" id="time" placeholder="0" oninput="setTime(this.value);"><br>
+				<input type="text" id="time" placeholder="0"><br>
 				<label>Stroke Weight</label><br>
-				<input type="text" id="stroke" placeholder="100" oninput="strokeWeight(this.value == '' ? 100 : parseFloat(this.value));"><br>
+				<input type="text" id="stroke" placeholder="100"><br>
 				<label>Speed (min/sec)</label><br>
 				<input type="text" id="speed" placeholder="10" oninput="speed = this.value == '' ? 10 : parseFloat(this.value);"><br>
 			</div>
@@ -102,44 +117,46 @@
 		</div>
 		<hr>
 		<div class="menurow">
-			<button id="playbutton" onclick="playing = this.classList.toggle('playing');"></button>
-			<input type="range" value="0" min="0" max="12983.16998" step="1" id="timeslider" oninput="setTime(this.value);"/>
+			<button id="playbutton"></button>
+			<input type="range" value="0" min="0" max="12983.16998" step="1" id="timeslider"/>
 		</div>
 		<hr>
 		<div class="menurow">
 			<hr>
 			<div class="menusection">
 				<label>Follow Earth</label><br>
-				<input type="checkbox" id="followEarth" oninput="handleFollowButtons('earth');"><br>
+				<input type="checkbox" id="followearth"><br>
 				<label>Follow moon</label><br>
-				<input type="checkbox" id="followMoon" oninput="handleFollowButtons('moon');"><br>
+				<input type="checkbox" id="followmoon"><br>
 				<label>Follow probe</label><br>
-				<input type="checkbox" id="followProbe" oninput="handleFollowButtons('probe');"><br>
+				<input type="checkbox" id="followprobe"><br>
 			</div>
 			<hr>
 			<div class="menusection">
 				<label>Track Bonus</label><br>
-				<input type="checkbox" oninput="trackBonus = this.checked;"><br>
+				<input type="checkbox" id="bonuscheckbox"><br>
 				<label>Show Other Path</label><br>
-				<input type="checkbox" oninput="showOtherPath = this.checked;"><br>
+				<input type="checkbox" id="othercheckbox"><br>
 				<label>Show Antenna Color</label><br>
-				<input type="checkbox" oninput="showAntennaColor = this.checked;" checked><br>
+				<input type="checkbox" id="antennacheckbox" checked><br>
 			</div>
 			<hr>
 			<div class="menusection">
 				<label>Show Axes</label><br>
-				<input type="checkbox" oninput="showAxes = this.checked;"><br>
+				<input type="checkbox" id="axescheckbox"><br>
 				<label>Show Text</label><br>
-				<input type="checkbox" oninput="showText = this.checked; overlayDOM.innerHTML = '';"><br>
+				<input type="checkbox" id="textcheckbox"><br>
 				<label>Use Textures</label><br>
-				<input type="checkbox" oninput="useTextures = this.checked;" checked>
+				<input type="checkbox" id="texturescheckbox" checked>
 			</div>
 			<hr>
 			<div class="menusection">
-				<label>Show Antenna Prioritization</labfreel><br>
-				<input type="checkbox" oninput="useAntennaList = this.checked;" checked><br>
-				<label>Use Real Time?</label><br>
-				<input type="checkbox" oninput="realTime = this.checked;" checked><br>
+				<label>Antenna Priority</labfreel><br>
+				<input type="checkbox" id="listcheckbox" checked><br>
+				<label>Real Time</label><br>
+				<input type="checkbox" id="realcheckbox"><br>
+				<label>Minimap</label><br>
+				<input type="checkbox" id="minimapcheckbox" checked><br>
 			</div>
 			<hr>
 		</div>

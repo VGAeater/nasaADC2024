@@ -1,0 +1,201 @@
+#menu {
+	position: fixed;
+	height: 35%;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	background-color: #19191b;
+	border: 1px solid #cc1444;
+	border-width: 1px 0px 0px 0px;
+	overflow-y: auto;
+  scrollbar-color: #cc1444 #121213;
+  /*scrollbar-width: thin;*/
+}
+
+#menu.hidden {
+	height: 0px;
+	border: none;
+}
+
+hr {
+	/*display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #cc1444;
+	margin: 1em 0;
+	padding: 0;*/
+	border-color: #cc1444;
+}
+
+.coloritem {
+    margin: 1vh 0px;
+    display: flex;
+    align-items: center;
+}
+
+.colorbox {
+    width: 3vh;
+    height: 3vh;
+    margin-right: 1vh;
+    border-radius: 2vh;
+}
+
+#pulsingcolorbox {
+	animation: pulsingcolorbox ease-in-out 0.31415926535s infinite alternate;
+}
+
+.sectionheader {
+	width: calc(100% - 2vh);
+	padding: 1vh;
+	border: none;
+	background-color: #121213;
+	border-radius: 2vh;
+	margin: 0px;
+}
+
+
+
+
+
+input[type=range] {
+	appearance: none; /* Hides the slider so that custom slider can be made */
+	width: calc(100% - 2vh); /* Specific width is required for Firefox. */
+	background: transparent; /* Otherwise white in Chrome */
+	margin: 1vh;
+}
+
+input[type=range]:focus {
+	outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+input[type=range]::-webkit-slider-thumb {
+	appearance: none;
+	height: 4vh;
+	width: 4vh;
+	border-radius: 1.5vh;
+	background: #ffffff;
+	cursor: pointer;
+	margin-top: -1vh; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+}
+
+input[type=range]::-moz-range-thumb, input[type=range]::-ms-thumb {
+	height: 4vh;
+	width: 4vh;
+	border-radius: 1.5vh;
+	background: #ffffff;
+	cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+	width: 100%;
+	height: 2vh;
+	cursor: pointer;
+	background: #770425;
+	border-radius: 1vh;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+	background: #770425;
+}
+
+input[type=range]::-moz-range-track {
+	width: 100%;
+	height: 2vh;
+	cursor: pointer;
+	background: #770425;
+	border-radius: 6px;
+}
+
+input[type=range]::-ms-track {
+	width: 100%;
+	height: 2vh;
+	cursor: pointer;
+	background: transparent;
+	border-color: transparent;
+	color: transparent;
+}
+
+input[type=checkbox] {
+  cursor: default;
+  appearance: none;
+  background-color: #770425;
+  border-radius: 2vh;
+  border: none;
+  width: 8vh;
+  height: 4vh;
+  margin: 0;
+  position: relative;
+}
+
+
+input[type=checkbox],
+input[type=checkbox]::after {
+  transition: all 100ms ease-out;
+}
+
+input[type=checkbox]::after {
+  background-color: #fff;
+  border-radius: 50%;
+  content: "";
+  width: 3vh;
+  height: 3vh;
+  left: 0.5vh;
+  top: 0.5vh;
+  position: absolute;
+}
+
+input[type=checkbox]:checked {
+  background-color: #cc1444;
+}
+
+input[type=checkbox]:checked::after {
+  background-color: #fff;
+  left: 4.5vh;
+}
+
+
+input[type=text] {
+	width: calc(100% - 2vh);
+	padding: 1vh;
+	border: none;
+	background-color: #121213;
+	border-radius: 2vh;
+}
+
+
+.menusection {
+	padding: 1vh;
+}
+
+.menurow {
+	display: flex;
+}
+
+button {
+	background-color: #cc1444;
+	border: 0;
+	padding: 1vh;
+	border-radius: 2vh;
+	margin-bottom: 1vh;
+}
+
+button:active {
+	background-color: #770425;
+}
+
+#playbutton {
+	width: 4vh;
+	height: 4vh;
+	border-radius: 1.5vh;
+	margin-left: 1vh;
+	margin-top: 1vh;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 2vh;
+	background-image: url(../assets/play.svg);
+}
+
+#playbutton.playing {
+	background-image: url(../assets/pause.svg);
+}
+

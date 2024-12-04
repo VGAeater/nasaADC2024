@@ -432,12 +432,13 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 
 	// disable all except selected and update values (ik its just radio buttons)
 	followEarthDOM.oninput = followMoonDOM.oninput = followProbeDOM.oninput = e => {
-		if (e.target.id != "followearth") 
-			followEarthDOM.checked = false;	
-		if (e.target.id != "followmoon") 
-			followMoonDOM.checked = false;		
-		if (e.target.id != "followprobe") 
+		if (e.target.id != "followearth")
+			followEarthDOM.checked = false;
+		if (e.target.id != "followmoon")
+			followMoonDOM.checked = false;
+		if (e.target.id != "followprobe")
 			followProbeDOM.checked = false;
+
 		followEarth = followEarthDOM.checked;
 		followMoon = followMoonDOM.checked;
 		followProbe = followProbeDOM.checked;
@@ -473,8 +474,6 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		strokeWeight = e.target.value == '' ? 100 : parseFloat(e.target.value);
 		p.strokeWeight(strokeWeight);
 	};
-
-	//gets values of checkboxes and sets them to the variables, sets aria-checked for accessibility, and whatever else they do
 
 	const textCheckboxDOM = document.getElementById("textcheckbox");
 	textCheckboxDOM.oninput = () => {

@@ -39,5 +39,8 @@ export const minimap = ( dataObject, shared ) => ( p ) => {
 
 	document.onmouseup = () => { shared.isDragging = false; };	// indicate that we are done dragging
 
-	minimapCheckboxDOM.oninput = e => { main.classList.toggle('hidden', !minimapCheckboxDOM.checked); }
+	minimapCheckboxDOM.oninput = e => { 
+		main.classList.toggle('hidden', !minimapCheckboxDOM.checked); 
+		minimapCheckboxDOM.setAttribute('aria-checked', minimapCheckboxDOM.checked);
+	}
 }

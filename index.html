@@ -24,20 +24,20 @@
 	<meta charset="utf-8" />
 </head>
 <body>
-	<div id="canvasdiv" resize="setSize();">
+	<div id="canvasdiv" resize="setSize();" aria-label="Main canvas">
 		<canvas id="canvas"></canvas>
 		<dd id="overlaytext"></dd>
 	</div>
-	<div id="minimap">
+	<div id="minimap" aria-label="Minimap">
 		<div id="minimaptab"></div>
 		<canvas id="minimapcanvas"></canvas>
 	</div>
-	<div id="loading"></div>
-	<div id="menu" class="hidden">
+	<div id="loading" aria-live="assertive" aria-label="Loading"></div>
+	<div id="menu" class="hidden" aria-label="menu">
 		<div class="menurow">
 			<hr>
 			<div class="menusection">
-				<h3 class="sectionheader">Path Key</h3>
+				<h3 class="sectionheader" aria-label="Path Key">Path Key</h3>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: rgb(227, 139, 73);"></div>
 					<span class="colorlabel">EDL</span>
@@ -61,7 +61,7 @@
 			</div>
 			<hr>
 			<div class="menusection">
-				<h3 class="sectionheader">Antenna Key</h3>
+				<h3 class="sectionheader" aria-label="Antenna Key">Antenna Key</h3>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: lime;"></div>
 					<span class="colorlabel">High Priority</span>
@@ -85,7 +85,7 @@
 			</div>
 			<hr>
 			<div class="menusection">
-				<h3 class="sectionheader">Velocity Vector Key</h3>
+				<h3 class="sectionheader" aria-label="Velocity Vector Key">Velocity Vector Key</h3>
 				<div class="coloritem">
 					<div class="colorbox" style="background-color: red;"></div>
 					<span class="colorlabel">Greater than 7 km/s</span>
@@ -104,58 +104,58 @@
 				</div>
 			</div>
 			<hr>
-			<div class="menusection">
+			<div class="menusection" aria-label="Scene controls">
 				<label>Time (min)</label><br>
-				<input type="text" id="time" placeholder="0"><br>
+				<input type="text" id="time" placeholder="0" aria-valuemin="0"><br>
 				<label>Stroke Weight</label><br>
-				<input type="text" id="stroke" placeholder="100"><br>
+				<input type="text" id="stroke" placeholder="100" aria-valuemin="1"><br>
 				<label>Speed (min/sec)</label><br>
 				<input type="text" id="speed" placeholder="10" oninput="speed = this.value == '' ? 10 : parseFloat(this.value);"><br>
 			</div>
 			<hr>
 		</div>
 		<hr>
-		<div class="menurow">
-			<button id="playbutton"></button>
-			<input type="range" value="0" min="0" max="12983.16998" step="1" id="timeslider"/>
+		<div class="menurow" aria-label="Play Menu">
+			<button id="playbutton" aria-label="Play button"></button>
+			<input type="range" value="0" min="0" aria-valuemin="0" max="12983.16998" aria-valuemax="12983.16998" step="1" id="timeslider"/>
 		</div>
 		<hr>
-		<div class="menurow">
+		<div class="menurow" aria-label="Scene settings">
 			<hr>
 			<div class="menusection">
 				<label>Follow Earth</label><br>
-				<input type="checkbox" id="followearth"><br>
-				<label>Follow moon</label><br>
-				<input type="checkbox" id="followmoon"><br>
-				<label>Follow probe</label><br>
-				<input type="checkbox" id="followprobe"><br>
+				<input type="checkbox" id="followearth" aria-label="Follow Earth" aria-checked="false"><br>
+				<label>Follow Moon</label><br>
+				<input type="checkbox" id="followmoon" aria-label="Follow Moon" aria-checked="false"><br>
+				<label>Follow Probe</label><br>
+				<input type="checkbox" id="followprobe" aria-label="Follow Probe" aria-checked="false"><br>
 			</div>
 			<hr>
 			<div class="menusection">
 				<label>Track Bonus</label><br>
-				<input type="checkbox" id="bonuscheckbox"><br>
+				<input type="checkbox" id="bonuscheckbox" aria-label="Track Bonus" aria-checked="false"><br>
 				<label>Show Other Path</label><br>
-				<input type="checkbox" id="othercheckbox"><br>
+				<input type="checkbox" id="othercheckbox" aria-label="Track Other Path" aria-checked="false"><br>
 				<label>Show Antenna Color</label><br>
-				<input type="checkbox" id="antennacheckbox" checked><br>
+				<input type="checkbox" id="antennacheckbox" aria-label="Show Antenna Color" checked aria-checked="true"><br>
 			</div>
 			<hr>
 			<div class="menusection">
 				<label>Show Axes</label><br>
-				<input type="checkbox" id="axescheckbox"><br>
+				<input type="checkbox" id="axescheckbox" aria-label="Show Axes" aria-checked="false"><br>
 				<label>Show Text</label><br>
-				<input type="checkbox" id="textcheckbox"><br>
+				<input type="checkbox" id="textcheckbox" aria-label="Show Text" aria-checked="false"><br>
 				<label>Use Textures</label><br>
-				<input type="checkbox" id="texturescheckbox" checked>
+				<input type="checkbox" id="texturescheckbox" aria-label="Use Textures" checked aria-checked="true">
 			</div>
 			<hr>
 			<div class="menusection">
 				<label>Antenna Priority</label><br>
-				<input type="checkbox" id="listcheckbox" checked><br>
+				<input type="checkbox" id="listcheckbox" aria-label="Show Antenna Priority" checked aria-checked="true"><br>
 				<label>Real Time</label><br>
-				<input type="checkbox" id="realcheckbox"><br>
+				<input type="checkbox" id="realcheckbox" aria-label="Use Real Time" aria-checked="false"><br>
 				<label>Minimap</label><br>
-				<input type="checkbox" id="minimapcheckbox" checked><br>
+				<input type="checkbox" id="minimapcheckbox" aria-label="Show Minimap" checked aria-checked="true"><br>
 			</div>
 			<hr>
 		</div>

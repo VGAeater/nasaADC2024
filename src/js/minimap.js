@@ -41,6 +41,5 @@ export const minimap = ( dataObject, shared ) => ( p ) => {
 
 	minimapCheckboxDOM.oninput = e => { 
 		main.classList.toggle('hidden', !minimapCheckboxDOM.checked); 
-		minimapCheckboxDOM.setAttribute('aria-checked', minimapCheckboxDOM.checked);
 	}
 }

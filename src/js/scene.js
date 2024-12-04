@@ -439,11 +439,8 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 		if (e.target.id != "followprobe") 
 			followProbeDOM.checked = false;
 		followEarth = followEarthDOM.checked;
-		followEarthDOM.setAttribute("aria-checked", followEarthDOM.checked);
 		followMoon = followMoonDOM.checked;
-		followMoonDOM.setAttribute("aria-checked", followMoonDOM.checked);
 		followProbe = followProbeDOM.checked;
-		followProbeDOM.setAttribute("aria-checked", followProbeDOM.checked);
 	}
 
 	// parse the time and both dom elements to match it
@@ -482,49 +479,27 @@ export const scene = ( dataObject, shared ) => ( p ) => {
 	const textCheckboxDOM = document.getElementById("textcheckbox");
 	textCheckboxDOM.oninput = () => {
 		showText = textCheckboxDOM.checked;
-		textCheckboxDOM.setAttribute('aria-checked', showText);
 		overlayDOM.innerHTML = '';
 	};
 
 	const texturesCheckboxDOM = document.getElementById("texturescheckbox");
-	texturesCheckboxDOM.oninput = () => { 
-		useTextures = texturesCheckboxDOM.checked; 
-		texturesCheckboxDOM.setAttribute('aria-checked', useTextures);
-	};
+	texturesCheckboxDOM.oninput = () => { useTextures = texturesCheckboxDOM.checked; };
 
 	const axesCheckboxDOM = document.getElementById("axescheckbox");
-	axesCheckboxDOM.oninput = () => {
-		showAxes = axesCheckboxDOM.checked;
-		axesCheckboxDOM.setAttribute('aria-checked', showAxes);
-	};
+	axesCheckboxDOM.oninput = () => { showAxes = axesCheckboxDOM.checked; };
 
 	const listCheckboxDOM = document.getElementById("listcheckbox");
-	listCheckboxDOM.oninput = () => {
-		useAntennaList = listCheckboxDOM.checked;
-		listCheckboxDOM.setAttribute('aria-checked', useAntennaList);
-	}
+	listCheckboxDOM.oninput = () => { useAntennaList = listCheckboxDOM.checked; }
 
 	const realCheckboxDOM = document.getElementById("realcheckbox");
-	realCheckboxDOM.oninput = () => {
-		realTime = realCheckboxDOM.checked;
-		realCheckboxDOM.setAttribute('aria-checked', realTime);
-	}
+	realCheckboxDOM.oninput = () => { realTime = realCheckboxDOM.checked; }
 
 	const bonusCheckboxDOM = document.getElementById("bonuscheckbox");
-	bonusCheckboxDOM.oninput = () => {
-		trackBonus = bonusCheckboxDOM.checked;
-		bonusCheckboxDOM.setAttribute('aria-checked', trackBonus);
-	};
+	bonusCheckboxDOM.oninput = () => { trackBonus = bonusCheckboxDOM.checked; };
 
 	const otherCheckboxDOM = document.getElementById("othercheckbox");
-	otherCheckboxDOM.oninput = () => {
-		showOtherPath = otherCheckboxDOM.checked;
-		otherCheckboxDOM.setAttribute('aria-checked', showOtherPath); 
-	}
+	otherCheckboxDOM.oninput = () => { showOtherPath = otherCheckboxDOM.checked; }
 
 	const antennaCheckboxDOM = document.getElementById("antennacheckbox");
-	antennaCheckboxDOM.oninput = () => { 
-		showAntennaColor = antennaCheckboxDOM.checked; 
-		antennaCheckboxDOM.setAttribute('aria-checked', showAntennaColor);
-	};
+	antennaCheckboxDOM.oninput = () => { showAntennaColor = antennaCheckboxDOM.checked; };
 }

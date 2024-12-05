@@ -333,7 +333,6 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		let bufferLeft = `FPS: ${framerate.toFixed(3)} Time: ${s.time.toFixed(3)}<br>`;
 		let bufferRight = ``;
 
-
 		// print all of the positions and velocities
 		// Probe stuff
 		bufferLeft += `---Probe Position---<br>`;
@@ -346,6 +345,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		bufferLeft += `Y: ${probeData[c.arrayProbeStart+4].toFixed(3)}<br>`;
 		bufferLeft += `Z: ${probeData[c.arrayProbeStart+5].toFixed(3)}<br>`;
 		bufferLeft += `Total: ${probeV.toFixed(3)}<br><br>`;
+
 		// Moon stuff
 		bufferLeft += `---Moon Position---<br>`;
 		bufferLeft += `X: ${bonusData[c.arrayMoonStart].toFixed(2)}<br>`;
@@ -357,7 +357,6 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		bufferLeft += `Z: ${bonusData[c.arrayMoonStart+5].toFixed(3)}<br>`;
 		bufferLeft += `Total: ${moonV.toFixed(3)}<br>`;
 
-
 		// Prints everything for the right side (antenna stuff)
 		if (!s.trackBonus) {
 			// Link Budgets
@@ -366,6 +365,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			bufferRight += `DSS24: ${antennaText(probeData[c.arrayRangeDSS24], 34)}kbps<br>`;
 			bufferRight += `DSS34: ${antennaText(probeData[c.arrayRangeDSS34], 34)}kbps<br>`;
 			bufferRight += `DSS54: ${antennaText(probeData[c.arrayRangeDSS54], 34)}kbps<br><br>`;
+
 			// just stuff for the priotorized List
 			let wpsaLink = dataObject.linkBudget(probeData[c.arrayRangeWPSA], 12);
 			let dss24Link = dataObject.linkBudget(probeData[c.arrayRangeDSS24], 34);
@@ -377,15 +377,17 @@ export const scene = ( dataObject, s ) => ( p ) => {
 				let list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
 				let antennaKeys = Object.keys(list);
 				let antennaValues = Object.values(list);
+
 				// Adds the priorotized list stuff
 				bufferRight += `---Priorotized List---<br>`;
+
 				// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
 				bufferRight += `Total Avaliable: ${Math.floor(probeData[c.arrayRangeWPSA-1]+probeData[c.arrayRangeDSS24-1]+probeData[c.arrayRangeDSS34-1]+probeData[c.arrayRangeDSS54-1])}<br>`
 				bufferRight += `1. ${antennaKeys[3]} - ${antennaValues[3]}<br>`;
 				bufferRight += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;
 				bufferRight += `3. ${antennaKeys[1]} - ${antennaValues[1]}<br>`;
 				bufferRight += `4. ${antennaKeys[0]} - ${antennaValues[0]}<br>`;
-			}		
+			}
 		}
 
 		overlayRightDOM.innerHTML = bufferRight;			// set the innerhtml to the newly generated buffer (this proved to be faster than writing to the DOM every time)

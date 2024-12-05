@@ -1,7 +1,7 @@
 import * as c from "./constants.js";
 
 // This is just a matrix multiplication function I found online cuz i aint writing allat and I couldn't find a library
-function multMatrices(a ,b){
+export function multMatrices(a ,b) {
 	if (a[0].length !== b.length)
 		throw new Error("Nuh Uh!!! You can't do that!!!");
 
@@ -20,14 +20,14 @@ function multMatrices(a ,b){
 }
 
 // Distance Formula
-function distance(antennaCords, probeCords){
+export function distance(antennaCords, probeCords) {
 	let first = (probeCords[0] - antennaCords[0])**2;
 	let second = (probeCords[1] - antennaCords[1])**2;
 	let third = (probeCords[2] - antennaCords[2])**2;
 	return Math.sqrt(first + second + third);
 }
 
-function rotationMatrix(timeElapsed){
+export function rotationMatrix(timeElapsed) {
 	const earthTilt = 0.40910518;
 	const earthRotation = 0.0043752689390883629091912824047036316217347442667247770055869327107291376933374649965090290441628832370979032264616092647931526225026442232147712881989155271345349586303407442060355058319830324161455127;
 	// Initializes the rotation angles
@@ -49,10 +49,10 @@ function rotationMatrix(timeElapsed){
 	];
 
 	// Multiplies and returns the 2 matricies
-	return multMatrices(rX, rY)
+	return multMatrices(rX, rY);
 }
 
-function antennaLoc(antenna, timeElapsed){
+export function antennaLoc(antenna, timeElapsed) {
 	let radLat = c.antennaPositions[antenna][0];
 	let radLong = c.antennaPositions[antenna][1];
 
@@ -70,11 +70,9 @@ function antennaLoc(antenna, timeElapsed){
 	return multMatrices(rotation, initialPos);
 }
 
-function bonusBudget(antenna, probeX, probeY, probeZ, time){
+export function bonusBudget(antenna, probeX, probeY, probeZ, time) {
 	let antennaPos = antennaLoc(antenna, time);
 	let probe = [probeX, probeY, probeZ];
 
-	return distance(antennaPos, probe)
+	return distance(antennaPos, probe);
 }
-
-console.log(rotationMatrix(100));

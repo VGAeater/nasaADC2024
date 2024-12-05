@@ -30,13 +30,24 @@ html, body {
 	height: 65%;
 }
 
-#overlaytext {
+.overlay {
+	margin-top: 1vh;
+	border-radius: 4vh;
+	border: 1px solid #cc1444;
 	position: fixed;
-	top: 0;
-	left: 0;
+	text-align: center;
+	top: 2vh;
 	color: #cc1444;
-	margin: 0;
-	padding: 0;
+	padding: 2vh;
+	max-width: 50%;
+}
+
+#overlaytextleft {
+	left: 2vh;
+}
+
+#overlaytextright {
+	right: 2vh;
 }
 
 .hidden {

@@ -45,7 +45,6 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	const canvasdiv = document.getElementById("canvasdiv");
 	const menu = document.getElementById("menu");
 
-
 	var prevbox;						// stores what the previous bounding box of the canvas was
 
 	var camera;

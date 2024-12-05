@@ -13,13 +13,12 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	var moonPath;						// moon path model that will be built later
 
 	var realTime = false;
-	// const launchTime = new Date('2024-06-11T15:25:47');	// Launch time acc to handbook
 
 	var prevBest = "WPSA";		// Previous best for the priorotized list
 
-	var showAxes = false, showText = true, showAntennaColor = true, useTextures = true, useAntennaList = true;	// state tracking variables for graphical options
+	var showAxes = false, showText = false, showAntennaColor = true, useTextures = true, useAntennaList = true;	// state tracking variables for graphical options
 	var followEarth = false, followMoon = false, followProbe = false;	// state tracking variables for following
-	var playing = false, speed = 10, strokeWeight = 250;	// state tracking variables for simulation speed
+	var playing = false, speed = 10, strokeWeight = 100;	// state tracking variables for simulation speed
 
 	// input dom objects
 	const followEarthDOM = document.getElementById("followearth");
@@ -333,49 +332,54 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 		let bufferLeft = `FPS: ${framerate.toFixed(3)} Time: ${s.time.toFixed(3)}<br>`;
 		let bufferRight = ``;
-		// print all of the positions and velocities
-		bufferLeft += `---Probe Position---<br>`;
-		bufferLeft += `X: ${probeData[c.arrayProbeStart].toFixed(1)}<br>`;
-		bufferLeft += `Y: ${probeData[c.arrayProbeStart+1].toFixed(1)}<br>`;
-		bufferLeft += `Z: ${probeData[c.arrayProbeStart+2].toFixed(1)}<br>`;
-		bufferLeft += `Mass: ${probeData[c.arrayProbeStart+6]}kg<br>`;
-		bufferLeft += `---Probe Velocity---<br>`;
-		bufferLeft += `X: ${probeData[c.arrayProbeStart+3].toFixed(1)}<br>`;
-		bufferLeft += `Y: ${probeData[c.arrayProbeStart+4].toFixed(1)}<br>`;
-		bufferLeft += `Z: ${probeData[c.arrayProbeStart+5].toFixed(1)}<br>`;
-		bufferLeft += `Total: ${probeV.toFixed(3)}<br><br>`;
 
+
+		// print all of the positions and velocities
+		// Probe stuff
+		bufferLeft += `---Probe Position---<br>`;
+		bufferLeft += `X: ${probeData[c.arrayProbeStart].toFixed(2)}<br>`;
+		bufferLeft += `Y: ${probeData[c.arrayProbeStart+1].toFixed(2)}<br>`;
+		bufferLeft += `Z: ${probeData[c.arrayProbeStart+2].toFixed(2)}<br>`;
+		bufferLeft += `Mass: ${probeData[c.arrayProbeStart+6].toFixed(2)}kg<br>`;
+		bufferLeft += `---Probe Velocity---<br>`;
+		bufferLeft += `X: ${probeData[c.arrayProbeStart+3].toFixed(3)}<br>`;
+		bufferLeft += `Y: ${probeData[c.arrayProbeStart+4].toFixed(3)}<br>`;
+		bufferLeft += `Z: ${probeData[c.arrayProbeStart+5].toFixed(3)}<br>`;
+		bufferLeft += `Total: ${probeV.toFixed(3)}<br><br>`;
+		// Moon stuff
 		bufferLeft += `---Moon Position---<br>`;
-		bufferLeft += `X: ${bonusData[c.arrayMoonStart].toFixed(1)}<br>`;
-		bufferLeft += `Y: ${bonusData[c.arrayMoonStart+1].toFixed(1)}<br>`;
-		bufferLeft += `Z: ${bonusData[c.arrayMoonStart+2].toFixed(1)}<br>`;
+		bufferLeft += `X: ${bonusData[c.arrayMoonStart].toFixed(2)}<br>`;
+		bufferLeft += `Y: ${bonusData[c.arrayMoonStart+1].toFixed(2)}<br>`;
+		bufferLeft += `Z: ${bonusData[c.arrayMoonStart+2].toFixed(2)}<br>`;
 		bufferLeft += `---Moon Velocity---<br>`;
-		bufferLeft += `X: ${bonusData[c.arrayMoonStart+3].toFixed(1)}<br>`;
-		bufferLeft += `Y: ${bonusData[c.arrayMoonStart+4].toFixed(1)}<br>`;
-		bufferLeft += `Z: ${bonusData[c.arrayMoonStart+5].toFixed(1)}<br>`;
+		bufferLeft += `X: ${bonusData[c.arrayMoonStart+3].toFixed(3)}<br>`;
+		bufferLeft += `Y: ${bonusData[c.arrayMoonStart+4].toFixed(3)}<br>`;
+		bufferLeft += `Z: ${bonusData[c.arrayMoonStart+5].toFixed(3)}<br>`;
 		bufferLeft += `Total: ${moonV.toFixed(3)}<br>`;
 
 
-
-		
-
-		// print the easly calculated link budget if tracking the easy data
+		// Prints everything for the right side (antenna stuff)
 		if (!s.trackBonus) {
+			// Link Budgets
 			bufferRight += `---Antennas---<br>`;
 			bufferRight += `WPSA: ${antennaText(probeData[c.arrayRangeWPSA], 12)}kbps<br>`;
 			bufferRight += `DSS24: ${antennaText(probeData[c.arrayRangeDSS24], 34)}kbps<br>`;
 			bufferRight += `DSS34: ${antennaText(probeData[c.arrayRangeDSS34], 34)}kbps<br>`;
 			bufferRight += `DSS54: ${antennaText(probeData[c.arrayRangeDSS54], 34)}kbps<br><br>`;
-
+			// just stuff for the priotorized List
 			let wpsaLink = dataObject.linkBudget(probeData[c.arrayRangeWPSA], 12);
 			let dss24Link = dataObject.linkBudget(probeData[c.arrayRangeDSS24], 34);
 			let dss34Link = dataObject.linkBudget(probeData[c.arrayRangeDSS34], 34);
 			let dss54Link = dataObject.linkBudget(probeData[c.arrayRangeDSS54], 34);
+
 			if (useAntennaList) {
+				// More stuff for the priorotized list
 				let list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
 				let antennaKeys = Object.keys(list);
 				let antennaValues = Object.values(list);
+				// Adds the priorotized list stuff
 				bufferRight += `---Priorotized List---<br>`;
+				// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
 				bufferRight += `Total Avaliable: ${Math.floor(probeData[c.arrayRangeWPSA-1]+probeData[c.arrayRangeDSS24-1]+probeData[c.arrayRangeDSS34-1]+probeData[c.arrayRangeDSS54-1])}<br>`
 				bufferRight += `1. ${antennaKeys[3]} - ${antennaValues[3]}<br>`;
 				bufferRight += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;

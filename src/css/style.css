@@ -30,36 +30,24 @@ html, body {
 	height: 65%;
 }
 
-#overlaytextleft {
-	margin-top: 10px;
-	border-radius: 10%;
-	border: 5px solid red;
+.overlay {
+	margin-top: 1vh;
+	border-radius: 4vh;
+	border: 1px solid #cc1444;
 	position: fixed;
 	text-align: center;
-	top: 10px;
-	left: 20px;
+	top: 2vh;
 	color: #cc1444;
-	padding: 1rem;
-	max-width: 20%;
-	min-width: 20%;
-	max-height: 60%;
-	overflow: scroll;
+	padding: 2vh;
+	max-width: 50%;
+}
+
+#overlaytextleft {
+	left: 2vh;
 }
 
 #overlaytextright {
-	margin-top: 10px;
-	border-radius: 10%;
-	border: 5px solid red;
-	position: fixed;
-	text-align: center;
-	top: 10px;
-	right: 30px;
-	color: #cc1444;
-	padding: 1rem;
-	max-width: 25%;
-	min-width: 25%;
-	max-height: 60%;
-	overflow: scroll;
+	right: 2vh;
 }
 
 .hidden {

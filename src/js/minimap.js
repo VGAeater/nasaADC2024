@@ -1,12 +1,13 @@
 import * as c from "./constants.js";
 
 export const minimap = ( dataObject, s ) => ( p ) => {
+
 	const orbitData = [
-		[[227, 139, 73], 0],			//EDL part 1
-		[[241, 64, 42], 115],			//orbiting earth
-		[[40, 169, 221], 1497],			// to the moon
-		[[255, 255, 255], 7093],		//back to earth
-		[[227, 139, 73], 12960]			//EDL part 2
+		[[227, 139, 73], 0],				//EDL part 1
+		[[241, 64, 42], 115],				//orbiting earth
+		[[40, 169, 221], 1497],				// to the moon
+		[[255, 255, 255], 7093],			//back to earth
+		[[227, 139, 73], 12960]				//EDL part 2
 	];
 
 	// declare and set DOM object references
@@ -17,7 +18,10 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 
 	var offsetX, offsetY;
 
-	var pgBase, pgBonus;
+	var trackedTouch;
+
+	var pgBase = p.createGraphics(320, 320);		// pre graphic for base outline
+	var pgBonus = p.createGraphics(320, 320);		// pre graphic for bonus bonoutline
 
 	var doneDrawing = false;
 
@@ -38,8 +42,6 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 
 	p.setup = () => {
 		p.createCanvas(320, 320, p.P2D, canvas);	// create the minimap canvas
-		pgBase = p.createGraphics(320, 320);	// pre graphic for base outline
-		pgBonus = p.createGraphics(320, 320);	// pre graphic for bonus bonoutline
 
 		pgBase.strokeWeight(2);
 		pgBonus.strokeWeight(2);
@@ -94,25 +96,66 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 	}
 
 	tab.onmousedown = e => {
-		s.isDragging = true;			// indicate that the minimap is being dragged
+		s.isDragging = true;				// indicate that the minimap is being dragged
+
 		// set the original offset between the mouse and the top left corner of the minimap
 		offsetX = e.clientX - main.offsetLeft;
 		offsetY = e.clientY - main.offsetTop;
 	};
 
-	// reset minimap position when window is resized
-	window.onresize = () => {
-		main.style.top = "0px";
-		main.style.right = "0px";		// put it on the right cuz it looks good
-		main.style.left = "";
-	};
-
 	document.onmousemove = e => {
-		if (!s.isDragging) return;		// check if actualy dragging
+		if (!s.isDragging || trackedTouch) return;	// check if actualy dragging
 
 		// calculate the minimap position based on the mouse position and the original offset
 		main.style.left = e.clientX - offsetX + 'px';
 		main.style.top = e.clientY - offsetY + 'px';
+	};
+
+	// handle touch /* all touch functions are modified versions of the amazing examples on MDN Docs https://developer.mozilla.org/en-US/docs/Web/API/Touch_events */
+	tab.ontouchstart = e => {
+		if (trackedTouch) return;			// only allow one touch to take effect canceling if already tracking one
+
+		e.preventDefault();
+		const touches = e.changedTouches;
+
+		trackedTouch = touches[0].identifier;
+		offsetX = touches[0].pageX - main.offsetLeft;
+		offsetY = touches[0].pageY - main.offsetTop;
+
+		s.isDragging = true;
+	}
+
+
+	tab.ontouchmove = e => {
+		e.preventDefault();
+		const touches = e.changedTouches;
+
+		for (let i = 0; i < touches.length; i++) {
+			if (touches[i].identifier != trackedTouch) continue;	// only tracking one touch
+
+			main.style.left = touches[i].pageX - offsetX + 'px';
+			main.style.top = touches[i].pageY - offsetY + 'px';
+		}
+	}
+
+	tab.ontouchend = tab.ontouchcancel = e => {
+		e.preventDefault();
+		const touches = e.changedTouches;
+
+		for (let i = 0; i < touches.length; i++) {
+			if (touches[i].identifier != trackedTouch) continue;	// only tracking one touch
+
+	  		trackedTouch = undefined;		// remove it; we're done
+			s.isDragging = false;
+			return;
+		}
+	}
+
+	// reset minimap position when window is resized
+	window.onresize = () => {
+		main.style.top = "0px";
+		main.style.right = "0px";			// put it on the right cuz it looks good
+		main.style.left = "";
 	};
 
 	document.onmouseup = () => { s.isDragging = false; };	// indicate that we are done dragging

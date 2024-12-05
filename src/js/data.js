@@ -84,12 +84,25 @@ export function data() {
 	this.buildArr = function(text) {
 		let data = text.split("\n");
 		let key = data[0].split(",");
+		key.push("Total Distance");
 		let arr = [...Array(key.length)].map(e => []);
+		let totalDist = 0;
 
 		for (let i = 1; i < data.length-1; i++) {
 			let row = data[i].split(",");
-			for (let j = 0; j < key.length; j++)
+			for (let j = 0; j < key.length - 1; j++)
 				arr[j].push(parseFloat(row[j]));
+
+			// dont count the first in total because it hasnt moved yet
+			if (i == 1) {
+				arr[arr.length - 1].push(0);
+				continue;
+			}
+
+			// add the calculated total distance
+			let s = c.arrayProbeStart;
+			totalDist += Math.hypot(arr[s][i-1], arr[s+1][i-1], arr[s+2][i-1]);
+			arr[arr.length - 1].push(totalDist);
 		}
 
 		return [arr, key];

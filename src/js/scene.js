@@ -174,8 +174,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		p.push();
 
 		p.translate(x, y, z);
-		p.rotateX(-Math.PI);					// weird axes correction
-		p.rotateX(-c.earthTilt);				// tilt axis
+		p.rotateX(-Math.PI);				// weird axes correction
+		p.rotateX(-c.earthTilt);			// tilt axis
 		p.rotateY(c.earthRotation * s.time + c.earthRotation * 521 /* temporary fix to correct the earths initial rotation */);	// rotate earth
 
 		p.push();
@@ -205,7 +205,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			p.translate(r * Math.cos(pos[0]) * Math.cos(pos[1]), -r * Math.sin(pos[0]), -r * Math.cos(pos[0]) * Math.sin(pos[1]));	// negatives for even more weird axes correction
 			let budget = dataObject.linkBudget(baseData[pos[4]], pos[3]);
 			let color = showAntennaColor ? antennaColor(budget) : [255, 0, 255];	// if show color is checked, color based on budget, else is magenta.
-			p.stroke(color);				// color code specificly for its signal strength
+			p.stroke(color);			// color code specificly for its signal strength
 			p.sphere(350, 4, 2);			// very low poly sphere on purpose
 
 			p.pop();
@@ -312,8 +312,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		const entries = Object.entries(budgets);
 		entries.sort((a, b) => (isNaN(a[1]) ? 0 : a[1]) - (isNaN(b[1]) ? 0 : b[1])); 	// Sorts it, if the budget is NaN, it is 0 cuz the sorting doesn't work on NaN
 		const sortedScores = Object.fromEntries(entries);
-		sortedScores[prevBest] -= 0.00001;			// put back the value taken to make it accurate
-		prevBest = Object.keys(sortedScores)[3];		// Makes prevbest
+		sortedScores[prevBest] -= 0.00001;		// put back the value taken to make it accurate
+		prevBest = Object.keys(sortedScores)[3];	// Makes prevbest
 
 		return sortedScores;
 	}
@@ -417,7 +417,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 		p.perspective(2 * Math.atan(prevbox.height / 2 / 800), prevbox.width/prevbox.height, 1, 10000000);	// initialize the camera
 
-		p.background(0);					// clear background as quick as posible
+		p.background(0);				// clear background as quick as posible
 		p.noFill();					// default to nofill
 		p.strokeWeight(100);				// default strokeweight
 
@@ -481,7 +481,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 		s.time = parseFloat(input);
 
-		if (input == "" || isNaN(s.time))			// default to 0 if bad input
+		if (input == "" || isNaN(s.time))		// default to 0 if bad input
 			s.time = 0;
 
 		timeDOM.value = input;				// set it to original in case of mis-input

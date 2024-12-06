@@ -504,8 +504,11 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	const textCheckboxDOM = document.getElementById("textcheckbox");
 	textCheckboxDOM.oninput = () => {
 		showText = textCheckboxDOM.checked;
+
 		overlayLeftDOM.innerHTML = '';
 		overlayRightDOM.innerHTML = '';
+		overlayLeftDOM.classList.toggle("hidden", !showText);
+		overlayRightDOM.classList.toggle("hidden", !showText);
 	};
 
 	const texturesCheckboxDOM = document.getElementById("texturescheckbox");

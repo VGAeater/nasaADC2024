@@ -19,6 +19,7 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 	var offsetX, offsetY;
 
 	var trackedTouch;
+	var hasDragged = false;
 
 	var pgBase = p.createGraphics(320, 320);		// pre graphic for base outline
 	var pgBonus = p.createGraphics(320, 320);		// pre graphic for bonus bonoutline
@@ -107,8 +108,20 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 		if (!s.isDragging || trackedTouch) return;	// check if actualy dragging
 
 		// calculate the minimap position based on the mouse position and the original offset
-		main.style.left = e.clientX - offsetX + 'px';
-		main.style.top = e.clientY - offsetY + 'px';
+		main.style.left = Math.min(Math.max(e.clientX - offsetX, -280), window.innerWidth-40) + 'px';
+		main.style.top = Math.min(Math.max(e.clientY - offsetY, 0), window.innerHeight-40) + 'px';
+
+		hasDragged = true;
+	};
+
+	// indicate that we are done dragging
+	document.onmouseup = () => {
+		// collapse if it never dragged
+		if (!hasDragged && s.isDragging)
+			main.classList.toggle('collapsed');
+		hasDragged = false;
+
+		s.isDragging = false;
 	};
 
 	// handle touch /* all touch functions are modified versions of the amazing examples on MDN Docs https://developer.mozilla.org/en-US/docs/Web/API/Touch_events */
@@ -121,24 +134,25 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 		trackedTouch = touches[0].identifier;
 		offsetX = touches[0].pageX - main.offsetLeft;
 		offsetY = touches[0].pageY - main.offsetTop;
-
-		s.isDragging = true;
 	}
 
 
-	tab.ontouchmove = e => {
+	document.ontouchmove = e => {
 		e.preventDefault();
 		const touches = e.changedTouches;
 
 		for (let i = 0; i < touches.length; i++) {
 			if (touches[i].identifier != trackedTouch) continue;	// only tracking one touch
 
-			main.style.left = touches[i].pageX - offsetX + 'px';
-			main.style.top = touches[i].pageY - offsetY + 'px';
+			main.style.left = Math.min(Math.max(touches[i].pageX - offsetX, -280), window.innerWidth-40) + 'px';
+			main.style.top = Math.min(Math.max(touches[i].pageY - offsetY, 0), window.innerHeight-40) + 'px';
+
+			s.isDragging = true;
+			return;
 		}
 	}
 
-	tab.ontouchend = tab.ontouchcancel = e => {
+	document.ontouchend = document.ontouchcancel = e => {
 		e.preventDefault();
 		const touches = e.changedTouches;
 
@@ -147,18 +161,21 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 
 	  		trackedTouch = undefined;		// remove it; we're done
 			s.isDragging = false;
+
+			// collapse if it never dragged
+			if (!hasDragged)
+				main.classList.toggle('collapsed');
+			hasDragged = false;
 			return;
 		}
 	}
 
 	// reset minimap position when window is resized
 	window.onresize = () => {
-		main.style.top = "0px";
+		main.style.bottom = "0px";
 		main.style.right = "0px";			// put it on the right cuz it looks good
 		main.style.left = "";
 	};
-
-	document.onmouseup = () => { s.isDragging = false; };	// indicate that we are done dragging
 
 	minimapCheckboxDOM.oninput = e => { main.classList.toggle('hidden', !minimapCheckboxDOM.checked); }
 }

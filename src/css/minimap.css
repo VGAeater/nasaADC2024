@@ -4,12 +4,16 @@
 	background-color: #121213;
 	position: fixed;
 	z-index: 2;
-	top: 0;
+	bottom: 0;
 	right: 0;
 	transition: none;
 	border-radius: 1.5vh;
 	overflow: hidden;
 	border: 1px solid #cc1444;
+}
+
+#minimap.collapsed {
+	height: 40px;
 }
 
 #minimaptab {

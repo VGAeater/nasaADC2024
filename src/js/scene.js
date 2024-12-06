@@ -113,7 +113,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		} else 
 			p.sphere(500, 6, 3);				// change it to a sphere until we get rotation or model
 		
-			p.pop();
+		p.pop();
 
 		let veloVectorDistance = Math.hypot(xv, yv, zv);
 		if (veloVectorDistance > 7)

@@ -101,7 +101,6 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		p.stroke(0,255,255);
 		
 		p.push();
-
 		p.translate(x, y, z);
 		//rotateZ(createVector(x, y).heading());
 		//rotateY(-createVector(x, y).heading());
@@ -111,11 +110,10 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			p.scale(4);			//looks miscroscopic without scaling up
 			p.model(rocketModel);
 			p.scale(1);
-		} else {
-			p.stroke(0,255,255);
+		} else 
 			p.sphere(500, 6, 3);				// change it to a sphere until we get rotation or model
-		}
-		p.pop();
+		
+			p.pop();
 
 		let veloVectorDistance = Math.hypot(xv, yv, zv);
 		if (veloVectorDistance > 7)

@@ -16,7 +16,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 	var prevBest = "WPSA";		// Previous best for the priorotized list
 
-	var showAxes = false, showText = false, showAntennaColor = true, useTextures = true, useAntennaList = true;	// state tracking variables for graphical options
+	var showAxes = false, showText = false, showAntennaColor = true, useTextures = true, useAntennaList = true, useRocketModel = true;	// state tracking variables for graphical options
 	var followEarth = false, followMoon = false, followProbe = false;	// state tracking variables for following
 	var playing = false, speed = 10, strokeWeight = 100;	// state tracking variables for simulation speed
 
@@ -39,6 +39,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	var showOtherPath = false;				// data selection trackers
 	var earthDayTex, earthNightTex, moonTex, cloudsTex;	// the textures for the earth and moon
 	var earthShader, moonShader, atmoShader;		// the shaders for the eath, moon, and atmosphere
+	var rocketModel;
 
 	// main dom objects
 	const canvas = document.getElementById("canvas");
@@ -96,18 +97,24 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 		if (followProbe)				// check if following the probe then go to its position
 			goToPosition(x, y, z);
-
+		
 		p.stroke(0,255,255);
-
+		
 		p.push();
 
 		p.translate(x, y, z);
 		//rotateZ(createVector(x, y).heading());
 		//rotateY(-createVector(x, y).heading());
 		//console.log(createVector(x, y, z).angleBetween(createVector(0, 0, 0)));
-		//cone(500, 1000, 8);				// draw the probe
-		p.sphere(500, 6, 3);				// change it to a sphere until we get rotation or model
-
+		if (useRocketModel) {
+			p.strokeWeight(1);		// wow wireframe!! 
+			p.scale(4);			//looks miscroscopic without scaling up
+			p.model(rocketModel);
+			p.scale(1);
+		} else {
+			p.stroke(0,255,255);
+			p.sphere(500, 6, 3);				// change it to a sphere until we get rotation or model
+		}
 		p.pop();
 
 		let veloVectorDistance = Math.hypot(xv, yv, zv);
@@ -406,6 +413,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		// load the shaders
 		earthShader = p.loadShader('src/glsl/earth.vert', 'src/glsl/earth.frag');
 		moonShader = p.loadShader('src/glsl/moon.vert', 'src/glsl/moon.frag');
+
+		rocketModel = p.loadModel('assets/orion.obj', true);
 	}
 
 	p.setup = () => {
@@ -531,4 +540,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 	const antennaCheckboxDOM = document.getElementById("antennacheckbox");
 	antennaCheckboxDOM.oninput = () => { showAntennaColor = antennaCheckboxDOM.checked; };
+
+	const rocketModelCheckboxDOM = document.getElementById("rocketmodelcheckbox");
+	rocketModelCheckboxDOM.oninput = () => { useRocketModel = rocketModelCheckboxDOM.checked };
 }

@@ -376,6 +376,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 				let list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
 				let antennaKeys = Object.keys(list);
 				let antennaValues = Object.values(list);
+				antennaValues = antennaValues.map(value => isNaN(value) ?  "Disconnected" : value);
 
 				// Adds the priorotized list stuff
 				bufferRight += `---Priorotized List---<br>`;
@@ -386,6 +387,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 				bufferRight += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;
 				bufferRight += `3. ${antennaKeys[1]} - ${antennaValues[1]}<br>`;
 				bufferRight += `4. ${antennaKeys[0]} - ${antennaValues[0]}<br>`;
+				console.log(probeData);
 			}
 		}
 

@@ -9,7 +9,7 @@ export function data() {
 		let nr = 0.55;
 		let lam = 0.136363636363636;
 		let kb = -228.6;
-		let ts = 22;
+		let ts = 222;
 		let first = pt + gt - losses;
 		let dishCirc = dr * Math.PI;
 		let second = 10 * Math.log10(nr * ((dishCirc / lam)**2));

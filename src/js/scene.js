@@ -376,6 +376,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 				let list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
 				let antennaKeys = Object.keys(list);
 				let antennaValues = Object.values(list);
+				antennaValues = antennaValues.map(value => isNaN(value) ?  "Disconnected" : value);
 
 				// Adds the priorotized list stuff
 				bufferRight += `---Priorotized List---<br>`;

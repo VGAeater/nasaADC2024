@@ -329,8 +329,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		let probeV = Math.hypot(probeData[c.arrayProbeStart+3], probeData[c.arrayProbeStart+4], probeData[c.arrayProbeStart+5]);
 		let moonV = Math.hypot(bonusData[c.arrayMoonStart+3], bonusData[c.arrayMoonStart+4], bonusData[c.arrayMoonStart+5]);
 
-		let bufferLeft = `FPS: ${framerate.toFixed(3)} Time: ${s.time.toFixed(3)}<br>`;
-		let bufferRight = ``;
+		let bufferLeft = `FPS: ${framerate.toFixed(3)}<br>`;
+		let bufferRight = ` Time: ${s.time.toFixed(3)}<br>`;
 
 		// print all of the positions and velocities
 		// Probe stuff

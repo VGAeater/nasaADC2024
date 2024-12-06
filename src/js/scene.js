@@ -387,7 +387,6 @@ export const scene = ( dataObject, s ) => ( p ) => {
 				bufferRight += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;
 				bufferRight += `3. ${antennaKeys[1]} - ${antennaValues[1]}<br>`;
 				bufferRight += `4. ${antennaKeys[0]} - ${antennaValues[0]}<br>`;
-				console.log(probeData);
 			}
 		}
 

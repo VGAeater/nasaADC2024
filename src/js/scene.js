@@ -97,9 +97,9 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 		if (followProbe)				// check if following the probe then go to its position
 			goToPosition(x, y, z);
-		
+
 		p.stroke(0,255,255);
-		
+
 		p.push();
 		p.translate(x, y, z);
 		//rotateZ(createVector(x, y).heading());

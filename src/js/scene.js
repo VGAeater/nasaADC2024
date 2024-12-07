@@ -208,7 +208,6 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			let budget = dataObject.linkBudget(baseData[pos[4]], pos[3]);
 			if(s.trackBonus){
 				budget = dataObject.linkBudget(b.bonusBudget(c.antennaPositions.indexOf(pos), bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[pos[4]-1]), pos[3]);
-				console.log(budget);
 			}
 			let color = showAntennaColor ? antennaColor(budget) : [255, 0, 255];	// if show color is checked, color based on budget, else is magenta.
 			p.stroke(color);			// color code specificly for its signal strength

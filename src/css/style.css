@@ -30,27 +30,6 @@ html, body {
 	height: 65%;
 }
 
-.overlay {
-	background-color: #000000aa;
-	margin: 0px;
-	border-radius: 4vh;
-	border: 1px solid #cc1444;
-	position: fixed;
-	text-align: center;
-	color: #cc1444;
-	padding: 2vh;
-	max-width: 50%;
-	top: 2vh;
-}
-
-#overlaytextleft {
-	left: 2vh;
-}
-
-#overlaytextright {
-	right: 2vh;
-}
-
 .hidden {
 	display: none;
 }

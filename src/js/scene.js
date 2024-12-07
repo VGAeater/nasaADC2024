@@ -454,6 +454,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		if (p.keyCode == 27) {				// on esc key press show/hide menu
 			menu.classList.toggle("hidden");
 			canvasdiv.classList.toggle("small");
+			help.classList.add("hidehelp");
 		}
 	}
 

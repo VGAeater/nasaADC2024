@@ -449,11 +449,12 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		if (playing)					// increment time if playing
 			setTime(s.time + speed * p.deltaTime / 1000);
 	}
+
 	p.keyPressed = () => {
 		if (p.keyCode == 27) {				// on esc key press show/hide menu
 			menu.classList.toggle("hidden");
 			canvasdiv.classList.toggle("small");
-			help.classList.add("helpHidden");
+			help.classList.add("hidehelp");
 		}
 	}
 

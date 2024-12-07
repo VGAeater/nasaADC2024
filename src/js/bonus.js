@@ -54,7 +54,7 @@ export function rotationMatrix(timeElapsed) {
 
 export function antennaLoc(antenna, timeElapsed) {
 	let radLat = c.antennaPositions[antenna][0];		// Gets the location of the antennas
-	let radLong = c.antennaPositions[antenna][1];		
+	let radLong = c.antennaPositions[antenna][1];
 
 	let totalRadius = c.earthRadius + c.antennaPositions[antenna][2];
 

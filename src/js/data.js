@@ -3,6 +3,9 @@ import * as c from "./constants.js";
 export function data() {
 	// finds the link budget for a specific range and radius of dish
 	this.linkBudget = function(slantr, dr) {
+		if(slantr == 0){
+			return 0;
+		}
 		let pt = 10;
 		let gt = 9;
 		let losses = 19.43;

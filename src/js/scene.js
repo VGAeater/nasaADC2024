@@ -1,4 +1,6 @@
 import * as c from "./constants.js";
+import * as b from "./bonus.js";
+
 
 export const scene = ( dataObject, s ) => ( p ) => {
 	// [color, start, end, base model, bonus model]
@@ -71,7 +73,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 	// return a color based on how strong the antenna's connection is
 	function antennaColor(budget) {
-		if (isNaN(budget))
+		if (isNaN(budget)||budget==0)
 			return [255, 0, 0, 255 * (Math.sin(p.millis() / 100) + 1) / 2];	// make strobing effect when no signal
 		if (budget > 8000)
 			return [0, 255, 0];
@@ -204,6 +206,10 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			let r = c.earthRadius + pos[2];
 			p.translate(r * Math.cos(pos[0]) * Math.cos(pos[1]), -r * Math.sin(pos[0]), -r * Math.cos(pos[0]) * Math.sin(pos[1]));	// negatives for even more weird axes correction
 			let budget = dataObject.linkBudget(baseData[pos[4]], pos[3]);
+			if(s.trackBonus){
+				budget = dataObject.linkBudget(b.bonusBudget(c.antennaPositions.indexOf(pos), bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[pos[4]-1]), pos[3]);
+				console.log(budget);
+			}
 			let color = showAntennaColor ? antennaColor(budget) : [255, 0, 255];	// if show color is checked, color based on budget, else is magenta.
 			p.stroke(color);			// color code specificly for its signal strength
 			p.sphere(350, 4, 2);			// very low poly sphere on purpose
@@ -359,6 +365,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		// Prints everything for the right side (antenna stuff)
 		if (!s.trackBonus) {
 			// Link Budgets
+			bufferRight += `-----BASE DATA-----<br>`;
 			bufferRight += `---Antennas---<br>`;
 			bufferRight += `WPSA: ${antennaText(probeData[c.arrayRangeWPSA], 12)}kbps<br>`;
 			bufferRight += `DSS24: ${antennaText(probeData[c.arrayRangeDSS24], 34)}kbps<br>`;
@@ -382,7 +389,44 @@ export const scene = ( dataObject, s ) => ( p ) => {
 				bufferRight += `---Priorotized List---<br>`;
 
 				// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
-				bufferRight += `Total Avaliable: ${Math.floor(probeData[c.arrayRangeWPSA-1]+probeData[c.arrayRangeDSS24-1]+probeData[c.arrayRangeDSS34-1]+probeData[c.arrayRangeDSS54-1])}<br>`
+				bufferRight += `Total Avaliable: ${Math.floor(probeData[c.arrayRangeWPSA-1])+Math.floor(probeData[c.arrayRangeDSS24-1])+Math.floor(probeData[c.arrayRangeDSS34-1])+Math.floor(probeData[c.arrayRangeDSS54-1])}<br>`
+				bufferRight += `1. ${antennaKeys[3]} - ${antennaValues[3]}<br>`;
+				bufferRight += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;
+				bufferRight += `3. ${antennaKeys[1]} - ${antennaValues[1]}<br>`;
+				bufferRight += `4. ${antennaKeys[0]} - ${antennaValues[0]}<br>`;
+			}
+		}
+
+		else{
+			let dss24RangeBonus = b.bonusBudget(0, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeDSS24-1]);
+			let dss34RangeBonus = b.bonusBudget(1, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeDSS34-1]);
+			let dss54RangeBonus = b.bonusBudget(2, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeDSS54-1]);
+			let wpsaRangeBonus = b.bonusBudget(3, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeWPSA-1]);
+			bufferRight += `-----BONUS DATA-----<br>`;
+			bufferRight += `---Antennas---<br>`;
+			bufferRight += `WPSA: ${antennaText(wpsaRangeBonus, 12)}kbps<br>`;
+			bufferRight += `DSS24: ${antennaText(dss24RangeBonus, 34)}kbps<br>`;
+			bufferRight += `DSS34: ${antennaText(dss34RangeBonus, 34)}kbps<br>`;
+			bufferRight += `DSS54: ${antennaText(dss54RangeBonus, 34)}kbps<br><br>`;
+
+			// just stuff for the priotorized List
+			let wpsaLink = dataObject.linkBudget(wpsaRangeBonus, 12);
+			let dss24Link = dataObject.linkBudget(dss24RangeBonus, 34);
+			let dss34Link = dataObject.linkBudget(dss34RangeBonus, 34);
+			let dss54Link = dataObject.linkBudget(dss54RangeBonus, 34);
+
+			if (useAntennaList) {
+				// More stuff for the priorotized list
+				let list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
+				let antennaKeys = Object.keys(list);
+				let antennaValues = Object.values(list);
+				antennaValues = antennaValues.map(value => isNaN(value) ?  "Disconnected" : value);
+
+				// Adds the priorotized list stuff
+				bufferRight += `---Priorotized List---<br>`;
+
+				// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
+				bufferRight += `Total Avaliable: ${Math.floor(baseData[c.arrayRangeWPSA-1])+Math.floor(baseData[c.arrayRangeDSS24-1])+Math.floor(baseData[c.arrayRangeDSS34-1])+Math.floor(baseData[c.arrayRangeDSS54-1])}<br>`
 				bufferRight += `1. ${antennaKeys[3]} - ${antennaValues[3]}<br>`;
 				bufferRight += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;
 				bufferRight += `3. ${antennaKeys[1]} - ${antennaValues[1]}<br>`;

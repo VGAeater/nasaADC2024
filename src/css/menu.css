@@ -10,7 +10,6 @@
 	overflow-y: auto;
 	scrollbar-color: #cc1444 #121213;
 	transition-duration: 1s;
-  /*scrollbar-width: thin;*/
 }
 
 #menu.hidden {

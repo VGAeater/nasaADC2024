@@ -9,6 +9,7 @@
 	padding: 2vh;
 	max-width: 50%;
 	top: 2vh;
+	user-select: none;
 }
 
 #overlaytextleft {

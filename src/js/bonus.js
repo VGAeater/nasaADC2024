@@ -34,7 +34,7 @@ export function rotationMatrix(timeElapsed) {
 	// Earth's tilt
 	let thetaX = earthTilt; 
 	// Earth's Rotation
-	let thetaY = earthRotation * timeElapsed;
+	let thetaZ = earthRotation * timeElapsed;
 
 	// Rotation matrices (got these on wikipedia cuz i am NOT doing ts myself)
 	let rX = [
@@ -42,18 +42,18 @@ export function rotationMatrix(timeElapsed) {
 		[0, Math.cos(thetaX), -Math.sin(thetaX)],
 		[0, Math.sin(thetaX), Math.cos(thetaX)]
 	]; 
-	let rY = [
-		[Math.cos(thetaY), 0, Math.sin(thetaY)],
-		[0,              1, 0],
-		[-Math.sin(thetaY), 0, Math.cos(thetaY)]
+	let rZ = [
+		[Math.cos(thetaZ), -Math.sin(thetaZ), 0],
+		[Math.sin(thetaZ), Math.cos(thetaZ), 0],
+		[0, 0, 1]
 	];
 
 	// Multiplies and returns the 2 matricies
-	return multMatrices(rX, rY);
+	return multMatrices(rX, rZ);
 }
 
 export function antennaLoc(antenna, timeElapsed) {
-	let radLat = c.antennaPositions[antenna][0];
+	let radLat = c.antennaPositions[antenna][0];		// Gets the location of the antennas
 	let radLong = c.antennaPositions[antenna][1];
 
 	let totalRadius = c.earthRadius + c.antennaPositions[antenna][2];
@@ -63,16 +63,16 @@ export function antennaLoc(antenna, timeElapsed) {
 	let y = totalRadius * Math.cos(radLat) * Math.sin(radLong);
 	let z = totalRadius * Math.sin(radLat);
 
-	let initialPos = [[x], [y], [z]];
+	let initialPos = [[x], [y], [z]];					// Has to be a 2d array or else matrixmultiplications doesnt work
 
-	let rotation = rotationMatrix(timeElapsed);
+	let rotation = rotationMatrix(timeElapsed);			// Finds the rotation matrix
 
-	return multMatrices(rotation, initialPos);
+	return multMatrices(rotation, initialPos);			// Multiplies the position by its rotation
 }
 
 export function bonusBudget(antenna, probeX, probeY, probeZ, time) {
-	let antennaPos = antennaLoc(antenna, time);
-	let probe = [probeX, probeY, probeZ];
+	let antennaPos = antennaLoc(antenna, time).flat();			// Finds the location of the antenna
+	let probe = [probeX, probeY, probeZ];				// Finds the location of the probe
 
-	return distance(antennaPos, probe);
+	return distance(antennaPos, probe);					// Finds and returns the distance between them
 }

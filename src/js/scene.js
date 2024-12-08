@@ -13,7 +13,9 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	];
 
 	var moonPath;						// moon path model that will be built later
+}
 
+		else{
 	var realTime = false;
 
 	var prevBest = "WPSA";		// Previous best for the priorotized list
@@ -361,76 +363,51 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		bufferLeft += `Z: ${bonusData[c.arrayMoonStart+5].toFixed(3)}<br>`;
 		bufferLeft += `Total: ${moonV.toFixed(3)}<br>`;
 
-		// Prints everything for the right side (antenna stuff)
-		if (!s.trackBonus) {
-			// Link Budgets
-			bufferRight += `-----BASE DATA-----<br>`;
-			bufferRight += `---Antennas---<br>`;
-			bufferRight += `WPSA: ${antennaText(probeData[c.arrayRangeWPSA], 12)}kbps<br>`;
-			bufferRight += `DSS24: ${antennaText(probeData[c.arrayRangeDSS24], 34)}kbps<br>`;
-			bufferRight += `DSS34: ${antennaText(probeData[c.arrayRangeDSS34], 34)}kbps<br>`;
-			bufferRight += `DSS54: ${antennaText(probeData[c.arrayRangeDSS54], 34)}kbps<br><br>`;
+		// DONE WITH LEFT SIDE ON TO THE RIGHT
 
-			// just stuff for the priotorized List
-			let wpsaLink = dataObject.linkBudget(probeData[c.arrayRangeWPSA], 12);
-			let dss24Link = dataObject.linkBudget(probeData[c.arrayRangeDSS24], 34);
-			let dss34Link = dataObject.linkBudget(probeData[c.arrayRangeDSS34], 34);
-			let dss54Link = dataObject.linkBudget(probeData[c.arrayRangeDSS54], 34);
+		let dss24Range, dss34Range, dss54Range, wpsaRange;
 
-			if (useAntennaList) {
-				// More stuff for the priorotized list
-				let list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
-				let antennaKeys = Object.keys(list);
-				let antennaValues = Object.values(list);
-				antennaValues = antennaValues.map(value => isNaN(value) ?  "Disconnected" : value);
-
-				// Adds the priorotized list stuff
-				bufferRight += `---Priorotized List---<br>`;
-
-				// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
-				bufferRight += `Total Avaliable: ${Math.floor(probeData[c.arrayRangeWPSA-1])+Math.floor(probeData[c.arrayRangeDSS24-1])+Math.floor(probeData[c.arrayRangeDSS34-1])+Math.floor(probeData[c.arrayRangeDSS54-1])}<br>`
-				bufferRight += `1. ${antennaKeys[3]} - ${antennaValues[3]}<br>`;
-				bufferRight += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;
-				bufferRight += `3. ${antennaKeys[1]} - ${antennaValues[1]}<br>`;
-				bufferRight += `4. ${antennaKeys[0]} - ${antennaValues[0]}<br>`;
-			}
+		if (s.trackBonus) {
+			dss24Range = b.bonusBudget(0, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeDSS24-1]);
+			dss34Range = b.bonusBudget(1, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeDSS34-1]);
+			dss54Range = b.bonusBudget(2, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeDSS54-1]);
+			wpsaRange = b.bonusBudget(3, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeWPSA-1]);
+		} else {
+			dss24Range = probeData[c.arrayRangeWPSA];
+			dss34Range = probeData[c.arrayRangeDSS24];
+			dss54Range = probeData[c.arrayRangeDSS34];
+			wpsaRange = probeData[c.arrayRangeDSS54];
 		}
 
-		else{
-			let dss24RangeBonus = b.bonusBudget(0, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeDSS24-1]);
-			let dss34RangeBonus = b.bonusBudget(1, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeDSS34-1]);
-			let dss54RangeBonus = b.bonusBudget(2, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeDSS54-1]);
-			let wpsaRangeBonus = b.bonusBudget(3, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[c.arrayRangeWPSA-1]);
-			bufferRight += `-----BONUS DATA-----<br>`;
-			bufferRight += `---Antennas---<br>`;
-			bufferRight += `WPSA: ${antennaText(wpsaRangeBonus, 12)}kbps<br>`;
-			bufferRight += `DSS24: ${antennaText(dss24RangeBonus, 34)}kbps<br>`;
-			bufferRight += `DSS34: ${antennaText(dss34RangeBonus, 34)}kbps<br>`;
-			bufferRight += `DSS54: ${antennaText(dss54RangeBonus, 34)}kbps<br><br>`;
+		bufferRight += `-----${s.trackBonus ? "BONUS" : "BASE"} DATA-----<br>`;
+		bufferRight += `---Antennas---<br>`;
+		bufferRight += `DSS24: ${antennaText(dss24Range, 34)}kbps<br>`;
+		bufferRight += `DSS34: ${antennaText(dss34Range, 34)}kbps<br>`;
+		bufferRight += `DSS54: ${antennaText(dss54Range, 34)}kbps<br>`;
+		bufferRight += `WPSA: ${antennaText(wpsaRange, 12)}kbps<br><br>`;
 
-			// just stuff for the priotorized List
-			let wpsaLink = dataObject.linkBudget(wpsaRangeBonus, 12);
-			let dss24Link = dataObject.linkBudget(dss24RangeBonus, 34);
-			let dss34Link = dataObject.linkBudget(dss34RangeBonus, 34);
-			let dss54Link = dataObject.linkBudget(dss54RangeBonus, 34);
+		// just stuff for the priotorized List
+		let dss24Link = dataObject.linkBudget(dss24Range, 34);
+		let dss34Link = dataObject.linkBudget(dss34Range, 34);
+		let dss54Link = dataObject.linkBudget(dss54Range, 34);
+		let wpsaLink = dataObject.linkBudget(wpsaRange, 12);
 
-			if (useAntennaList) {
-				// More stuff for the priorotized list
-				let list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
-				let antennaKeys = Object.keys(list);
-				let antennaValues = Object.values(list);
-				antennaValues = antennaValues.map(value => isNaN(value) ?  "Disconnected" : value);
+		if (useAntennaList) {
+			// More stuff for the priorotized list
+			let list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
+			let antennaKeys = Object.keys(list);
+			let antennaValues = Object.values(list);
+			antennaValues = antennaValues.map(value => isNaN(value) ?  "Disconnected" : value);
 
-				// Adds the priorotized list stuff
-				bufferRight += `---Priorotized List---<br>`;
+			// Adds the priorotized list stuff
+			bufferRight += `---Priorotized List---<br>`;
 
-				// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
-				bufferRight += `Total Avaliable: ${Math.floor(baseData[c.arrayRangeWPSA-1])+Math.floor(baseData[c.arrayRangeDSS24-1])+Math.floor(baseData[c.arrayRangeDSS34-1])+Math.floor(baseData[c.arrayRangeDSS54-1])}<br>`
-				bufferRight += `1. ${antennaKeys[3]} - ${antennaValues[3]}<br>`;
-				bufferRight += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;
-				bufferRight += `3. ${antennaKeys[1]} - ${antennaValues[1]}<br>`;
-				bufferRight += `4. ${antennaKeys[0]} - ${antennaValues[0]}<br>`;
-			}
+			// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
+			bufferRight += `Total Avaliable: ${Math.floor(baseData[c.arrayRangeWPSA-1])+Math.floor(baseData[c.arrayRangeDSS24-1])+Math.floor(baseData[c.arrayRangeDSS34-1])+Math.floor(baseData[c.arrayRangeDSS54-1])}<br>`
+			bufferRight += `1. ${antennaKeys[3]} - ${antennaValues[3]}<br>`;
+			bufferRight += `2. ${antennaKeys[2]} - ${antennaValues[2]}<br>`;
+			bufferRight += `3. ${antennaKeys[1]} - ${antennaValues[1]}<br>`;
+			bufferRight += `4. ${antennaKeys[0]} - ${antennaValues[0]}<br>`;
 		}
 
 		overlayRightDOM.innerHTML = bufferRight;			// set the innerhtml to the newly generated buffer (this proved to be faster than writing to the DOM every time)

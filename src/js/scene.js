@@ -205,10 +205,13 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 			let r = c.earthRadius + pos[2];
 			p.translate(r * Math.cos(pos[0]) * Math.cos(pos[1]), -r * Math.sin(pos[0]), -r * Math.cos(pos[0]) * Math.sin(pos[1]));	// negatives for even more weird axes correction
-			let budget = dataObject.linkBudget(baseData[pos[4]], pos[3]);
-			if(s.trackBonus){
+
+			let budget;
+			if (s.trackBonus)
 				budget = dataObject.linkBudget(b.bonusBudget(c.antennaPositions.indexOf(pos), bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time)*Math.floor(baseData[pos[4]-1]), pos[3]);
-			}
+			else
+				budget = dataObject.linkBudget(baseData[pos[4]], pos[3]);
+
 			let color = showAntennaColor ? antennaColor(budget) : [255, 0, 255];	// if show color is checked, color based on budget, else is magenta.
 			p.stroke(color);			// color code specificly for its signal strength
 			p.sphere(350, 4, 2);			// very low poly sphere on purpose

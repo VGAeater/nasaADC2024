@@ -292,7 +292,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			return;
 
 		p.resizeCanvas(box.width, box.height);		// resize the dom element
-		p.perspective(2 * Math.atan(box.height / 2 / 800), box.width/box.height, 1, 10000000);	// recalculate the perspective box
+		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width/p.height, 1, 10000000);	// recalculate the perspective box
 
 		prevbox = box;					// update the previous box
 	}
@@ -423,6 +423,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	p.preload = () => {
 		//window.MSStream was removed because IE probably cant handle 8k textures lol (if you use IE, please get some help 🙏) both android and ios cant handle it in different ways
 		let res = /CrOS|iPad|iPhone|iPod|Android/.test(navigator.userAgent) ? "4k" : "8k";
+		help.classList.toggle("hidden", /iPad|iPhone|iPod|Android/.test(navigator.userAgent));
 
 		// load the textures based on what resolution was chosen
 		earthDayTex = p.loadImage('assets/' + res + '/earthDay.jpg');

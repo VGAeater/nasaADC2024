@@ -75,4 +75,4 @@ export function bonusBudget(antenna, probeX, probeY, probeZ, time) {
 	let probe = [probeX, probeY, probeZ];				// Finds the location of the probe
 
 	return distance(antennaPos, probe);					// Finds and returns the distance between them
-}	
+}

@@ -126,6 +126,7 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 
 	// handle touch /* all touch functions are modified versions of the amazing examples on MDN Docs https://developer.mozilla.org/en-US/docs/Web/API/Touch_events */
 	tab.ontouchstart = e => {
+		e.preventDefault();
 		if (trackedTouch) return;			// only allow one touch to take effect canceling if already tracking one
 
 		e.preventDefault();
@@ -137,7 +138,7 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 	}
 
 
-	document.ontouchmove = e => {
+	tab.ontouchmove = e => {
 		e.preventDefault();
 		const touches = e.changedTouches;
 
@@ -148,11 +149,12 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 			main.style.top = Math.min(Math.max(touches[i].pageY - offsetY, 0), window.innerHeight-40) + 'px';
 
 			s.isDragging = true;
+			hasDragged = true;
 			return;
 		}
 	}
 
-	document.ontouchend = document.ontouchcancel = e => {
+	tab.ontouchend = document.ontouchcancel = e => {
 		e.preventDefault();
 		const touches = e.changedTouches;
 
@@ -165,6 +167,7 @@ export const minimap = ( dataObject, s ) => ( p ) => {
 			// collapse if it never dragged
 			if (!hasDragged)
 				main.classList.toggle('collapsed');
+
 			hasDragged = false;
 			return;
 		}

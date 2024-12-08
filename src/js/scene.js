@@ -75,7 +75,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 	// return a color based on how strong the antenna's connection is
 	function antennaColor(budget) {
-		if (isNaN(budget)||budget==0)
+		if (isNaN(budget) || budget == 0)
 			return [255, 0, 0, 255 * (Math.sin(p.millis() / 100) + 1) / 2];	// make strobing effect when no signal
 		if (budget > 8000)
 			return [0, 255, 0];

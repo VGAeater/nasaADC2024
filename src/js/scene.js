@@ -106,12 +106,12 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		//rotateY(-createVector(x, y).heading());
 		//console.log(createVector(x, y, z).angleBetween(createVector(0, 0, 0)));
 		if (useRocketModel) {
-			p.strokeWeight(1);		// wow wireframe!! 
-			p.scale(4);			//looks miscroscopic without scaling up
+			p.strokeWeight(1);			// wow wireframe!! 
+			p.scale(4);				//looks miscroscopic without scaling up
 			p.model(rocketModel);
 			p.scale(1);
 		} else 
-			p.sphere(500, 6, 3);				// change it to a sphere until we get rotation or model
+			p.sphere(500, 6, 3);			// change it to a sphere until we get rotation or model
 		
 		p.pop();
 

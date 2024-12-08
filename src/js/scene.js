@@ -13,9 +13,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	];
 
 	var moonPath;						// moon path model that will be built later
-}
 
-		else{
 	var realTime = false;
 
 	var prevBest = "WPSA";		// Previous best for the priorotized list

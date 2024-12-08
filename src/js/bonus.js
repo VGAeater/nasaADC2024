@@ -34,7 +34,7 @@ export function rotationMatrix(timeElapsed) {
 	// Earth's tilt
 	let thetaX = earthTilt; 
 	// Earth's Rotation
-	let thetaZ = earthRotation * timeElapsed;
+	let thetaZ = earthRotation * (timeElapsed + 521);
 
 	// Rotation matrices (got these on wikipedia cuz i am NOT doing ts myself)
 	let rX = [
@@ -70,7 +70,7 @@ export function antennaLoc(antenna, timeElapsed) {
 	return multMatrices(rotation, initialPos);			// Multiplies the position by its rotation
 }
 
-export function bonusBudget(antenna, probeX, probeY, probeZ, time) {
+export function bonusRange(antenna, probeX, probeY, probeZ, time) {
 	let antennaPos = antennaLoc(antenna, time).flat();			// Finds the location of the antenna
 	let probe = [probeX, probeY, probeZ];				// Finds the location of the probe
 

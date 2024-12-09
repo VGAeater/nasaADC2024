@@ -24,6 +24,8 @@
 	left: 2vh;
 	transition-duration: 1s;
 	font-size: 3vh;
+	border-radius: 1.5vh;
+	padding: 1vh;
 }
 
 .hidehelp {

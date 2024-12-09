@@ -33,3 +33,12 @@ html, body {
 .hidden {
 	display: none;
 }
+
+.pulsing {
+	animation: pulsing ease-in-out 0.31415926535s infinite alternate;
+}
+
+@keyframes pulsing {
+	to { opacity: 0; }
+}
+

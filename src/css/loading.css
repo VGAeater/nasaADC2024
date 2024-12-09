@@ -34,9 +34,3 @@
 		translate: 5% -5%;
 	}
 }
-
-@keyframes pulsingcolorbox {
-	to {
-		background-color: red;
-	}
-}

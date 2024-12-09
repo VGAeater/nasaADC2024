@@ -212,9 +212,13 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			p.translate(r * Math.cos(pos[0]) * Math.cos(pos[1]), -r * Math.sin(pos[0]), -r * Math.cos(pos[0]) * Math.sin(pos[1]));	// negatives for even more weird axes correction
 
 			let budget;
-			if (s.trackBonus)
-				budget = dataObject.linkBudget(b.bonusRange(c.antennaPositions.indexOf(pos), bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time), pos[3]);
-			else
+			if (s.trackBonus) {
+				let probeData = s.trackBonus ? bonusData : baseData;
+				let probeCoords = [probeData[c.arrayProbeStart], probeData[c.arrayProbeStart+1], probeData[c.arrayProbeStart+2]];
+				let moonCoords = [bonusData[c.arrayMoonStart], bonusData[c.arrayMoonStart+1], bonusData[c.arrayMoonStart+2]];
+
+				budget = dataObject.linkBudget(b.bonusRange(c.antennaPositions.indexOf(pos), probeCoords, moonCoords, s.time), pos[3]);
+			} else
 				budget = dataObject.linkBudget(baseData[pos[4]], pos[3]);
 
 			let color = showAntennaColor ? antennaColor(budget) : [255, 0, 255];	// if show color is checked, color based on budget, else is magenta.
@@ -381,10 +385,13 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		let dss24Link, dss34Link, dss54Link, wpsaLink;
 
 		if (s.trackBonus) {
-			dss24Link = dataObject.linkBudget(b.bonusRange(0, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time), 34);
-			dss34Link = dataObject.linkBudget(b.bonusRange(1, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time), 34);
-			dss54Link = dataObject.linkBudget(b.bonusRange(2, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time), 34);
-			wpsaLink = dataObject.linkBudget(b.bonusRange(3, bonusData[c.arrayProbeStart], bonusData[c.arrayProbeStart+1], bonusData[c.arrayProbeStart+2], s.time), 12);
+			let probeCoords = [probeData[c.arrayProbeStart], probeData[c.arrayProbeStart+1], probeData[c.arrayProbeStart+2]];
+			let moonCoords = [bonusData[c.arrayMoonStart], bonusData[c.arrayMoonStart+1], bonusData[c.arrayMoonStart+2]];
+
+			dss24Link = dataObject.linkBudget(b.bonusRange(0, probeCoords, moonCoords, s.time), 34);
+			dss34Link = dataObject.linkBudget(b.bonusRange(1, probeCoords, moonCoords, s.time), 34);
+			dss54Link = dataObject.linkBudget(b.bonusRange(2, probeCoords, moonCoords, s.time), 34);
+			wpsaLink = dataObject.linkBudget(b.bonusRange(3, probeCoords, moonCoords, s.time), 12);
 		} else {
 			dss24Link = dataObject.linkBudget(probeData[c.arrayRangeDSS24], 34);
 			dss34Link = dataObject.linkBudget(probeData[c.arrayRangeDSS34], 34);
@@ -411,7 +418,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		bufferRight += `───Priority List───<br>`;
 
 		// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
-		bufferRight += `Avaliable: ${Math.floor(baseData[c.arrayRangeWPSA-1])+Math.floor(baseData[c.arrayRangeDSS24-1])+Math.floor(baseData[c.arrayRangeDSS34-1])+Math.floor(baseData[c.arrayRangeDSS54-1])}<br>`
+		bufferRight += `Avaliable: ${(isNaN(dss24Link) ? 0 : 1) + (isNaN(dss34Link) ? 0 : 1) + (isNaN(dss54Link) ? 0 : 1) + (isNaN(wpsaLink) ? 0 : 1)}<br>`
 		bufferRight += `1: ${antennaKeys[3]} → ${listText(antennaValues[3])}<br>`;
 		bufferRight += `2: ${antennaKeys[2]} → ${listText(antennaValues[2])}<br>`;
 		bufferRight += `3: ${antennaKeys[1]} → ${listText(antennaValues[1])}<br>`;

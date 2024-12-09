@@ -427,7 +427,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		camera = p.createCamera();			// create the camera
 		camera.camera(c.earthRadius * 3, c.earthRadius * 2, -c.earthRadius * 3, 0, 0, 0, 0, -1, 0);	// 0, -1, 0 to make coordinate system right handed
 
-		p.perspective(2 * Math.atan(prevbox.height / 2 / 800), prevbox.width/prevbox.height, 1, 10000000);	// initialize the camera
+		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width/p.height, 1, 10000000);	// initialize the camera
 
 		p.background(0);				// clear background as quick as posible
 		p.noFill();					// default to nofill

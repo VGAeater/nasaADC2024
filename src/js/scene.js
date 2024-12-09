@@ -167,7 +167,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		}
 	}
 
-	function handleEarth(baseData, bonusData) {
+	function handleEarth(baseData, bonusData, budgets) {
 		// set x y and z for later
 		let x = bonusData[c.arrayEarthStart];
 		let y = bonusData[c.arrayEarthStart+1];
@@ -205,23 +205,14 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		p.pop();
 
 		// loop through antennas
-		for (const pos of c.antennaPositions) {
+		for (let i = 0; i < c.antennaPositions.length; i++) {
+			let ant = c.antennaPositions[i];
 			p.push();
 
-			let r = c.earthRadius + pos[2];
-			p.translate(r * Math.cos(pos[0]) * Math.cos(pos[1]), -r * Math.sin(pos[0]), -r * Math.cos(pos[0]) * Math.sin(pos[1]));	// negatives for even more weird axes correction
+			let r = c.earthRadius + ant[2];
+			p.translate(r * Math.cos(ant[0]) * Math.cos(ant[1]), -r * Math.sin(ant[0]), -r * Math.cos(ant[0]) * Math.sin(ant[1]));	// negatives for even more weird axes correction
 
-			let budget;
-			if (s.trackBonus) {
-				let probeData = s.trackBonus ? bonusData : baseData;
-				let probeCoords = [probeData[c.arrayProbeStart], probeData[c.arrayProbeStart+1], probeData[c.arrayProbeStart+2]];
-				let moonCoords = [bonusData[c.arrayMoonStart], bonusData[c.arrayMoonStart+1], bonusData[c.arrayMoonStart+2]];
-
-				budget = dataObject.linkBudget(b.bonusRange(c.antennaPositions.indexOf(pos), probeCoords, moonCoords, s.time), pos[3]);
-			} else
-				budget = dataObject.linkBudget(baseData[pos[4]], pos[3]);
-
-			let color = showAntennaColor ? antennaColor(budget) : [255, 0, 255];	// if show color is checked, color based on budget, else is magenta.
+			let color = showAntennaColor ? antennaColor(budgets[i]) : [255, 0, 255];	// if show color is checked, color based on budget, else is magenta.
 			p.stroke(color);			// color code specificly for its signal strength
 			p.sphere(350, 4, 2);			// very low poly sphere on purpose
 
@@ -326,14 +317,14 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	}
 
 	// Does the whole priorotized list thing
-	function antennaList(wpsa, dss24, dss34, dss54) {
+	function antennaList(dss24, dss34, dss54, wpsa) {
 		let budgets = {
 			'WPSA':  Math.min(wpsa, 10000),		// Makes the budgets a max of 10,000
 			'DSS24': Math.min(dss24, 10000),
 			'DSS34': Math.min(dss34, 10000),
 			'DSS54': Math.min(dss54, 10000)
 		};
-	
+
 		budgets[prevBest] += 0.0009765625;		// Adds a negligible amount to the previous one so it sorts slightly above (idc if this is the best way to do this but, once again, cry about it)
 		const entries = Object.entries(budgets);
 		entries.sort((a, b) => (isNaN(a[1]) ? 0 : a[1]) - (isNaN(b[1]) ? 0 : b[1])); 	// Sorts it, if the budget is NaN, it is 0 cuz the sorting doesn't work on NaN
@@ -344,7 +335,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		return sortedScores;
 	}
 
-	function handleText(baseData, bonusData) {
+	function handleText(baseData, bonusData, budgets) {
 		if (!showText)					// check if user wants to see this
 			return;
 
@@ -382,22 +373,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		bufferLeft += `Total: ${moonV.toFixed(3)}<br>`;
 
 		// DONE WITH LEFT SIDE ON TO THE RIGHT
-		let dss24Link, dss34Link, dss54Link, wpsaLink;
-
-		if (s.trackBonus) {
-			let probeCoords = [probeData[c.arrayProbeStart], probeData[c.arrayProbeStart+1], probeData[c.arrayProbeStart+2]];
-			let moonCoords = [bonusData[c.arrayMoonStart], bonusData[c.arrayMoonStart+1], bonusData[c.arrayMoonStart+2]];
-
-			dss24Link = dataObject.linkBudget(b.bonusRange(0, probeCoords, moonCoords, s.time), 34);
-			dss34Link = dataObject.linkBudget(b.bonusRange(1, probeCoords, moonCoords, s.time), 34);
-			dss54Link = dataObject.linkBudget(b.bonusRange(2, probeCoords, moonCoords, s.time), 34);
-			wpsaLink = dataObject.linkBudget(b.bonusRange(3, probeCoords, moonCoords, s.time), 12);
-		} else {
-			dss24Link = dataObject.linkBudget(probeData[c.arrayRangeDSS24], 34);
-			dss34Link = dataObject.linkBudget(probeData[c.arrayRangeDSS34], 34);
-			dss54Link = dataObject.linkBudget(probeData[c.arrayRangeDSS54], 34);
-			wpsaLink = dataObject.linkBudget(probeData[c.arrayRangeWPSA], 34);
-		}
+		let [dss24Link, dss34Link, dss54Link, wpsaLink] = budgets;
 
 		bufferRight += `─────${s.trackBonus ? "BONUS" : "BASE"} DATA─────<br>`;
 		bufferRight += `Mass: ${probeData[c.arrayProbeStart+6].toFixed(2)}kg<br>`;
@@ -409,7 +385,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		bufferRight += `WPSA: ${antennaText(wpsaLink, 12)}<br><br>`;
 
 		// More stuff for the priorotized list
-		let list = antennaList(wpsaLink, dss24Link, dss34Link, dss54Link);
+		let list = antennaList(dss24Link, dss34Link, dss54Link, wpsaLink);
 		let antennaKeys = Object.keys(list);
 		let antennaValues = Object.values(list);
 		antennaValues = antennaValues.map(value => isNaN(value) ?  "Disc." : value);
@@ -464,23 +440,38 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 	p.draw = () => {
 		setSize();					// check if size has changed and adjust if it has
+		p.background(0);
 
 		if (!(dataObject.baseReady && dataObject.bonusReady))	// stall until the data has been loaded (kinda hacky solution)
 			return;
 
 		if (!s.isDragging)				// make sure the minimap isnt being dragged because p5 is too stupid to take input by dom element
 			p.orbitControl(2, 2, 0.5);		// default orbit controls are wack
-		p.background(0);
 
 		// set the current data points based on time
 		let baseData = dataObject.dataWeightedAverage(dataObject.baseArr, s.time);
 		let bonusData = dataObject.dataWeightedAverage(dataObject.bonusArr, s.time);
 
+		let budgets = [];
+		for (let i = 0; i < 4; i++) {
+			let ant = c.antennaPositions[i];
+			if (!s.trackBonus) {
+				budgets.push(dataObject.linkBudget(baseData[ant[4]], ant[3]));
+				continue;
+			}
+
+			let probeData = s.trackBonus ? bonusData : baseData;
+			let probeCoords = [probeData[c.arrayProbeStart], probeData[c.arrayProbeStart+1], probeData[c.arrayProbeStart+2]];
+			let moonCoords = [bonusData[c.arrayMoonStart], bonusData[c.arrayMoonStart+1], bonusData[c.arrayMoonStart+2]];
+
+			budgets.push(dataObject.linkBudget(b.bonusRange(i, probeCoords, moonCoords, s.time), ant[3]));
+		}
+
 		// run each handler
-		handleEarth(baseData, bonusData);
+		handleEarth(baseData, bonusData, budgets);
 		handleMoon(bonusData);
 		handleRocket(baseData, bonusData);
-		handleText(baseData, bonusData);
+		handleText(baseData, bonusData, budgets);
 		handleAxes();
 
 		if (playing)					// increment time if playing

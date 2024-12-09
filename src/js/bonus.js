@@ -95,7 +95,7 @@ export function interceptSphere(pointA, pointB, sphere, radius) {
 export function bonusRange(antenna, probe, moon, time) {
 	let antennaPos = antennaLoc(antenna, time).flat();		// Finds the location of the antenna
 
-	if (interceptSphere(probe, antennaPos, [0, 0, 0], c.earthRadius))
+	if (interceptSphere(probe, antennaPos, [0, 0, 0], c.earthRadius + c.antennaPositions[antenna][2] - 0.0625))	// tiny margin of error because computers arent perfect
 		return NaN;
 
 	if (interceptSphere(probe, antennaPos, moon, c.moonRadius))

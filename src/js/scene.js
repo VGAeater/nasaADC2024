@@ -103,15 +103,13 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		p.stroke(0,255,255);
 
 		p.push();
+
 		p.translate(x, y, z);
-		//rotateZ(createVector(x, y).heading());
-		//rotateY(-createVector(x, y).heading());
-		//console.log(createVector(x, y, z).angleBetween(createVector(0, 0, 0)));
+
 		if (useRocketModel) {
 			p.strokeWeight(1);			// wow wireframe!! 
-			p.scale(4);				//looks miscroscopic without scaling up
+			p.scale(4);				// looks miscroscopic without scaling up
 			p.model(rocketModel);
-			p.scale(1);
 		} else 
 			p.sphere(500, 6, 3);			// change it to a sphere until we get rotation or model
 		
@@ -279,19 +277,6 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		drawAxie(0,0,1);
 	}
 
-	function setSize() {
-		let box = canvasdiv.getBoundingClientRect();	// find the current bounding box
-
-		// quit if pointless
-		if (box.width === prevbox.width && box.height === prevbox.height)
-			return;
-
-		p.resizeCanvas(box.width, box.height);		// resize the dom element
-		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width/p.height, 1, 10000000);	// recalculate the perspective box
-
-		prevbox = box;					// update the previous box
-	}
-
 	// generates a formated string used in a log of the print statements
 	function textTriplet(data, start) {
 		return `${data[start].toFixed(3)}, ${data[start+1].toFixed(3)}, ${data[start+2].toFixed(3)}`;
@@ -400,8 +385,21 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		bufferRight += `3: ${antennaKeys[1]} → ${listText(antennaValues[1])}<br>`;
 		bufferRight += `4: ${antennaKeys[0]} → ${listText(antennaValues[0])}<br>`;
 
-		overlayRightDOM.innerHTML = bufferRight;			// set the innerhtml to the newly generated buffer (this proved to be faster than writing to the DOM every time)
+		overlayRightDOM.innerHTML = bufferRight;	// set the innerhtml to the newly generated buffer (this proved to be faster than writing to the DOM every time)
 		overlayLeftDOM.innerHTML = bufferLeft;
+	}
+
+	function setSize() {
+		let box = canvasdiv.getBoundingClientRect();	// find the current bounding box
+
+		// quit if pointless
+		if (box.width === prevbox.width && box.height === prevbox.height)
+			return;
+
+		p.resizeCanvas(box.width, box.height);		// resize the dom element
+		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width/p.height, 1, 10000000);	// recalculate the perspective box
+
+		prevbox = box;					// update the previous box
 	}
 
 	p.preload = () => {

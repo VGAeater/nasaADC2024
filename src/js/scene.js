@@ -478,7 +478,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 	p.keyPressed = () => {
 		if (p.keyCode == 27) {				// on esc key press show/hide menu
-			menu.classList.toggle("hidden");
+			menu.classList.toggle("hide");
 			canvasdiv.classList.toggle("small");
 			help.classList.add("hidehelp");
 		}

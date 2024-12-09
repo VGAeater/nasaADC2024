@@ -9,10 +9,10 @@
 	border-width: 1px 0px 0px 0px;
 	overflow-y: auto;
 	scrollbar-color: #cc1444 #121213;
-	transition-duration: 1s;
+	transition-duration: 0.5s;
 }
 
-#menu.hidden {
+#menu.hide {
 	height: 0px;
 	border: none;
 }

@@ -400,8 +400,6 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		overlayLeftDOM.innerHTML = bufferLeft;
 	}
 
-	
-
 	function setSize() {
 		let box = canvasdiv.getBoundingClientRect();	// find the current bounding box
 

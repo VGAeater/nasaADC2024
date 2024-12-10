@@ -108,7 +108,7 @@ export const scene = (dataObject, s) => (p) => {
 				y: y,
 				z: z,
 				color: starColors[Math.floor(Math.random() * starColors.length)],
-				strokeWeight: Math.floor(Math.random() * 5) + 2;
+				strokeWeight: Math.floor(Math.random() * 5) + 2
 			};
 		}
 
@@ -519,7 +519,6 @@ export const scene = (dataObject, s) => (p) => {
 		handleText(baseData, bonusData, budgets);
 		handleAxes();
 
-		console.log(stars);
 		for (let star of stars) {
 			p.push();
 			p.stroke(star.color)

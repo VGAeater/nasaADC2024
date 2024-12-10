@@ -2,7 +2,7 @@ import * as c from "./constants.js";
 import * as b from "./bonus.js";
 
 
-export const scene = ( dataObject, s ) => ( p ) => {
+export const scene = (dataObject, s) => (p) => {
 	// [color, start, end, base model, bonus model]
 	var orbitData = [
 		[[227, 139, 73], 0, null, null],		//EDL part 1
@@ -13,6 +13,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	];
 
 	var moonPath;						// moon path model that will be built later
+
+	var stars = [];						// star background
 
 	var realTime = false;
 
@@ -39,7 +41,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 
 	var showOtherPath = false;				// data selection trackers
-	var earthDayTex, earthNightTex, moonTex, cloudsTex;	// the textures for the earth and moon
+	var earthDayTex, earthNightTex, moonTex, cloudsTex, starTex;	// the textures for the earth and moon
 	var earthShader, moonShader, atmoShader;		// the shaders for the eath, moon, and atmosphere
 	var rocketModel;
 
@@ -65,11 +67,11 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	 * ending point defaults to the max index in the array
 	 * ment to be run once per path to make the model because its slow
 	 */
-	function buildPath(arr, selector, start=0, end=null) {
+	function buildPath(arr, selector, start = 0, end = null) {
 		if (end == null)
-			end = arr[0].length-1;
+			end = arr[0].length - 1;
 		for (let i = start; i < end; i++)
-			p.line(arr[selector][i], arr[selector+1][i], arr[selector+2][i], arr[selector][i+1], arr[selector+1][i+1], arr[selector+2][i+1]);
+			p.line(arr[selector][i], arr[selector + 1][i], arr[selector + 2][i], arr[selector][i + 1], arr[selector + 1][i + 1], arr[selector + 2][i + 1]);
 	}
 
 	// return a color based on how strong the antenna's connection is
@@ -85,22 +87,54 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		return [255, 0, 0];				// default to red for very weak connections
 	}
 
+	function createStarBackground(starNums = 1000) {
+		var stars = [];
+		var starColors = [[200, 200, 200], [175, 175, 175], [150, 150, 150], [100, 100, 100], [50, 50, 50]];
+
+		function makeRandomStarPoint() {
+			const r = Math.floor(Math.random() * 600000) + 400000;
+			const randAngle = Math.random();
+
+			const theta = 2 * Math.PI * randAngle;
+			const phi = Math.random() * Math.PI;
+
+			//gets cartesian coordinates
+			const x = r * Math.sin(phi) * Math.cos(theta);
+			const y = r * Math.sin(phi) * Math.sin(theta);
+			const z = r * Math.cos(phi);
+			
+			return {
+				x: x,
+				y: y,
+				z: z,
+				color: starColors[Math.floor(Math.random() * starColors.length)],
+				strokeWeight: Math.floor(Math.random() * 5) + 2
+			};
+		}
+
+		for (let i = 0; i < starNums; i++) {
+			stars.push(makeRandomStarPoint());
+		}
+		
+		return stars;
+	}
+
 	function handleRocket(baseData, bonusData) {
 		let data = s.trackBonus ? bonusData : baseData;	// switch to bonus data if tracking it
 
 		// set the x y z xv yv and zv for later
 		let x = data[c.arrayProbeStart];
-		let y = data[c.arrayProbeStart+1];
-		let z = data[c.arrayProbeStart+2];
+		let y = data[c.arrayProbeStart + 1];
+		let z = data[c.arrayProbeStart + 2];
 
-		let xv = data[c.arrayProbeStart+3];
-		let yv = data[c.arrayProbeStart+4];
-		let zv = data[c.arrayProbeStart+5];
+		let xv = data[c.arrayProbeStart + 3];
+		let yv = data[c.arrayProbeStart + 4];
+		let zv = data[c.arrayProbeStart + 5];
 
 		if (followProbe)				// check if following the probe then go to its position
 			goToPosition(x, y, z);
 
-		p.stroke(0,255,255);
+		p.stroke(0, 255, 255);
 
 		p.push();
 
@@ -110,9 +144,9 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			p.strokeWeight(1);			// wow wireframe!! 
 			p.scale(4);				// looks miscroscopic without scaling up
 			p.model(rocketModel);
-		} else 
+		} else
 			p.sphere(500, 6, 3);			// change it to a sphere until we get rotation or model
-		
+
 		p.pop();
 
 		let veloVectorDistance = Math.hypot(xv, yv, zv);
@@ -133,7 +167,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		if (!orbitData[4][2]) {
 			for (let i = 0; i < orbitData.length; i++) {
 				p.beginGeometry();
-				buildPath(dataObject.baseArr, c.arrayProbeStart, orbitData[i][1], orbitData[i+1] ? orbitData[i+1][1] : null);
+				buildPath(dataObject.baseArr, c.arrayProbeStart, orbitData[i][1], orbitData[i + 1] ? orbitData[i + 1][1] : null);
 				orbitData[i][2] = p.endGeometry();
 			}
 		}
@@ -142,7 +176,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		if (!orbitData[4][3]) {
 			for (let i = 0; i < orbitData.length; i++) {
 				p.beginGeometry();
-				buildPath(dataObject.bonusArr, c.arrayProbeStart, orbitData[i][1], orbitData[i+1] ? orbitData[i+1][1] : null);
+				buildPath(dataObject.bonusArr, c.arrayProbeStart, orbitData[i][1], orbitData[i + 1] ? orbitData[i + 1][1] : null);
 				orbitData[i][3] = p.endGeometry();
 			}
 		}
@@ -153,7 +187,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 		// show the secondary path first and only if showing other path enabled
 		if (showOtherPath) {
-			p.stroke(255,0,255);			// draw all paths the same color
+			p.stroke(255, 0, 255);			// draw all paths the same color
 			for (var i = 0; i < orbitData.length; i++)
 				p.model(orbitData[i][secondaryPath]);
 		}
@@ -168,8 +202,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	function handleEarth(baseData, bonusData, budgets) {
 		// set x y and z for later
 		let x = bonusData[c.arrayEarthStart];
-		let y = bonusData[c.arrayEarthStart+1];
-		let z = bonusData[c.arrayEarthStart+2];
+		let y = bonusData[c.arrayEarthStart + 1];
+		let z = bonusData[c.arrayEarthStart + 2];
 
 		if (followEarth)				// check if following the earth then go to its position
 			goToPosition(x, y, z);
@@ -185,7 +219,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 		p.push();
 
-		p.rotateY(-Math.PI/2);				// weird axes correction that only applies to textures
+		p.rotateY(-Math.PI / 2);				// weird axes correction that only applies to textures
 
 		if (useTextures) {
 			p.noStroke();				// disable stroke cuz its ugly
@@ -222,8 +256,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 	function handleMoon(data) {
 		let x = data[c.arrayMoonStart];
-		let y = data[c.arrayMoonStart+1];
-		let z = data[c.arrayMoonStart+2];
+		let y = data[c.arrayMoonStart + 1];
+		let z = data[c.arrayMoonStart + 2];
 
 		if (followMoon)					// check if following the moon then go to its position
 			goToPosition(x, y, z);
@@ -253,16 +287,16 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		}
 
 		// if so, render
-		p.stroke(255,255,0);
+		p.stroke(255, 255, 0);
 		p.model(moonPath);
 	}
 
 	// draw an axie thing
 	function drawAxie(x, y, z) {
-		p.stroke(x*255,y*255,z*255);
-		p.line(0,0,0,x*7500,y*7500,z*7500);
+		p.stroke(x * 255, y * 255, z * 255);
+		p.line(0, 0, 0, x * 7500, y * 7500, z * 7500);
 		p.push();
-		p.translate(x*7500, y*7500, z*7500);
+		p.translate(x * 7500, y * 7500, z * 7500);
 		p.sphere(500, 8, 4);
 		p.pop();
 	}
@@ -272,14 +306,14 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		if (!showAxes)					// check if user wants to see this
 			return;
 
-		drawAxie(1,0,0);
-		drawAxie(0,1,0);
-		drawAxie(0,0,1);
+		drawAxie(1, 0, 0);
+		drawAxie(0, 1, 0);
+		drawAxie(0, 0, 1);
 	}
 
 	// generates a formated string used in a log of the print statements
 	function textTriplet(data, start) {
-		return `${data[start].toFixed(3)}, ${data[start+1].toFixed(3)}, ${data[start+2].toFixed(3)}`;
+		return `${data[start].toFixed(3)}, ${data[start + 1].toFixed(3)}, ${data[start + 2].toFixed(3)}`;
 	}
 
 	// generates a formated string used in the link budget monitors
@@ -304,7 +338,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 	// Does the whole priorotized list thing
 	function antennaList(dss24, dss34, dss54, wpsa) {
 		let budgets = {
-			'WPSA':  Math.min(wpsa, 10000),		// Makes the budgets a max of 10,000
+			'WPSA': Math.min(wpsa, 10000),		// Makes the budgets a max of 10,000
 			'DSS24': Math.min(dss24, 10000),
 			'DSS34': Math.min(dss34, 10000),
 			'DSS54': Math.min(dss54, 10000)
@@ -338,8 +372,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 
 		// make generale stuff
 		let framerate = p.frameRate();
-		let probeV = Math.hypot(probeData[c.arrayProbeStart+3], probeData[c.arrayProbeStart+4], probeData[c.arrayProbeStart+5]);
-		let moonV = Math.hypot(bonusData[c.arrayMoonStart+3], bonusData[c.arrayMoonStart+4], bonusData[c.arrayMoonStart+5]);
+		let probeV = Math.hypot(probeData[c.arrayProbeStart + 3], probeData[c.arrayProbeStart + 4], probeData[c.arrayProbeStart + 5]);
+		let moonV = Math.hypot(bonusData[c.arrayMoonStart + 3], bonusData[c.arrayMoonStart + 4], bonusData[c.arrayMoonStart + 5]);
 
 		let bufferLeft = `FPS: ${framerate.toFixed(3)}<br><br>`;
 		let bufferRight = `Time: ${s.time.toFixed(3)}<br><br>`;
@@ -348,31 +382,31 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		// Probe stuff
 		bufferLeft += `───Probe Position───<br>`;
 		bufferLeft += `X: ${probeData[c.arrayProbeStart].toFixed(2)}<br>`;
-		bufferLeft += `Y: ${probeData[c.arrayProbeStart+1].toFixed(2)}<br>`;
-		bufferLeft += `Z: ${probeData[c.arrayProbeStart+2].toFixed(2)}<br>`;
+		bufferLeft += `Y: ${probeData[c.arrayProbeStart + 1].toFixed(2)}<br>`;
+		bufferLeft += `Z: ${probeData[c.arrayProbeStart + 2].toFixed(2)}<br>`;
 		bufferLeft += `───Probe Velocity───<br>`;
-		bufferLeft += `X: ${probeData[c.arrayProbeStart+3].toFixed(3)}<br>`;
-		bufferLeft += `Y: ${probeData[c.arrayProbeStart+4].toFixed(3)}<br>`;
-		bufferLeft += `Z: ${probeData[c.arrayProbeStart+5].toFixed(3)}<br>`;
+		bufferLeft += `X: ${probeData[c.arrayProbeStart + 3].toFixed(3)}<br>`;
+		bufferLeft += `Y: ${probeData[c.arrayProbeStart + 4].toFixed(3)}<br>`;
+		bufferLeft += `Z: ${probeData[c.arrayProbeStart + 5].toFixed(3)}<br>`;
 		bufferLeft += `Total: ${probeV.toFixed(3)}<br><br>`;
 
 		// Moon stuff
 		bufferLeft += `───Moon Position───<br>`;
 		bufferLeft += `X: ${bonusData[c.arrayMoonStart].toFixed(2)}<br>`;
-		bufferLeft += `Y: ${bonusData[c.arrayMoonStart+1].toFixed(2)}<br>`;
-		bufferLeft += `Z: ${bonusData[c.arrayMoonStart+2].toFixed(2)}<br>`;
+		bufferLeft += `Y: ${bonusData[c.arrayMoonStart + 1].toFixed(2)}<br>`;
+		bufferLeft += `Z: ${bonusData[c.arrayMoonStart + 2].toFixed(2)}<br>`;
 		bufferLeft += `───Moon Velocity───<br>`;
-		bufferLeft += `X: ${bonusData[c.arrayMoonStart+3].toFixed(3)}<br>`;
-		bufferLeft += `Y: ${bonusData[c.arrayMoonStart+4].toFixed(3)}<br>`;
-		bufferLeft += `Z: ${bonusData[c.arrayMoonStart+5].toFixed(3)}<br>`;
+		bufferLeft += `X: ${bonusData[c.arrayMoonStart + 3].toFixed(3)}<br>`;
+		bufferLeft += `Y: ${bonusData[c.arrayMoonStart + 4].toFixed(3)}<br>`;
+		bufferLeft += `Z: ${bonusData[c.arrayMoonStart + 5].toFixed(3)}<br>`;
 		bufferLeft += `Total: ${moonV.toFixed(3)}<br>`;
 
 		// DONE WITH LEFT SIDE ON TO THE RIGHT
 		let [dss24Link, dss34Link, dss54Link, wpsaLink] = budgets;
 
 		bufferRight += `─────${s.trackBonus ? "BONUS" : "BASE"} DATA─────<br>`;
-		bufferRight += `Mass: ${probeData[c.arrayProbeStart+6].toFixed(2)}kg<br>`;
-		bufferRight += `Dist: ${probeData[probeData.length-1].toFixed(2)}km<br><br>`;
+		bufferRight += `Mass: ${probeData[c.arrayProbeStart + 6].toFixed(2)}kg<br>`;
+		bufferRight += `Dist: ${probeData[probeData.length - 1].toFixed(2)}km<br><br>`;
 		bufferRight += `───Antennas───<br>`;
 		bufferRight += `DSS24: ${antennaText(dss24Link, 34)}<br>`;
 		bufferRight += `DSS34: ${antennaText(dss34Link, 34)}<br>`;
@@ -383,7 +417,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		let list = antennaList(dss24Link, dss34Link, dss54Link, wpsaLink);
 		let antennaKeys = Object.keys(list);
 		let antennaValues = Object.values(list);
-		antennaValues = antennaValues.map(value => isNaN(value) ?  "Disc." : value);
+		antennaValues = antennaValues.map(value => isNaN(value) ? "Disc." : value);
 
 		// Adds the priorotized list stuff
 		bufferRight += `───Priority List───<br>`;
@@ -408,7 +442,7 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			return;
 
 		p.resizeCanvas(box.width, box.height);		// resize the dom element
-		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width/p.height, 1, 10000000);	// recalculate the perspective box
+		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width / p.height, 1, 10000000);	// recalculate the perspective box
 
 		prevbox = box;					// update the previous box
 	}
@@ -438,7 +472,9 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		camera = p.createCamera();			// create the camera
 		camera.camera(c.earthRadius * 3, c.earthRadius * 2, -c.earthRadius * 3, 0, 0, 0, 0, -1, 0);	// 0, -1, 0 to make coordinate system right handed
 
-		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width/p.height, 1, 10000000);	// initialize the camera
+		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width / p.height, 1, 10000000);	// initialize the camera
+
+		stars = createStarBackground(2000);		// create the star background, if in draw we create a atom
 
 		p.background(0);				// clear background as quick as posible
 		p.noFill();					// default to nofill
@@ -470,8 +506,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 			}
 
 			let probeData = s.trackBonus ? bonusData : baseData;
-			let probeCoords = [probeData[c.arrayProbeStart], probeData[c.arrayProbeStart+1], probeData[c.arrayProbeStart+2]];
-			let moonCoords = [bonusData[c.arrayMoonStart], bonusData[c.arrayMoonStart+1], bonusData[c.arrayMoonStart+2]];
+			let probeCoords = [probeData[c.arrayProbeStart], probeData[c.arrayProbeStart + 1], probeData[c.arrayProbeStart + 2]];
+			let moonCoords = [bonusData[c.arrayMoonStart], bonusData[c.arrayMoonStart + 1], bonusData[c.arrayMoonStart + 2]];
 
 			budgets.push(dataObject.linkBudget(b.bonusRange(i, probeCoords, moonCoords, s.time), ant[3]));
 		}
@@ -482,6 +518,14 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		handleRocket(baseData, bonusData);
 		handleText(baseData, bonusData, budgets);
 		handleAxes();
+
+		for (let star of stars) {
+			p.push();
+			p.stroke(star.color)
+			p.strokeWeight(star.strokeWeight);
+        	p.point(star.x, star.y, star.z); 
+        	p.pop();
+		}
 
 		if (playing)					// increment time if playing
 			setTime(s.time + speed * p.deltaTime / 1000);

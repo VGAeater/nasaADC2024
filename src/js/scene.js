@@ -108,6 +108,7 @@ export const scene = (dataObject, s) => (p) => {
 				y: y,
 				z: z,
 				color: starColors[Math.floor(Math.random() * starColors.length)],
+				strokeWeight: Math.floor(Math.random() * 5) + 2;
 			};
 		}
 
@@ -456,7 +457,6 @@ export const scene = (dataObject, s) => (p) => {
 		earthNightTex = p.loadImage('assets/' + res + '/earthNight.jpg');
 		cloudsTex = p.loadImage('assets/' + res + '/clouds.jpg');
 		moonTex = p.loadImage('assets/' + res + '/moon.jpg');
-		starTex = p.loadImage('assets/star.png');
 
 		// load the shaders
 		earthShader = p.loadShader('src/glsl/earth.vert', 'src/glsl/earth.frag');
@@ -523,8 +523,7 @@ export const scene = (dataObject, s) => (p) => {
 		for (let star of stars) {
 			p.push();
 			p.stroke(star.color)
-
-			p.strokeWeight(5);
+			p.strokeWeight(star.strokeWeight);
         	p.point(star.x, star.y, star.z); 
         	p.pop();
 		}

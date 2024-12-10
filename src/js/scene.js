@@ -320,6 +320,16 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		return sortedScores;
 	}
 
+	function avaliableAntennaColors(amount) {
+		if (amount == 3)
+			return "#00ff00";
+		else if (amount == 2)
+			return "#ffd300";
+		else if (amount == 1)
+			return "#ff8800";
+		return "#ff0000";
+	}
+
 	function handleText(baseData, bonusData, budgets) {
 		if (!showText)					// check if user wants to see this
 			return;
@@ -379,7 +389,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		bufferRight += `───Priority List───<br>`;
 
 		// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
-		bufferRight += `Avaliable: ${(isNaN(dss24Link) ? 0 : 1) + (isNaN(dss34Link) ? 0 : 1) + (isNaN(dss54Link) ? 0 : 1) + (isNaN(wpsaLink) ? 0 : 1)}<br>`
+		let avaliableAntennas = (isNaN(dss24Link) ? 0 : 1) + (isNaN(dss34Link) ? 0 : 1) + (isNaN(dss54Link) ? 0 : 1) + (isNaN(wpsaLink) ? 0 : 1);
+		bufferRight += `Avaliable: <a style="color: ${avaliableAntennaColors(avaliableAntennas)}">${avaliableAntennas}</a><br>`;
 		bufferRight += `1: ${antennaKeys[3]} → ${listText(antennaValues[3])}<br>`;
 		bufferRight += `2: ${antennaKeys[2]} → ${listText(antennaValues[2])}<br>`;
 		bufferRight += `3: ${antennaKeys[1]} → ${listText(antennaValues[1])}<br>`;
@@ -388,6 +399,8 @@ export const scene = ( dataObject, s ) => ( p ) => {
 		overlayRightDOM.innerHTML = bufferRight;	// set the innerhtml to the newly generated buffer (this proved to be faster than writing to the DOM every time)
 		overlayLeftDOM.innerHTML = bufferLeft;
 	}
+
+	
 
 	function setSize() {
 		let box = canvasdiv.getBoundingClientRect();	// find the current bounding box

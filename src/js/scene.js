@@ -30,6 +30,7 @@ export const scene = (dataObject, s) => (p) => {
 	const followProbeDOM = document.getElementById("followprobe");
 
 	const timeDOM = document.getElementById("time");
+	const timeValueDOM = document.getElementById("timeValue");
 	const strokeDOM = document.getElementById("stroke");
 	const speedDOM = document.getElementById("speed");
 	const timeSliderDOM = document.getElementById("timeslider");
@@ -66,7 +67,6 @@ export const scene = (dataObject, s) => (p) => {
 	const realTimeDOM = document.getElementById("realcheckbox");
 	const minimapDOM = document.getElementById("minimapcheckbox");
 	const showRocketModelDOM = document.getElementById("rocketmodelcheckbox");
-	const timeValueDOM = document.getElementById("timeValue");
 
 	// Antenna Status
 	const dss24StatusDOM = document.getElementById("dss24Status");
@@ -86,8 +86,8 @@ export const scene = (dataObject, s) => (p) => {
 	const priorityLabel4DOM = document.getElementById("priorityLabel4");
 
 	var showOtherPath = false;				// data selection trackers
-	var earthDayTex, earthNightTex, moonTex, cloudsTex, starTex;	// the textures for the earth and moon
-	var earthShader, moonShader, atmoShader;		// the shaders for the eath, moon, and atmosphere
+	var earthDayTex, earthNightTex, moonTex, cloudsTex, starsBG;	// the textures for the earth and moon
+	var earthShader, moonShader;		// the shaders for the eath, moon, and atmosphere
 	var rocketModel;
 
 	// main dom objects
@@ -364,7 +364,7 @@ export const scene = (dataObject, s) => (p) => {
 	// generates a formated string used in the link budget monitors
 	function antennaText(budget) {
 		if (isNaN(budget))
-			return "N/A";
+			return "Inactive";
 
 		if (budget > 10000)
 			return `${budget.toFixed(2)}kb/s → 10Mb/s`;
@@ -376,7 +376,7 @@ export const scene = (dataObject, s) => (p) => {
 		if (num == 10000)
 			return "10Mb/s";
 		if (isNaN(num))
-			return "N/A";
+			return "Inactive";
 		return `${num.toFixed(2)}kb/s`;
 	}
 
@@ -420,9 +420,6 @@ export const scene = (dataObject, s) => (p) => {
 		// Update fpsDOM with the FPS value
 		fpsDOM.innerText = framerate.toFixed(3);
 
-		// DONE WITH LEFT SIDE ON TO THE RIGHT
-		let [dss24Link, dss34Link, dss54Link, wpsaLink] = budgets;
-	
 		document.getElementById("timeValue").innerText = s.time.toFixed(3);
 	
 		probePosXDOM.innerText = probeData[c.arrayProbeStart].toFixed(2);
@@ -464,6 +461,11 @@ export const scene = (dataObject, s) => (p) => {
 		priorityValue2DOM.innerText = listText(antennaValues[2]);
 		priorityValue3DOM.innerText = listText(antennaValues[1]);
 		priorityValue4DOM.innerText = listText(antennaValues[0]);
+
+		let avaliableAntennas = (isNaN(dss24Link) ? 0 : 1) + (isNaN(dss34Link) ? 0 : 1) + (isNaN(dss54Link) ? 0 : 1) + (isNaN(wpsaLink) ? 0 : 1);
+		const totalAvailableDOM = document.getElementById("totalAvailable");
+    	totalAvailableDOM.innerText = `${avaliableAntennas} Antenna${avaliableAntennas !== 1 ? 's' : ''}`;
+    	totalAvailableDOM.style.color = avaliableAntennaColors(avaliableAntennas);
 	}
 
 	function setSize() {
@@ -506,7 +508,6 @@ export const scene = (dataObject, s) => (p) => {
 
 		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width / p.height, 1, 10000000);	// initialize the camera
 
-		stars = createStarBackground(2000);		// create the star background, if in draw we create a atom
 
 		p.background(0);				// clear background as quick as posible
 		p.noFill();					// default to nofill
@@ -518,7 +519,6 @@ export const scene = (dataObject, s) => (p) => {
 	p.draw = () => {
 		setSize();					// check if size has changed and adjust if it has
 		p.background(0);
-
 		if (!(dataObject.baseReady && dataObject.bonusReady))	// stall until the data has been loaded (kinda hacky solution)
 			return;
 
@@ -551,13 +551,6 @@ export const scene = (dataObject, s) => (p) => {
 		handleText(baseData, bonusData, budgets);
 		handleAxes();
 
-		for (let star of stars) {
-			p.push();
-			p.stroke(star.color)
-			p.strokeWeight(star.strokeWeight);
-        	p.point(star.x, star.y, star.z); 
-        	p.pop();
-		}
 
 		if (playing)					// increment time if playing
 			setTime(s.time + speed * p.deltaTime / 1000);
@@ -591,16 +584,17 @@ export const scene = (dataObject, s) => (p) => {
 			let now = new Date();
 			let timeDifference = now.getTime() - c.launchTime.getTime();
 			input = timeDifference / (1000 * 60);
-			input = Math.max(input, 0);		// If it's negative, turns it into positive
+			input = Math.max(input, 0);
 		}
-
+	
 		s.time = parseFloat(input);
-
-		if (input == "" || isNaN(s.time))		// default to 0 if bad input
+	
+		if (input == "" || isNaN(s.time))
 			s.time = 0;
-
-		timeDOM.value = input;				// set it to original in case of mis-input
-		timeSliderDOM.value = s.time;			// needs to be valid
+	
+		timeDOM.value = input;              // Update input field
+		timeSliderDOM.value = s.time;       // Update slider
+		timeValueDOM.innerText = s.time.toFixed(3); // Update display value
 	}
 
 	playButtonDOM.onclick = e => { playing = e.target.classList.toggle('playing'); };

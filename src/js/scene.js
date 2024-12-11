@@ -420,9 +420,7 @@ export const scene = (dataObject, s) => (p) => {
 		// Update fpsDOM with the FPS value
 		fpsDOM.innerText = framerate.toFixed(3);
 
-		// DONE WITH LEFT SIDE ON TO THE RIGHT
-		let [dss24Link, dss34Link, dss54Link, wpsaLink] = budgets;
-	
+		// DONE WITH LEFT SIDE ON TO THE RIGHT	
 		document.getElementById("timeValue").innerText = s.time.toFixed(3);
 	
 		probePosXDOM.innerText = probeData[c.arrayProbeStart].toFixed(2);

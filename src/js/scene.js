@@ -461,6 +461,11 @@ export const scene = (dataObject, s) => (p) => {
 		priorityValue2DOM.innerText = listText(antennaValues[2]);
 		priorityValue3DOM.innerText = listText(antennaValues[1]);
 		priorityValue4DOM.innerText = listText(antennaValues[0]);
+
+		let avaliableAntennas = (isNaN(dss24Link) ? 0 : 1) + (isNaN(dss34Link) ? 0 : 1) + (isNaN(dss54Link) ? 0 : 1) + (isNaN(wpsaLink) ? 0 : 1);
+		const totalAvailableDOM = document.getElementById("totalAvailable");
+    	totalAvailableDOM.innerText = `${avaliableAntennas} Antenna${avaliableAntennas !== 1 ? 's' : ''}`;
+    	totalAvailableDOM.style.color = avaliableAntennaColors(avaliableAntennas);
 	}
 
 	function setSize() {

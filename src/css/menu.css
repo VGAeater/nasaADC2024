@@ -1,187 +1,488 @@
-#menu {
-	position: fixed;
-	height: 35%;
-	width: 100%;
-	bottom: 0;
-	left: 0;
-	background-color: #19191b;
-	border: 1px solid #cc1444;
-	border-width: 1px 0px 0px 0px;
-	overflow-y: auto;
-	scrollbar-color: #cc1444 #121213;
-	transition-duration: 0.5s;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-size: 1.5vh;
 }
 
-#menu.hide {
-	height: 0px;
-	border: none;
+h1, h2, h3 {
+    font-weight: bold;
 }
 
-hr {
-	border-color: #cc1444;
+html,
+body {
+    height: 100%;
+    background-color: black;
+    font-family: 'Arial', sans-serif;
+    user-select: none;
+    overflow-y: hidden;
 }
 
-.coloritem {
-    margin: 1vh 0px;
+#menuContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.primaryTextColor {
+    color: white;
+}
+
+#escape {
+    background-color: rgba(173, 40, 64, 0.2);
+    outline: 2px solid rgba(173, 40, 64, 0.5);
+    width: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+    text-align: center;
+    animation: fade 2s infinite;
+}
+
+@keyframes fade {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+#menuContainer {
+    background-color: rgba(18, 16, 16, 0.9);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    padding: 15px;
+    max-height: 35vh;
+    overflow-y: auto;
+    transition-duration: 0.5s;
+}
+
+#tabsContainer {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.tab {
+    background-color: #4a070c;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 2vh;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.tab:hover {
+    background-color: rgba(156, 159, 161, 0.7);
+}
+
+.tab.selected {
+    background-color: #c1121f;
+}
+
+#keyContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 15px;
+}
+
+.key {
+    background-color: rgba(18, 16, 16, 0.9);
+    outline: 2px solid white;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 320px;
+    height: 25vh;
+    box-sizing: border-box;
+}
+
+.colorCodes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+}
+
+.colorLabel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.dot {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.keyTitle {
+    margin-bottom: 5px;
+    background-color: rgb(71, 68, 68);
+    padding: 5px;
+    border-radius: 20px;
+}
+
+#pulsing {
+    animation: fade 0.5s infinite;
+}
+
+#timeSliderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.sectionContainer {
+    background-color: #32343650;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 12px;
+}
+
+.sectionContainer>h3 {
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: white;
+    border-bottom: 1px solid rgba(173, 40, 64, 0.5);
+    padding-bottom: 10px;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.checkbox-row:last-child {
+    border-bottom: none;
+}
+
+.checkbox-row label {
+    color: #f5313e;
+    flex-grow: 1;
+    margin-right: 15px;
     display: flex;
     align-items: center;
 }
 
-.colorbox {
-    width: 3vh;
-    height: 3vh;
-    margin-right: 1vh;
-    border-radius: 2vh;
+.checkbox-row input[type="checkbox"] {
+    margin-left: auto;
+    align-self: center;
 }
 
-.sectionheader {
-	width: calc(100% - 2vh);
-	padding: 1vh;
-	border: none;
-	background-color: #121213;
-	border-radius: 2vh;
-	margin: 0px;
+#displayTime,
+#displayStroke,
+#displaySpeed {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+#displayTime h3,
+#displayStroke h3,
+#displaySpeed h3 {
+    margin: 0;
+    font-size: 1.6vh;
+    line-height: 4vh;
+    width: 40%;
+}
+
+#time,
+#speed,
+#stroke {
+    width: 30%;
+    color: white;
+    height: 4vh;
+    font-size: 1.6vh;
+    padding: 0 1vh;
+    border: none;
+    border-radius: 1vh;
+    margin-top: -2px;
+}
+
+input[type=text] {
+    width: 60%;
+    padding: 0 1vh;
+    border: none;
+    background-color: #121213;
+    border-radius: 1vh;
+    height: 4vh;
+    font-size: 1.6vh;
+    color: white;
+}
+
+#playbutton {
+    width: 4vh;
+    height: 4vh;
+    border-radius: 1.5vh;
+    border: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 2vh;
+    background-image: url("../../assets/play.svg");
+    margin-right: 10px;
+    cursor: pointer;
+    background-color: rgba(173, 40, 64, 0.8);
+
+    &:hover {
+        background-color: rgb(173, 40, 64);
+        transition: 0.2s linear;
+    }
+
+    &:not(:hover) {
+        transition: 0.2s linear;
+    }
+}
+
+#playbutton.playing {
+    background-image: url("../../assets/pause.svg");
 }
 
 input[type=range] {
-	appearance: none; /* Hides the slider so that custom slider can be made */
-	width: calc(100% - 2vh); /* Specific width is required for Firefox. */
-	background: transparent; /* Otherwise white in Chrome */
-	margin: 1vh;
+    appearance: none;
+    /* Hides the slider so that custom slider can be made */
+    width: 100%;
+    /* Full width */
+    background: transparent;
+    /* Otherwise white in Chrome */
+    margin: 0 10px;
+    /* Margin to align with the button */
 }
 
 input[type=range]:focus {
-	outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+    outline: none;
+    /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
 }
 
 input[type=range]::-webkit-slider-thumb {
-	appearance: none;
-	height: 4vh;
-	width: 4vh;
-	border-radius: 1.5vh;
-	background: #ffffff;
-	cursor: pointer;
-	margin-top: -1vh; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+    appearance: none;
+    height: 4vh;
+    width: 4vh;
+    border-radius: 1.5vh;
+    background: #ffffff;
+    cursor: pointer;
+    margin-top: -1vh;
+    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
 }
 
-input[type=range]::-moz-range-thumb, input[type=range]::-ms-thumb {
-	height: 4vh;
-	width: 4vh;
-	border-radius: 1.5vh;
-	background: #ffffff;
-	cursor: pointer;
+input[type=range]::-moz-range-thumb,
+input[type=range]::-ms-thumb {
+    height: 4vh;
+    width: 4vh;
+    border-radius: 1.5vh;
+    background: #ffffff;
+    cursor: pointer;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
-	width: 100%;
-	height: 2vh;
-	cursor: pointer;
-	background: #770425;
-	border-radius: 1vh;
+    width: 100%;
+    height: 2vh;
+    cursor: pointer;
+    background: #770425;
+    border-radius: 1vh;
 }
 
 input[type=range]:focus::-webkit-slider-runnable-track {
-	background: #770425;
+    background: rgba(173, 40, 64, 0.8);
 }
 
 input[type=range]::-moz-range-track {
-	width: 100%;
-	height: 2vh;
-	cursor: pointer;
-	background: #770425;
-	border-radius: 6px;
+    width: 100%;
+    height: 2vh;
+    cursor: pointer;
+    background: #770425;
+    border-radius: 6px;
 }
 
 input[type=range]::-ms-track {
-	width: 100%;
-	height: 2vh;
-	cursor: pointer;
-	background: transparent;
-	border-color: transparent;
-	color: transparent;
+    width: 100%;
+    height: 2vh;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
 }
 
 input[type=checkbox] {
-  cursor: default;
-  appearance: none;
-  background-color: #770425;
-  border-radius: 2vh;
-  border: none;
-  width: 8vh;
-  height: 4vh;
-  margin: 0;
-  position: relative;
+    cursor: default;
+    appearance: none;
+    background-color: rgba(173, 40, 64, 0.8);
+    border-radius: 2vh;
+    border: none;
+    width: 8vh;
+    height: 4vh;
+    margin: 0;
+    position: relative;
 }
 
 
 input[type=checkbox],
 input[type=checkbox]::after {
-  transition: all 100ms ease-out;
+    transition: all 100ms ease-out;
 }
 
 input[type=checkbox]::after {
-  background-color: #fff;
-  border-radius: 50%;
-  content: "";
-  width: 3vh;
-  height: 3vh;
-  left: 0.5vh;
-  top: 0.5vh;
-  position: absolute;
+    background-color: #fff;
+    border-radius: 50%;
+    content: "";
+    width: 3vh;
+    height: 3vh;
+    left: 0.5vh;
+    top: 0.5vh;
+    position: absolute;
 }
 
 input[type=checkbox]:checked {
-  background-color: #cc1444;
+    background-color: rgb(173, 40, 64);
 }
 
 input[type=checkbox]:checked::after {
-  background-color: #fff;
-  left: 4.5vh;
+    background-color: #fff;
+    left: 4.5vh;
 }
 
-
-input[type=text] {
-	width: calc(100% - 2vh);
-	padding: 1vh;
-	border: none;
-	background-color: #121213;
-	border-radius: 2vh;
+.sectionContainer {
+    color: white;
 }
 
-
-.menusection {
-	padding: 1vh;
+.dataRow {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.menurow {
-	display: flex;
+.dataRow:last-child {
+    border-bottom: none;
 }
 
-button {
-	background-color: #cc1444;
-	border: 0;
-	padding: 1vh;
-	border-radius: 2vh;
-	margin-bottom: 1vh;
+.dataTitle {
+    color: white;
+    margin: 0;
+    font-size: 2vh;
+    text-transform: uppercase;
 }
 
-button:active {
-	background-color: #770425;
+.dataFields {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-#playbutton {
-	width: 4vh;
-	height: 4vh;
-	border-radius: 1.5vh;
-	margin-left: 1vh;
-	margin-top: 1vh;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 2vh;
-	background-image: url("../../assets/play.svg");
+.dataField {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #f5313e;
 }
 
-#playbutton.playing {
-	background-image: url("../../assets/pause.svg");
+.dataField label {
+    font-weight: bold;
+    margin-right: 10px;
 }
 
+.dataField .value {
+    font-family: monospace;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.antenna-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.moon-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.antenna-row .sectionContainer {
+    flex: 1;
+    min-width: 3vw;
+}
+
+.antenna-row .sectionContainer .dataFields {
+    gap: 0.1vh;
+}
+
+.antenna-row .dataField {
+    font-size: 1.6vh;
+}
+
+/* replace px with vh */
+@media screen and (max-width: 1000px) {
+    #keyContainer {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 8vh; 
+    }
+
+    .key {
+        margin-bottom: 20px; 
+        width: 100%;
+        height: 25vh; /* Ensure consistent height */
+        max-height: 312px; /* Add a max-height to prevent excessive stretching */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .key .colorCodes {
+        flex-grow: 1;
+    }
+
+    #visualContainer {
+        margin-bottom: 8vh;
+    }
+
+    #antennaPriority {
+        margin-bottom: 10vh;
+    }
+}
+
+#menuContainer.hide {
+    border-width: 0px;
+    overflow: hidden;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.hidden {
+    display: none;
+}
+
+#keyContainer.hidden {
+    display: none;
+}

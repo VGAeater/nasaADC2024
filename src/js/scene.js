@@ -20,7 +20,7 @@ export const scene = (dataObject, s) => (p) => {
 
 	var prevBest = "WPSA";		// Previous best for the priorotized list
 
-	var showAxes = false, showText = false, showAntennaColor = true, useTextures = true, useRocketModel = true;	// state tracking variables for graphical options
+	var showAxes = false, showAntennaColor = true, useTextures = true, useRocketModel = true;	// state tracking variables for graphical options
 	var followEarth = false, followMoon = false, followProbe = false;	// state tracking variables for following
 	var playing = false, speed = 10, strokeWeight = 100;	// state tracking variables for simulation speed
 
@@ -36,9 +36,54 @@ export const scene = (dataObject, s) => (p) => {
 
 	const playButtonDOM = document.getElementById("playbutton");
 
-	const overlayLeftDOM = document.getElementById("overlaytextleft");
-	const overlayRightDOM = document.getElementById("overlaytextright");
+	const fpsDOM = document.getElementById("fpsValue");
 
+	// Probe Pos
+	const probePosXDOM = document.getElementById("probePosX");
+	const probePosYDOM = document.getElementById("probePosY");
+	const probePosZDOM = document.getElementById("probePosZ");
+
+	// Probe Vel
+	const probeVelXDOM = document.getElementById("probeVelX");
+	const probeVelYDOM = document.getElementById("probeVelY");
+	const probeVelZDOM = document.getElementById("probeVelZ");
+	const probeVelTotalDOM = document.getElementById("probeVelTotal");
+
+	// Moon Pos
+	const moonPosXDOM = document.getElementById("moonPosX");
+	const moonPosYDOM = document.getElementById("moonPosY");
+	const moonPosZDOM = document.getElementById("moonPosZ");
+
+	// Moon Vel
+	const moonVelXDOM = document.getElementById("moonVelX");
+	const moonVelYDOM = document.getElementById("moonVelY");
+	const moonVelZDOM = document.getElementById("moonVelZ");
+	const moonVelTotalDOM = document.getElementById("moonVelTotal");
+
+	// Visual Elements
+	const showAxesDOM = document.getElementById("axescheckbox");
+	const useTexturesDOM = document.getElementById("texturescheckbox");
+	const realTimeDOM = document.getElementById("realcheckbox");
+	const minimapDOM = document.getElementById("minimapcheckbox");
+	const showRocketModelDOM = document.getElementById("rocketmodelcheckbox");
+	const timeValueDOM = document.getElementById("timeValue");
+
+	// Antenna Status
+	const dss24StatusDOM = document.getElementById("dss24Status");
+	const dss34StatusDOM = document.getElementById("dss34Status");
+	const dss54StatusDOM = document.getElementById("dss54Status");
+	const wpsaStatusDOM = document.getElementById("wpsaStatus");
+
+	// Antenna Priority
+	const priorityValue1DOM = document.getElementById("priorityValue1");
+	const priorityValue2DOM = document.getElementById("priorityValue2");
+	const priorityValue3DOM = document.getElementById("priorityValue3");
+	const priorityValue4DOM = document.getElementById("priorityValue4");
+
+	const priorityLabel1DOM = document.getElementById("priorityLabel1");
+	const priorityLabel2DOM = document.getElementById("priorityLabel2");
+	const priorityLabel3DOM = document.getElementById("priorityLabel3");
+	const priorityLabel4DOM = document.getElementById("priorityLabel4");
 
 	var showOtherPath = false;				// data selection trackers
 	var earthDayTex, earthNightTex, moonTex, cloudsTex, starTex;	// the textures for the earth and moon
@@ -48,7 +93,7 @@ export const scene = (dataObject, s) => (p) => {
 	// main dom objects
 	const canvas = document.getElementById("canvas");
 	const canvasdiv = document.getElementById("canvasdiv");
-	const menu = document.getElementById("menu");
+	const menu = document.getElementById("menuContainer");
 
 	var prevbox;						// stores what the previous bounding box of the canvas was
 
@@ -365,73 +410,60 @@ export const scene = (dataObject, s) => (p) => {
 	}
 
 	function handleText(baseData, bonusData, budgets) {
-		if (!showText)					// check if user wants to see this
-			return;
-
 		let probeData = s.trackBonus ? bonusData : baseData;
-
-		// make generale stuff
+	
+		// make general stuff
 		let framerate = p.frameRate();
 		let probeV = Math.hypot(probeData[c.arrayProbeStart + 3], probeData[c.arrayProbeStart + 4], probeData[c.arrayProbeStart + 5]);
 		let moonV = Math.hypot(bonusData[c.arrayMoonStart + 3], bonusData[c.arrayMoonStart + 4], bonusData[c.arrayMoonStart + 5]);
-
-		let bufferLeft = `FPS: ${framerate.toFixed(3)}<br><br>`;
-		let bufferRight = `Time: ${s.time.toFixed(3)}<br><br>`;
-
-		// print all of the positions and velocities
-		// Probe stuff
-		bufferLeft += `───Probe Position───<br>`;
-		bufferLeft += `X: ${probeData[c.arrayProbeStart].toFixed(2)}<br>`;
-		bufferLeft += `Y: ${probeData[c.arrayProbeStart + 1].toFixed(2)}<br>`;
-		bufferLeft += `Z: ${probeData[c.arrayProbeStart + 2].toFixed(2)}<br>`;
-		bufferLeft += `───Probe Velocity───<br>`;
-		bufferLeft += `X: ${probeData[c.arrayProbeStart + 3].toFixed(3)}<br>`;
-		bufferLeft += `Y: ${probeData[c.arrayProbeStart + 4].toFixed(3)}<br>`;
-		bufferLeft += `Z: ${probeData[c.arrayProbeStart + 5].toFixed(3)}<br>`;
-		bufferLeft += `Total: ${probeV.toFixed(3)}<br><br>`;
-
-		// Moon stuff
-		bufferLeft += `───Moon Position───<br>`;
-		bufferLeft += `X: ${bonusData[c.arrayMoonStart].toFixed(2)}<br>`;
-		bufferLeft += `Y: ${bonusData[c.arrayMoonStart + 1].toFixed(2)}<br>`;
-		bufferLeft += `Z: ${bonusData[c.arrayMoonStart + 2].toFixed(2)}<br>`;
-		bufferLeft += `───Moon Velocity───<br>`;
-		bufferLeft += `X: ${bonusData[c.arrayMoonStart + 3].toFixed(3)}<br>`;
-		bufferLeft += `Y: ${bonusData[c.arrayMoonStart + 4].toFixed(3)}<br>`;
-		bufferLeft += `Z: ${bonusData[c.arrayMoonStart + 5].toFixed(3)}<br>`;
-		bufferLeft += `Total: ${moonV.toFixed(3)}<br>`;
+	
+		// Update fpsDOM with the FPS value
+		fpsDOM.innerText = framerate.toFixed(3);
 
 		// DONE WITH LEFT SIDE ON TO THE RIGHT
 		let [dss24Link, dss34Link, dss54Link, wpsaLink] = budgets;
+	
+		document.getElementById("timeValue").innerText = s.time.toFixed(3);
+	
+		probePosXDOM.innerText = probeData[c.arrayProbeStart].toFixed(2);
+		probePosYDOM.innerText = probeData[c.arrayProbeStart + 1].toFixed(2);
+		probePosZDOM.innerText = probeData[c.arrayProbeStart + 2].toFixed(2);
+	
+		probeVelXDOM.innerText = probeData[c.arrayProbeStart + 3].toFixed(3);
+		probeVelYDOM.innerText = probeData[c.arrayProbeStart + 4].toFixed(3);
+		probeVelZDOM.innerText = probeData[c.arrayProbeStart + 5].toFixed(3);
+		probeVelTotalDOM.innerText = probeV.toFixed(3);
 
-		bufferRight += `─────${s.trackBonus ? "BONUS" : "BASE"} DATA─────<br>`;
-		bufferRight += `Mass: ${probeData[c.arrayProbeStart + 6].toFixed(2)}kg<br>`;
-		bufferRight += `Dist: ${probeData[probeData.length - 1].toFixed(2)}km<br><br>`;
-		bufferRight += `───Antennas───<br>`;
-		bufferRight += `DSS24: ${antennaText(dss24Link, 34)}<br>`;
-		bufferRight += `DSS34: ${antennaText(dss34Link, 34)}<br>`;
-		bufferRight += `DSS54: ${antennaText(dss54Link, 34)}<br>`;
-		bufferRight += `WPSA: ${antennaText(wpsaLink, 12)}<br><br>`;
-
-		// More stuff for the priorotized list
+		moonPosXDOM.innerText = bonusData[c.arrayMoonStart].toFixed(2);
+		moonPosYDOM.innerText = bonusData[c.arrayMoonStart + 1].toFixed(2);
+		moonPosZDOM.innerText = bonusData[c.arrayMoonStart + 2].toFixed(2);
+	
+		moonVelXDOM.innerText = bonusData[c.arrayMoonStart + 3].toFixed(3);
+		moonVelYDOM.innerText = bonusData[c.arrayMoonStart + 4].toFixed(3);
+		moonVelZDOM.innerText = bonusData[c.arrayMoonStart + 5].toFixed(3);
+		moonVelTotalDOM.innerText = moonV.toFixed(3);
+	
+		let [dss24Link, dss34Link, dss54Link, wpsaLink] = budgets;
+	
+		dss24StatusDOM.innerText = antennaText(dss24Link);
+		dss34StatusDOM.innerText = antennaText(dss34Link);
+		dss54StatusDOM.innerText = antennaText(dss54Link);
+		wpsaStatusDOM.innerText = antennaText(wpsaLink);
+	
 		let list = antennaList(dss24Link, dss34Link, dss54Link, wpsaLink);
 		let antennaKeys = Object.keys(list);
 		let antennaValues = Object.values(list);
 		antennaValues = antennaValues.map(value => isNaN(value) ? "Disc." : value);
 
-		// Adds the priorotized list stuff
-		bufferRight += `───Priority List───<br>`;
+		priorityLabel1DOM.innerText = antennaKeys[3];
+		priorityLabel2DOM.innerText = antennaKeys[2];
+		priorityLabel3DOM.innerText = antennaKeys[1];
+		priorityLabel4DOM.innerText = antennaKeys[0];
 
-		// Total number of avaliable antennas (Because of strattons weird data roudning thing, Math.floor is necessary)
-		let avaliableAntennas = (isNaN(dss24Link) ? 0 : 1) + (isNaN(dss34Link) ? 0 : 1) + (isNaN(dss54Link) ? 0 : 1) + (isNaN(wpsaLink) ? 0 : 1);
-		bufferRight += `Avaliable: <a style="color: ${avaliableAntennaColors(avaliableAntennas)}">${avaliableAntennas}</a><br>`;
-		bufferRight += `1: ${antennaKeys[3]} → ${listText(antennaValues[3])}<br>`;
-		bufferRight += `2: ${antennaKeys[2]} → ${listText(antennaValues[2])}<br>`;
-		bufferRight += `3: ${antennaKeys[1]} → ${listText(antennaValues[1])}<br>`;
-		bufferRight += `4: ${antennaKeys[0]} → ${listText(antennaValues[0])}<br>`;
-
-		overlayRightDOM.innerHTML = bufferRight;	// set the innerhtml to the newly generated buffer (this proved to be faster than writing to the DOM every time)
-		overlayLeftDOM.innerHTML = bufferLeft;
+		priorityValue1DOM.innerText = listText(antennaValues[3]);
+		priorityValue2DOM.innerText = listText(antennaValues[2]);
+		priorityValue3DOM.innerText = listText(antennaValues[1]);
+		priorityValue4DOM.innerText = listText(antennaValues[0]);
 	}
 
 	function setSize() {
@@ -511,7 +543,7 @@ export const scene = (dataObject, s) => (p) => {
 
 			budgets.push(dataObject.linkBudget(b.bonusRange(i, probeCoords, moonCoords, s.time), ant[3]));
 		}
-
+		
 		// run each handler
 		handleEarth(baseData, bonusData, budgets);
 		handleMoon(bonusData);
@@ -582,16 +614,6 @@ export const scene = (dataObject, s) => (p) => {
 	strokeDOM.oninput = e => {
 		strokeWeight = e.target.value == '' ? 100 : parseFloat(e.target.value);
 		p.strokeWeight(strokeWeight);
-	};
-
-	const textCheckboxDOM = document.getElementById("textcheckbox");
-	textCheckboxDOM.oninput = () => {
-		showText = textCheckboxDOM.checked;
-
-		overlayLeftDOM.innerHTML = '';
-		overlayRightDOM.innerHTML = '';
-		overlayLeftDOM.classList.toggle("hidden", !showText);
-		overlayRightDOM.classList.toggle("hidden", !showText);
 	};
 
 	const texturesCheckboxDOM = document.getElementById("texturescheckbox");

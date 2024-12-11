@@ -30,6 +30,7 @@ export const scene = (dataObject, s) => (p) => {
 	const followProbeDOM = document.getElementById("followprobe");
 
 	const timeDOM = document.getElementById("time");
+	const timeValueDOM = document.getElementById("timeValue");
 	const strokeDOM = document.getElementById("stroke");
 	const speedDOM = document.getElementById("speed");
 	const timeSliderDOM = document.getElementById("timeslider");
@@ -66,7 +67,6 @@ export const scene = (dataObject, s) => (p) => {
 	const realTimeDOM = document.getElementById("realcheckbox");
 	const minimapDOM = document.getElementById("minimapcheckbox");
 	const showRocketModelDOM = document.getElementById("rocketmodelcheckbox");
-	const timeValueDOM = document.getElementById("timeValue");
 
 	// Antenna Status
 	const dss24StatusDOM = document.getElementById("dss24Status");
@@ -419,8 +419,7 @@ export const scene = (dataObject, s) => (p) => {
 	
 		// Update fpsDOM with the FPS value
 		fpsDOM.innerText = framerate.toFixed(3);
-
-		// DONE WITH LEFT SIDE ON TO THE RIGHT	
+		
 		document.getElementById("timeValue").innerText = s.time.toFixed(3);
 	
 		probePosXDOM.innerText = probeData[c.arrayProbeStart].toFixed(2);
@@ -589,16 +588,17 @@ export const scene = (dataObject, s) => (p) => {
 			let now = new Date();
 			let timeDifference = now.getTime() - c.launchTime.getTime();
 			input = timeDifference / (1000 * 60);
-			input = Math.max(input, 0);		// If it's negative, turns it into positive
+			input = Math.max(input, 0);
 		}
-
+	
 		s.time = parseFloat(input);
-
-		if (input == "" || isNaN(s.time))		// default to 0 if bad input
+	
+		if (input == "" || isNaN(s.time))
 			s.time = 0;
-
-		timeDOM.value = input;				// set it to original in case of mis-input
-		timeSliderDOM.value = s.time;			// needs to be valid
+	
+		timeDOM.value = input;              // Update input field
+		timeSliderDOM.value = s.time;       // Update slider
+		timeValueDOM.innerText = s.time.toFixed(3); // Update display value
 	}
 
 	playButtonDOM.onclick = e => { playing = e.target.classList.toggle('playing'); };

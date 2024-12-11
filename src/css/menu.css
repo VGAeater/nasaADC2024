@@ -213,6 +213,7 @@ body {
 }
 
 #time,
+#timeLabel,
 #speed,
 #stroke {
     width: 30%;

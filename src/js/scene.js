@@ -364,7 +364,7 @@ export const scene = (dataObject, s) => (p) => {
 	// generates a formated string used in the link budget monitors
 	function antennaText(budget) {
 		if (isNaN(budget))
-			return "N/A";
+			return "Inactive";
 
 		if (budget > 10000)
 			return `${budget.toFixed(2)}kb/s → 10Mb/s`;
@@ -376,7 +376,7 @@ export const scene = (dataObject, s) => (p) => {
 		if (num == 10000)
 			return "10Mb/s";
 		if (isNaN(num))
-			return "N/A";
+			return "Inactive";
 		return `${num.toFixed(2)}kb/s`;
 	}
 

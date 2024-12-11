@@ -419,7 +419,7 @@ export const scene = (dataObject, s) => (p) => {
 	
 		// Update fpsDOM with the FPS value
 		fpsDOM.innerText = framerate.toFixed(3);
-		
+
 		document.getElementById("timeValue").innerText = s.time.toFixed(3);
 	
 		probePosXDOM.innerText = probeData[c.arrayProbeStart].toFixed(2);
@@ -548,13 +548,13 @@ export const scene = (dataObject, s) => (p) => {
 		handleText(baseData, bonusData, budgets);
 		handleAxes();
 
-		for (let star of stars) {
-			p.push();
-			p.stroke(star.color)
-			p.strokeWeight(star.strokeWeight);
-        	p.point(star.x, star.y, star.z); 
-        	p.pop();
-		}
+		// for (let star of stars) {
+		// 	p.push();
+		// 	p.stroke(star.color)
+		// 	p.strokeWeight(star.strokeWeight);
+        // 	p.point(star.x, star.y, star.z); 
+        // 	p.pop();
+		// }
 
 		if (playing)					// increment time if playing
 			setTime(s.time + speed * p.deltaTime / 1000);

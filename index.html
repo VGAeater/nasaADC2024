@@ -5,7 +5,8 @@
 	<!-- noto imports cuz i love noto -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&family=Roboto&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&family=Roboto&display=swap"
+		rel="stylesheet">
 
 	<!-- p5 import -->
 	<script src="src/js/p5.min.js"></script>
@@ -24,6 +25,7 @@
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<meta charset="utf-8" />
 </head>
+
 <body>
 	<div id="canvasdiv" resize="setSize();" aria-label="Main canvas">
 		<canvas id="canvas"></canvas>
@@ -36,153 +38,353 @@
 		<canvas id="minimapcanvas"></canvas>
 	</div>
 	<div id="loading" aria-live="assertive" aria-label="Loading"></div>
-	<div id="menu" class="hide" aria-label="menu">
-		<div class="menurow">
-			<hr>
-			<div class="menusection">
-				<h3 class="sectionheader" aria-label="Path Key">Path Key</h3>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: rgb(227, 139, 73);"></div>
-					<span class="colorlabel">EDL</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: rgb(241, 64, 42);"></div>
-					<span class="colorlabel">Orbiting Earth</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: rgb(40, 169, 221);"></div>
-					<span class="colorlabel">Path to Moon</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: white;"></div>
-					<span class="colorlabel">Returning to Earth</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: magenta;"></div>
-					<span class="colorlabel">Other Path</span>
-				</div>
-			</div>
-			<hr>
-			<div class="menusection">
-				<h3 class="sectionheader" aria-label="Antenna Key">Antenna Key</h3>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: lime;"></div>
-					<span class="colorlabel">High Priority</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: yellow;"></div>
-					<span class="colorlabel">Medium Priority</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: orange;"></div>
-					<span class="colorlabel">Low Priority</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: red;"></div>
-					<span class="colorlabel">Very Low Priority</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox pulsing" style="background-color: red;"></div>
-					<span class="colorlabel">No Connection</span>
-				</div>
-			</div>
-			<hr>
-			<div class="menusection">
-				<h3 class="sectionheader" aria-label="Antenna Key">Antenna Avaliability</h3>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: lime;"></div>
-					<span class="colorlabel">3/4 Antennas</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: #ffd300;"></div>
-					<span class="colorlabel">2 Antennas</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: #ff8800;"></div>
-					<span class="colorlabel">1 Antenna</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: red;"></div>
-					<span class="colorlabel">0 Antennas</span>
-				</div>
-			</div>
-			<hr>
-			<div class="menusection">
-				<h3 class="sectionheader" aria-label="Velocity Vector Key">Velocity Vector Key</h3>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: red;"></div>
-					<span class="colorlabel">Greater than 7 km/s</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: orange;"></div>
-					<span class="colorlabel">Greater than 5 km/s</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: yellow;"></div>
-					<span class="colorlabel">Greater than 3 km/s</span>
-				</div>
-				<div class="coloritem">
-					<div class="colorbox" style="background-color: lime;"></div>
-					<span class="colorlabel">Less than 3 km/s</span>
-				</div>
-			</div>
-			<hr>
-			<div class="menusection" aria-label="Scene controls">
-				<label>Time (min)</label><br>
-				<input type="text" id="time" placeholder="0"><br>
-				<label>Stroke Weight</label><br>
-				<input type="text" id="stroke" placeholder="100"><br>
-				<label>Speed (min/sec)</label><br>
-				<input type="text" id="speed" placeholder="10"><br>
-			</div>
-			<hr>
+	<!-- Menu -->
+	<div id="menuContainer" class="hide">
+		<!-- Tabs -->
+		<div id="tabsContainer">
+			<button class="tab" id="tabKey">Key</button>
+			<button class="tab" id="tabSettings">Controls</button>
+			<button class="tab" id="tabData">Data</button>
 		</div>
-		<hr>
-		<div class="menurow" aria-label="Play Menu">
-			<button id="playbutton" aria-label="Play button"></button>
-			<input type="range" value="0" min="0" aria-valuemin="0" max="12983.16998" aria-valuemax="12983.16998" step="1" id="timeslider"/>
+
+		<!-- Key -->
+		<div id="keyContainer">
+			<div class="items">
+				<div id="pathKey" class="key">
+					<h3 class="primaryTextColor keyTitle">Path Key</h3>
+					<div class="colorCodes">
+						<div class="colorLabel">
+							<span class="dot" style="background-color: rgb(227, 139, 73);"></span>
+							<h3 class="primaryTextColor">EDL</h3>
+						</div>
+						<div class="colorLabel">
+							<span class="dot" style="background-color: rgb(241, 64, 42);"></span>
+							<h3 class="primaryTextColor">Orbiting Earth</h3>
+						</div>
+						<div class="colorLabel">
+							<span class="dot" style="background-color: rgb(40, 169, 221);"></span>
+							<h3 class="primaryTextColor">Path to Moon</h3>
+						</div>
+						<div class="colorLabel">
+							<span class="dot" style="background-color: white;"></span>
+							<h3 class="primaryTextColor">Returning to Earth</h3>
+						</div>
+						<div class="colorLabel">
+							<span class="dot" style="background-color: magenta;"></span>
+							<h3 class="primaryTextColor">Other Path</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="antennaKey" class="key">
+				<h3 class="primaryTextColor keyTitle">Antenna Key</h3>
+				<div class="colorCodes">
+					<div class="colorLabel">
+						<span class="dot" style="background-color: lime"></span>
+						<h3 class="primaryTextColor">High Priority</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" style="background-color: yellow"></span>
+						<h3 class="primaryTextColor">Medium Priority</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" style="background-color: orange"></span>
+						<h3 class="primaryTextColor">Low Priority</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" style="background-color: red"></span>
+						<h3 class="primaryTextColor">Very Low Priority</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" id="pulsing" style="background-color: red;"></span>
+						<h3 class="primaryTextColor">No Connection</h3>
+					</div>
+				</div>
+			</div>
+			<div id="vVectorKey" class="key">
+				<h3 class="primaryTextColor keyTitle">Velocity Vector Key</h3>
+				<div class="colorCodes">
+					<div class="colorLabel">
+						<span class="dot" style="background-color: red"></span>
+						<h3 class="primaryTextColor">Greater than 7 km/s</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" style="background-color: orange"></span>
+						<h3 class="primaryTextColor">Greater than 5 km/s</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" style="background-color: yellow"></span>
+						<h3 class="primaryTextColor">Greater than 3 km/s</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" style="background-color: lime"></span>
+						<h3 class="primaryTextColor">Less than 3 km/s</h3>
+					</div>
+				</div>
+			</div>
+			<div id="antennaNumKey" class="key">
+				<h3 class="primaryTextColor keyTitle">Antenna Avaliability</h3>
+				<div class="colorCodes">
+					<div class="colorLabel">
+						<span class="dot" style="background-color: lime"></span>
+						<h3 class="primaryTextColor">3/4 Antennas</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" style="background-color: yellow"></span>
+						<h3 class="primaryTextColor">2 Antennas</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" style="background-color: orange"></span>
+						<h3 class="primaryTextColor">1 Antenna</h3>
+					</div>
+					<div class="colorLabel">
+						<span class="dot" style="background-color: red"></span>
+						<h3 class="primaryTextColor">0 Antenna</h3>
+					</div>
+				</div>
+			</div>
 		</div>
-		<hr>
-		<div class="menurow" aria-label="Scene settings">
-			<hr>
-			<div class="menusection">
-				<label>Follow Earth</label><br>
-				<input type="checkbox" id="followearth" aria-label="Follow Earth"><br>
-				<label>Follow Moon</label><br>
-				<input type="checkbox" id="followmoon" aria-label="Follow Moon"><br>
-				<label>Follow Probe</label><br>
-				<input type="checkbox" id="followprobe" aria-label="Follow Probe"><br>
+
+		<!-- Control Panel -->
+		<div id="settingsContainer" class="hidden">
+			<div class="sectionContainer">
+				<h3 class="primaryTextColor">Time</h3>
+				<div id="timeSliderContainer">
+					<button id="playbutton" aria-label="Play button"></button>
+					<input type="range" value="0" min="0" aria-valuemin="0" max="12983.16998"
+						aria-valuemax="12983.16998" step="1" id="timeslider" />
+				</div>
+				<div id="displayTime">
+					<h3 id="time" class="primaryTextColor"> Time (min): </h3>
+					<input type="text" id="time" placeholder="0">
+				</div>
+				<div id="displaySpeed">
+					<h3 id="time" class="primaryTextColor">Speed (min/sec): </h3>
+					<input type="text" id="speed" placeholder="10">
+				</div>
+				<div id="displayStroke">
+					<h3 id="time" class="primaryTextColor">Stroke Weight: </h3>
+					<input type="text" id="stroke" placeholder="100">
+				</div>
 			</div>
-			<hr>
-			<div class="menusection">
-				<label>Track Bonus</label><br>
-				<input type="checkbox" id="bonuscheckbox" aria-label="Track Bonus"><br>
-				<label>Show Other Path</label><br>
-				<input type="checkbox" id="othercheckbox" aria-label="Track Other Path"><br>
-				<label>Show Antenna Color</label><br>
-				<input type="checkbox" id="antennacheckbox" aria-label="Show Antenna Color" checked><br>
+			<div class="antenna-row">
+				<div class="sectionContainer">
+					<h3 class="primaryTextColor">Follow</h3>
+					<div class="checkbox-row">
+						<label for="followearth">Follow Earth</label>
+						<input type="checkbox" id="followearth" aria-label="Follow Earth">
+					</div>
+					<div class="checkbox-row">
+						<label for="followmoon">Follow Moon</label>
+						<input type="checkbox" id="followmoon" aria-label="Follow Moon">
+					</div>
+					<div class="checkbox-row">
+						<label for="followprobe">Follow Probe</label>
+						<input type="checkbox" id="followprobe" aria-label="Follow Probe">
+					</div>
+				</div>
+
+				<div class="sectionContainer">
+					<h3 class="primaryTextColor">Track</h3>
+					<div class="checkbox-row">
+						<label for="bonuscheckbox">Track Bonus</label>
+						<input type="checkbox" id="bonuscheckbox" aria-label="Track Bonus">
+					</div>
+					<div class="checkbox-row">
+						<label for="othercheckbox">Show Other Path</label>
+						<input type="checkbox" id="othercheckbox" aria-label="Track Other Path">
+					</div>
+					<div class="checkbox-row">
+						<label for="antennacheckbox">Show Antenna Color</label>
+						<input type="checkbox" id="antennacheckbox" aria-label="Show Antenna Color" checked>
+					</div>
+				</div>
 			</div>
-			<hr>
-			<div class="menusection">
-				<label>Show Axes</label><br>
-				<input type="checkbox" id="axescheckbox" aria-label="Show Axes"><br>
-				<label>Show Text</label><br>
-				<input type="checkbox" id="textcheckbox" aria-label="Show Text"><br>
-				<label>Use Textures</label><br>
-				<input type="checkbox" id="texturescheckbox" aria-label="Use Textures" checked><br>
+
+			<div class="sectionContainer" id="visualContainer">
+				<h3 class="primaryTextColor">Visual</h3>
+				<div class="checkbox-row">
+					<label for="axescheckbox">Show Axes</label>
+					<input type="checkbox" id="axescheckbox" aria-label="Show Axes">
+				</div>
+				<div class="checkbox-row">
+					<label for="texturescheckbox">Use Textures</label>
+					<input type="checkbox" id="texturescheckbox" aria-label="Use Textures" checked>
+				</div>
+				<div class="checkbox-row">
+					<label for="realcheckbox">Real Time</label>
+					<input type="checkbox" id="realcheckbox" aria-label="Use Real Time">
+				</div>
+				<div class="checkbox-row">
+					<label for="minimapcheckbox">Minimap</label>
+					<input type="checkbox" id="minimapcheckbox" aria-label="Show Minimap">
+				</div>
+				<div class="checkbox-row">
+					<label for="rocketmodelcheckbox">Use Rocket Model</label>
+					<input type="checkbox" id="rocketmodelcheckbox" aria-label="Use Rocket Model" checked>
+				</div>
 			</div>
-			<hr>
-			<div class="menusection">
-				<label>Real Time</label><br>
-				<input type="checkbox" id="realcheckbox" aria-label="Use Real Time"><br>
-				<label>Minimap</label><br>
-				<input type="checkbox" id="minimapcheckbox" aria-label="Show Minimap"><br>
-				<label>Use Rocket Model</label><br>
-				<input type="checkbox" id="rocketmodelcheckbox" aria-label="Use Rocket Model" checked><br>
-			</div>
-			<hr>
 		</div>
-		<hr>
+
+		<!-- Data -->
+		<div id="dataContainer" class="hidden">
+			<div class="sectionContainer">
+				<h3 class="primaryTextColor">Status</h3>
+				<div class="dataRow">
+					<div class="dataField">
+						<label>FPS:</label>
+						<span class="value" id="fpsValue">0.000</span>
+					</div>
+					<div class="dataField">
+						<label>Time:</label>
+						<span class="value" id="timeValue">0.000</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="antenna-row">
+				<div class="sectionContainer">
+					<h3 class="primaryTextColor">Probe Position</h3>
+					<div id="probePosition" class="dataRow">
+						<div class="dataFields">
+							<div class="dataField">
+								<label>X:</label>
+								<span class="value" id="probePosX">0.000</span>
+							</div>
+							<div class="dataField">
+								<label>Y:</label>
+								<span class="value" id="probePosY">0.000</span>
+							</div>
+							<div class="dataField">
+								<label>Z:</label>
+								<span class="value" id="probePosZ">0.000</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="sectionContainer">
+					<h3 class="primaryTextColor">Probe Velocity</h3>
+					<div id="probeVelocity" class="dataRow">
+						<div class="dataFields">
+							<div class="dataField">
+								<label id="value">X:</label>
+								<span class="value" id="probeVelX">0.000</span>
+							</div>
+							<div class="dataField">
+								<label id="value">Y:</label>
+								<span class="value" id="probeVelY">0.000</span>
+							</div>
+							<div class="dataField">
+								<label id="value">Z:</label>
+								<span class="value" id="probeVelZ">0.000</span>
+							</div>
+							<div class="dataField">
+								<label id="value">Total:</label>
+								<span class="value" id="probeVelTotal">0.000</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="antenna-row">
+				<div class="sectionContainer">
+					<h3 class="primaryTextColor">Moon Position</h3>
+					<div id="moonPosition" class="dataRow">
+						<div class="dataFields">
+							<div class="dataField">
+								<label>X:</label>
+								<span class="value" id="moonPosX">0.000</span>
+							</div>
+							<div class="dataField">
+								<label>Y:</label>
+								<span class="value" id="moonPosY">0.000</span>
+							</div>
+							<div class="dataField">
+								<label>Z:</label>
+								<span class="value" id="moonPosZ">0.000</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="sectionContainer">
+					<h3 class="primaryTextColor">Moon Velocity</h3>
+					<div id="moonVelocity" class="dataRow">
+						<div class="dataFields">
+							<div class="dataField">
+								<label id="priorityLabel1">X:</label>
+								<span class="value" id="moonVelX">0.000</span>
+							</div>
+							<div class="dataField">
+								<label id="priorityLabel2">Y:</label>
+								<span class="value" id="moonVelY">0.000</span>
+							</div>
+							<div class="dataField">
+								<label id="priorityLabel3">Z:</label>
+								<span class="value" id="moonVelZ">0.000</span>
+							</div>
+							<div class="dataField">
+								<label id="priorityLabel4">Total:</label>
+								<span class="value" id="moonVelTotal">0.000</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="antenna-row">
+				<div class="sectionContainer">
+					<h3 class="primaryTextColor">Antenna Status</h3>
+					<div id="antennaStatus" class="dataRow">
+						<div class="dataFields">
+							<div class="dataField">
+								<label>DSS24:</label>
+								<span class="value" id="dss24Status">N/A</span>
+							</div>
+							<div class="dataField">
+								<label>DSS34:</label>
+								<span class="value" id="dss34Status">N/A</span>
+							</div>
+							<div class="dataField">
+								<label>DSS54:</label>
+								<span class="value" id="dss54Status">N/A</span>
+							</div>
+							<div class="dataField">
+								<label>WPSA:</label>
+								<span class="value" id="wpsaStatus">N/A</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="sectionContainer">
+					<h3 class="primaryTextColor">Antenna Priority</h3>
+					<div id="antennaPriority" class="dataRow">
+						<div class="dataFields">
+							<div class="dataField">
+								<label id="priorityLabel1">DSS24:</label>
+								<span class="value" id="priorityValue1">N/A</span>
+							</div>
+							<div class="dataField">
+								<label id="priorityLabel2">DSS34:</label>
+								<span class="value" id="priorityValue2">N/A</span>
+							</div>
+							<div class="dataField">
+								<label id="priorityLabel3">DSS54:</label>
+								<span class="value" id="priorityValue3">N/A</span>
+							</div>
+							<div class="dataField">
+								<label id="priorityLabel4">WPSA:</label>
+								<span class="value" id="priorityValue4">N/A</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<p style="display:none;" id="p5_loading"></p>
 </body>

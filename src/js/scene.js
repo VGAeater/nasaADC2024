@@ -86,8 +86,8 @@ export const scene = (dataObject, s) => (p) => {
 	const priorityLabel4DOM = document.getElementById("priorityLabel4");
 
 	var showOtherPath = false;				// data selection trackers
-	var earthDayTex, earthNightTex, moonTex, cloudsTex, starTex;	// the textures for the earth and moon
-	var earthShader, moonShader, atmoShader;		// the shaders for the eath, moon, and atmosphere
+	var earthDayTex, earthNightTex, moonTex, cloudsTex, starsBG;	// the textures for the earth and moon
+	var earthShader, moonShader;		// the shaders for the eath, moon, and atmosphere
 	var rocketModel;
 
 	// main dom objects
@@ -486,6 +486,7 @@ export const scene = (dataObject, s) => (p) => {
 		earthNightTex = p.loadImage('assets/' + res + '/earthNight.jpg');
 		cloudsTex = p.loadImage('assets/' + res + '/clouds.jpg');
 		moonTex = p.loadImage('assets/' + res + '/moon.jpg');
+		starsBG = p.loadImage('assets/starsBG.jpg');
 
 		// load the shaders
 		earthShader = p.loadShader('src/glsl/earth.vert', 'src/glsl/earth.frag');
@@ -503,7 +504,7 @@ export const scene = (dataObject, s) => (p) => {
 
 		p.perspective(2 * Math.atan(p.height / 2 / 800), p.width / p.height, 1, 10000000);	// initialize the camera
 
-		stars = createStarBackground(2000);		// create the star background, if in draw we create a atom
+		// stars = createStarBackground(2000);		// create the star background, if in draw we create a atom
 
 		p.background(0);				// clear background as quick as posible
 		p.noFill();					// default to nofill
@@ -514,7 +515,12 @@ export const scene = (dataObject, s) => (p) => {
 
 	p.draw = () => {
 		setSize();					// check if size has changed and adjust if it has
-		p.background(0);
+		if (starsBG instanceof p5.Image) {
+			starsBG.resize(p.width, p.height); // resize the star background to the new size
+			p.background(starsBG); // set the background to the star background
+		} else {
+			p.background(0); // fallback to black background if starsBG is not a valid image
+		};				// set the background to the star background
 
 		if (!(dataObject.baseReady && dataObject.bonusReady))	// stall until the data has been loaded (kinda hacky solution)
 			return;
